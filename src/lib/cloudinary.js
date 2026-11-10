@@ -12,9 +12,10 @@ export function isCloudinary(url) {
 
 /**
  * @param {string} url  Original Cloudinary URL
- * @param {{ w?: number, h?: number, crop?: "fit"|"fill"|"pad"|"limit", trim?: boolean, dpr?: number }} [opts]
+ * @param {{ w?: number, h?: number, crop?: "fit"|"fill"|"pad"|"limit", trim?: boolean, dpr?: number, background?: string }} [opts]
+ *   background: hex without "#", used by crop "pad" (e.g. social preview images)
  */
-export function cloudinaryUrl(url, { w, h, crop = "limit", trim = false, dpr } = {}) {
+export function cloudinaryUrl(url, { w, h, crop = "limit", trim = false, dpr, background } = {}) {
   if (!isCloudinary(url)) return url;
   const parts = [];
   if (trim) parts.push("e_trim:8");
@@ -22,6 +23,7 @@ export function cloudinaryUrl(url, { w, h, crop = "limit", trim = false, dpr } =
   if (w) size.push(`w_${Math.round(w)}`);
   if (h) size.push(`h_${Math.round(h)}`);
   if (dpr) size.push(`dpr_${dpr}`);
+  if (background) size.push(`b_rgb:${background}`);
   parts.push(size.join(","));
 
   const segment = url.includes(UPLOAD_SEGMENT) ? UPLOAD_SEGMENT : "/upload/";

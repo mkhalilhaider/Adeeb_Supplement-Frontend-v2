@@ -1,8 +1,8 @@
-import { useRef } from "react";
 import { Drawer } from "vaul";
 import { X } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { useIsDesktop } from "../../lib/useMediaQuery";
+import { useReturnFocus } from "../../lib/hooks";
 import { IconButton } from "./Button";
 
 /**
@@ -33,20 +33,8 @@ export function Sheet({
   const isDesktop = useIsDesktop();
   const bottom = !alwaysSide && (forceBottom || !isDesktop);
   const direction = bottom ? "bottom" : side;
-  // Vaul doesn't hand focus back to the opener on close, so keyboard users would land at the top
-  // of the page. Remember the opener when the sheet takes focus, and restore it on close.
-  const openerRef = useRef(null);
-  const rememberOpener = () => {
-    const el = document.activeElement;
-    openerRef.current = el instanceof HTMLElement && el !== document.body ? el : null;
-  };
-  const restoreFocus = (event) => {
-    const opener = openerRef.current;
-    if (opener?.isConnected) {
-      event.preventDefault();
-      opener.focus({ preventScroll: true });
-    }
-  };
+  // Vaul doesn’t hand focus back to the opener on close; do it ourselves.
+  const returnFocus = useReturnFocus();
 
   return (
     // autoFocus: Vaul defaults to false, which skips moving focus into the sheet — then Radix
@@ -57,8 +45,7 @@ export function Sheet({
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-ink/40" />
         <Drawer.Content
-          onOpenAutoFocus={rememberOpener}
-          onCloseAutoFocus={restoreFocus}
+          {...returnFocus}
           {...(description ? {} : { "aria-describedby": undefined })}
           className={cn(
             "fixed z-50 flex flex-col bg-surface outline-none",

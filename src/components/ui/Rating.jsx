@@ -27,17 +27,19 @@ function Star({ fill, size, id }) {
  * Star rating for display. Reads as "Rated 4.4 out of 5, 5 reviews" to screen readers.
  * Renders nothing when there are no reviews (never show empty stars as if rated zero).
  *
- * @param {{ value: number, count?: number, size?: number, showValue?: boolean }} props
+ * @param {{ value: number, count?: number, size?: number, showValue?: boolean, single?: boolean }} props
+ *   `single`: one person’s rating (a review) — no count, announced as "Rated 4 out of 5".
  */
-export function Rating({ value, count, size = 14, showValue = false, className }) {
+export function Rating({ value, count, size = 14, showValue = false, single = false, className }) {
   const uid = useId();
-  if (!count || !value) return null;
+  if (!value || (!count && !single)) return null;
   const rounded = Math.round(value * 10) / 10;
 
   return (
     <span className={cn("inline-flex items-center gap-1.5", className)}>
       <span className="sr-only">
-        Rated {rounded} out of 5{count != null ? `, ${count} review${count === 1 ? "" : "s"}` : ""}
+        Rated {rounded} out of 5
+        {!single && count != null ? `, ${count} review${count === 1 ? "" : "s"}` : ""}
       </span>
       <span aria-hidden="true" className="inline-flex items-center gap-px">
         {[0, 1, 2, 3, 4].map((i) => (
@@ -51,7 +53,7 @@ export function Rating({ value, count, size = 14, showValue = false, className }
       </span>
       <span aria-hidden="true" className="text-small text-ink-3 tabular-nums">
         {showValue && <span className="mr-1 font-semibold text-ink">{rounded.toFixed(1)}</span>}
-        {count != null && `(${count})`}
+        {!single && count != null && `(${count})`}
       </span>
     </span>
   );

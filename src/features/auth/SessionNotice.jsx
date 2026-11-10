@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { toast } from "sonner";
+import { notify } from "../../lib/notify";
 import { useSession } from "./session-store";
 
 /** Tells the user once, calmly, when their session ended on its own (not when they logged out). */
@@ -9,7 +9,7 @@ export function SessionNotice() {
 
   useEffect(() => {
     if (!expired) return;
-    toast("Your session expired", { description: "Please log in again to continue." });
+    notify.info("Your session expired", { description: "Please log in again to continue." });
     acknowledge();
   }, [expired, acknowledge]);
 

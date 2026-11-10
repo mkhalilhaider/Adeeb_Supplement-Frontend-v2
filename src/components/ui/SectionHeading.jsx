@@ -8,7 +8,7 @@ import { cn } from "../../lib/cn";
  *
  * @param {{ eyebrow?: string, index?: number, title: string, as?: "h1"|"h2"|"h3", action?: { label: string, to: string } }} props
  */
-export function SectionHeading({ eyebrow, index, title, as: Tag = "h2", action, className }) {
+export function SectionHeading({ eyebrow, index, title, as: Tag = "h2", action, id, className }) {
   return (
     <div className={cn("flex items-end justify-between gap-4", className)}>
       <div>
@@ -19,7 +19,10 @@ export function SectionHeading({ eyebrow, index, title, as: Tag = "h2", action, 
             {eyebrow}
           </p>
         )}
-        <Tag className="mt-2 text-h2 font-extrabold uppercase font-condensed md:text-[2rem] md:leading-tight">
+        <Tag
+          id={id}
+          className="mt-2 text-h2 font-extrabold uppercase font-condensed md:text-[2rem] md:leading-tight"
+        >
           {title}
         </Tag>
       </div>

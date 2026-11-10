@@ -67,3 +67,25 @@ export function useInViewOnce({ rootMargin = "400px 0px" } = {}) {
   }, [seen, rootMargin]);
   return [ref, seen];
 }
+
+/**
+ * Return focus to whatever opened an overlay, for Radix/Vaul content whose open state we
+ * control ourselves (their built-in restore only works with their own Trigger).
+ * Spread the result onto the Content: <Content {...useReturnFocus()} />.
+ */
+export function useReturnFocus() {
+  const openerRef = useRef(null);
+  return {
+    onOpenAutoFocus: () => {
+      const el = document.activeElement;
+      openerRef.current = el instanceof HTMLElement && el !== document.body ? el : null;
+    },
+    onCloseAutoFocus: (event) => {
+      const opener = openerRef.current;
+      if (opener?.isConnected) {
+        event.preventDefault();
+        opener.focus({ preventScroll: true });
+      }
+    },
+  };
+}

@@ -35,3 +35,10 @@ export async function fetchProducts(query = {}, { signal } = {}) {
   });
   return { items: envelope.data ?? [], meta: envelope.meta };
 }
+
+/**
+ * One active product by slug (404 if inactive or deleted).
+ * @returns {Promise<import("../../types").Product>}
+ */
+export const fetchProduct = (slug, { signal } = {}) =>
+  getData(`/catalog/products/${encodeURIComponent(slug)}`, { signal });

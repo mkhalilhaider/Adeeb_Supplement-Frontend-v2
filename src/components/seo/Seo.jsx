@@ -7,7 +7,7 @@ import { site } from "../../config/site";
  * automatically, so no helper library is needed.
  *
  * @param {object} props
- * @param {string} [props.title]        Page title (site name is appended)
+ * @param {string} [props.title]        Page title (site name is appended unless it already has it)
  * @param {string} [props.description]
  * @param {string} [props.canonicalPath] Defaults to the current path without query string
  * @param {string} [props.image]        Absolute image URL for social previews
@@ -26,7 +26,9 @@ export function Seo({
 }) {
   const { pathname } = useLocation();
   const fullTitle = title
-    ? `${title} | ${site.name}`
+    ? title.includes(site.name)
+      ? title
+      : `${title} | ${site.name}`
     : `${site.name} — Authentic Sports Nutrition in Pakistan`;
   const canonical = `${env.siteUrl}${canonicalPath ?? pathname}`;
 

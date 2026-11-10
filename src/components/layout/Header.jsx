@@ -8,6 +8,29 @@ import { cn } from "../../lib/cn";
 import { useSession } from "../../features/auth/session-store";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { SearchCombobox } from "../../features/search/SearchCombobox";
+import { selectCartCount, useGuestCart } from "../../features/cart/guest-cart";
+
+/** Cart icon with a live count badge. */
+function CartLink() {
+  const count = useGuestCart(selectCartCount);
+  return (
+    <Link
+      to="/cart"
+      aria-label={count ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart, empty"}
+      className="relative -mr-2 flex size-11 items-center justify-center rounded-md hover:bg-shelf md:mr-0"
+    >
+      <ShoppingBag aria-hidden="true" className="size-5" />
+      {count > 0 && (
+        <span
+          aria-hidden="true"
+          className="absolute top-1 right-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[11px] font-bold text-ink tabular-nums"
+        >
+          {count > 99 ? "99+" : count}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 /** Thin bar above the header: the three facts that matter most for trust (desktop/tablet). */
 function UtilityBar() {
@@ -113,13 +136,7 @@ export function Header({ onOpenMenu, onOpenSearch }) {
             >
               <Heart aria-hidden="true" className="size-5" />
             </Link>
-            <Link
-              to="/cart"
-              aria-label="Cart"
-              className="-mr-2 flex size-11 items-center justify-center rounded-md hover:bg-shelf md:mr-0"
-            >
-              <ShoppingBag aria-hidden="true" className="size-5" />
-            </Link>
+            <CartLink />
           </div>
         </div>
       </header>

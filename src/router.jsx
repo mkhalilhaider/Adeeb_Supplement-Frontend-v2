@@ -29,6 +29,7 @@ export const router = createBrowserRouter([
           { path: "category/:slug", ...page(() => import("./pages/store/CategoryPage")) },
           { path: "brand/:slug", ...page(() => import("./pages/store/BrandPage")) },
           { path: "brands", ...page(() => import("./pages/store/BrandsPage")) },
+          { path: "product/:slug", ...page(() => import("./pages/store/ProductPage")) },
 
           // Customer account (Phase 6 fills these in).
           {
