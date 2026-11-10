@@ -5,10 +5,18 @@ import { SessionNotice } from "../../features/auth/SessionNotice";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { MobileTabBar } from "./MobileTabBar";
+import { useCartUi } from "../../features/cart/cart-ui";
+import { useSession } from "../../features/auth/session-store";
 
 // Overlays load on first use: most visits never open them, so their drawer/dialog code
 // stays off the critical path.
 const MobileMenu = lazy(() => import("./MobileMenu").then((m) => ({ default: m.MobileMenu })));
+// Guest → account cart merge and wishlist push: only logged-in shoppers download it.
+const SessionSync = lazy(() =>
+  import("../../features/cart/SessionSync").then((m) => ({ default: m.SessionSync })),
+);
+const CartDrawer = lazy(() => import("../../features/cart/components/CartDrawer"));
+const QuickAddSheet = lazy(() => import("../../features/cart/components/QuickAddSheet"));
 const SearchOverlay = lazy(() =>
   import("../../features/search/SearchOverlay").then((m) => ({ default: m.SearchOverlay })),
 );
@@ -18,6 +26,17 @@ export default function StoreLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState({ menu: false, search: false });
+  const loggedIn = useSession((s) => s.status === "authenticated");
+  // Cart drawer / options sheet mount on first use and stay mounted (for close animations).
+  const drawerOpen = useCartUi((s) => s.drawerOpen);
+  const quickAddSlug = useCartUi((s) => s.quickAddSlug);
+  const [cartUiUsed, setCartUiUsed] = useState({ drawer: false, quickAdd: false });
+  if ((drawerOpen && !cartUiUsed.drawer) || (quickAddSlug && !cartUiUsed.quickAdd)) {
+    setCartUiUsed({
+      drawer: cartUiUsed.drawer || drawerOpen,
+      quickAdd: cartUiUsed.quickAdd || Boolean(quickAddSlug),
+    });
+  }
   const openMenu = () => {
     setMounted((m) => ({ ...m, menu: true }));
     setMenuOpen(true);
@@ -52,8 +71,15 @@ export default function StoreLayout() {
       <Suspense fallback={null}>
         {mounted.menu && <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} />}
         {mounted.search && <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />}
+        {cartUiUsed.drawer && <CartDrawer />}
+        {cartUiUsed.quickAdd && <QuickAddSheet />}
       </Suspense>
       <SessionNotice />
+      {loggedIn && (
+        <Suspense fallback={null}>
+          <SessionSync />
+        </Suspense>
+      )}
       <ScrollRestoration />
     </div>
   );

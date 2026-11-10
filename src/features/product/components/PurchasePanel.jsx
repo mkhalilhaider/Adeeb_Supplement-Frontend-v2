@@ -6,7 +6,8 @@ import { QuantityStepper } from "../../../components/ui/QuantityStepper";
 import { Rating } from "../../../components/ui/Rating";
 import { whatsappLink } from "../../../config/site";
 import { cn } from "../../../lib/cn";
-import { isPurchasable } from "../../catalog/lib/product-view";
+import { isPurchasable, toProductCard } from "../../catalog/lib/product-view";
+import { WishlistButton } from "../../wishlist/WishlistButton";
 import { variantLabel } from "../lib/variant-matrix";
 import { DeliveryInfo } from "./DeliveryInfo";
 import { VariantPicker } from "./VariantPicker";
@@ -105,12 +106,16 @@ export function PurchasePanel({
           >
             Add to cart
           </Button>
+          <WishlistButton card={toProductCard(product)} />
         </div>
       ) : (
         <div ref={addRef} className="flex flex-col gap-2">
-          <Button size="lg" fullWidth disabled>
-            Sold out
-          </Button>
+          <div className="flex gap-2">
+            <Button size="lg" fullWidth disabled>
+              Sold out
+            </Button>
+            <WishlistButton card={toProductCard(product)} />
+          </div>
           <Button
             variant="outline"
             size="lg"

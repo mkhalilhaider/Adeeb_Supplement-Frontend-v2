@@ -9,7 +9,8 @@ import { ActiveFilters, SortSelect } from "./ListingControls";
 
 // The sheet (and its drawer library) loads only when a phone user first opens filters.
 const FilterSheet = lazy(() => import("./FilterSheet"));
-import { ProductCard, ProductCardSkeleton } from "./ProductCard";
+import { ProductCardSkeleton } from "./ProductCard";
+import { ShopProductCard } from "./ShopProductCard";
 
 const GRID =
   "grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
@@ -81,7 +82,7 @@ export function ListingView({ listing, header }) {
         >
           {cards.map((card, i) => (
             <li key={card.id}>
-              <ProductCard card={card} priority={i < 4} />
+              <ShopProductCard card={card} priority={i < 4} />
             </li>
           ))}
           {list.isFetchingNextPage &&

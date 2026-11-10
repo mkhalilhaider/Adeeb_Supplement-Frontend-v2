@@ -44,7 +44,7 @@ export function ReviewsSection({ productId, average, count }) {
   const total = reviews.length || count || 0;
 
   return (
-    <section ref={ref} id="reviews" aria-labelledby="reviews-heading" className="scroll-mt-24">
+    <section ref={ref} aria-labelledby="reviews-heading">
       <h2 id="reviews-heading" className="text-h2 font-extrabold uppercase font-condensed">
         Reviews{total > 0 ? ` (${total})` : ""}
       </h2>
@@ -135,3 +135,5 @@ export function ReviewsSection({ productId, average, count }) {
     </section>
   );
 }
+
+export default ReviewsSection;

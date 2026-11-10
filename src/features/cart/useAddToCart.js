@@ -4,18 +4,21 @@ import { fetchProduct } from "../catalog/api";
 import { catalogKeys } from "../catalog/queries";
 import { isPurchasable, paidPrice, variantImage } from "../catalog/lib/product-view";
 import { notify } from "../../lib/notify";
-import { useGuestCart } from "./guest-cart";
+import { useCart } from "./useCart";
+import { useCartUi } from "./cart-ui";
 
 /**
  * Add a variant to the cart, re-checking stock first: the page may have been open a while, so
  * the product is refreshed if its data is older than 30s (usually no request at all).
- * Phase 4 routes logged-in shoppers to the server cart behind this same hook.
+ * Works for guests (device cart) and logged-in shoppers (server cart) alike, then opens the cart
+ * drawer with the new line highlighted.
  *
  * @returns {{ add: (product: any, variant: any, quantity: number) => Promise<boolean>, pending: boolean }}
  */
 export function useAddToCart() {
   const queryClient = useQueryClient();
-  const addLine = useGuestCart((s) => s.add);
+  const cart = useCart();
+  const openDrawer = useCartUi((s) => s.openDrawer);
   const [pending, setPending] = useState(false);
 
   const add = async (product, variant, quantity) => {
@@ -33,7 +36,7 @@ export function useAddToCart() {
         return false;
       }
 
-      const { quantity: inCart, capped } = addLine(
+      const { quantity: inCart, capped } = await cart.add(
         {
           variantId: current._id,
           productId: fresh._id,
@@ -53,11 +56,8 @@ export function useAddToCart() {
         notify.info(`Only ${current.stockQuantity} available`, {
           description: `Your cart now has ${inCart}, the most we can send.`,
         });
-      } else {
-        notify.success("Added to cart", {
-          description: `${quantity} × ${fresh.name}`,
-        });
       }
+      openDrawer(current._id);
       return true;
     } catch (error) {
       notify.error(error);

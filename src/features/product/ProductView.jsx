@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Seo } from "../../components/seo/Seo";
 import { Breadcrumbs } from "../../components/ui/Breadcrumbs";
 import { useInViewOnce } from "../../lib/hooks";
-import { ProductRail } from "../catalog/components/ProductRail";
 import { toProductCard } from "../catalog/lib/product-view";
-import { useProducts } from "../catalog/queries";
 import { useRecentlyViewed } from "../catalog/recently-viewed";
 import { useAddToCart } from "../cart/useAddToCart";
-import { ReviewsSection } from "../reviews/ReviewsSection";
 import { ProductGallery } from "./components/ProductGallery";
 import { ProductDescription, ProductSpecs } from "./components/ProductDetails";
 import { PurchasePanel, MAX_QTY } from "./components/PurchasePanel";
@@ -21,55 +18,44 @@ import {
   visibleVariants,
 } from "./lib/variant-matrix";
 
-/** Same-category best sellers, fetched only when the section is about to be seen. */
-function RelatedProducts({ product }) {
-  const [ref, seen] = useInViewOnce();
-  const query = useProducts(
-    { category: product.category?._id, sort: "bestselling", limit: 9 },
-    { enabled: seen && Boolean(product.category?._id) },
-  );
-  const cards = useMemo(
-    () =>
-      (query.data?.items ?? [])
-        .filter((p) => p._id !== product._id)
-        .slice(0, 8)
-        .map((p) => toProductCard(p)),
-    [query.data, product._id],
-  );
+const ProductRails = lazy(() => import("./components/ProductRails"));
+const ReviewsSection = lazy(() => import("../reviews/ReviewsSection"));
+
+/**
+ * Reviews load (code and data) when scrolled near. The anchor stays in the page so the
+ * rating link in the purchase panel (#reviews) can jump here and trigger the load.
+ */
+function BelowFoldReviews({ product }) {
+  const [ref, seen] = useInViewOnce({ rootMargin: "600px 0px" });
   return (
-    <div ref={ref} className="min-h-px">
-      {(query.isPending && seen) || cards.length > 0 ? (
-        <ProductRail
-          id="related-heading"
-          eyebrow={product.category?.name}
-          title="You may also like"
-          cards={cards}
-          loading={query.isPending}
-          action={
-            product.category
-              ? { label: "View all", to: `/category/${product.category.slug}` }
-              : undefined
-          }
-        />
-      ) : null}
+    <div ref={ref} id="reviews" className="mt-14 min-h-24 scroll-mt-24 md:mt-20">
+      {seen && (
+        <Suspense fallback={null}>
+          <ReviewsSection
+            productId={product._id}
+            average={product.averageRating}
+            count={product.reviewCount}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }
 
-/** Products this device viewed before (no request: stored snapshots). */
-function RecentlyViewedRail({ excludeId }) {
-  const cards = useRecentlyViewed((s) => s.cards);
-  const visible = useMemo(
-    () => cards.filter((c) => c.id !== excludeId).slice(0, 8),
-    [cards, excludeId],
-  );
+/**
+ * Related + recently viewed rails, loaded (code and data) only as the shopper scrolls near
+ * them, so their card code stays out of the product page's first load.
+ */
+function BelowFoldRails({ product }) {
+  const [ref, seen] = useInViewOnce({ rootMargin: "600px 0px" });
   return (
-    <ProductRail
-      id="recent-heading"
-      eyebrow="This device"
-      title="Recently viewed"
-      cards={visible}
-    />
+    <div ref={ref} className="mt-14 min-h-px md:mt-20">
+      {seen && (
+        <Suspense fallback={null}>
+          <ProductRails product={product} />
+        </Suspense>
+      )}
+    </div>
   );
 }
 
@@ -167,18 +153,9 @@ export function ProductView({ product }) {
         </section>
       </div>
 
-      <div className="mt-14 md:mt-20">
-        <ReviewsSection
-          productId={product._id}
-          average={product.averageRating}
-          count={product.reviewCount}
-        />
-      </div>
+      <BelowFoldReviews product={product} />
 
-      <div className="mt-14 flex flex-col gap-14 md:mt-20 md:gap-20">
-        <RelatedProducts product={product} />
-        <RecentlyViewedRail excludeId={product._id} />
-      </div>
+      <BelowFoldRails product={product} />
 
       <StickyBuyBar
         targetRef={addRef}

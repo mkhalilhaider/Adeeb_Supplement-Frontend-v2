@@ -1,6 +1,7 @@
 import { SectionHeading } from "../../../components/ui/SectionHeading";
 import { cn } from "../../../lib/cn";
-import { ProductCard, ProductCardSkeleton } from "./ProductCard";
+import { ProductCardSkeleton } from "./ProductCard";
+import { ShopProductCard } from "./ShopProductCard";
 
 /**
  * Horizontal row of products: swipe on phones (scroll-snap, ~2.3 cards visible so it's obvious
@@ -32,7 +33,7 @@ export function ProductRail({
       >
         {items.map((card, i) => (
           <li key={card?.id ?? i} className="w-[43%] shrink-0 snap-start sm:w-[30%] md:w-auto">
-            {card ? <ProductCard card={card} /> : <ProductCardSkeleton />}
+            {card ? <ShopProductCard card={card} /> : <ProductCardSkeleton />}
           </li>
         ))}
       </ul>

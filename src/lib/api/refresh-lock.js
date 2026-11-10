@@ -5,11 +5,14 @@
  */
 const LOCK_NAME = "adeeb-auth-refresh";
 
-/** Run `fn` while holding a cross-tab lock; falls back to running directly if unsupported. */
-export function withCrossTabLock(fn) {
+/**
+ * Run `fn` while holding a cross-tab lock; falls back to running directly if unsupported.
+ * Use a different `name` for anything that may itself refresh the session (or it deadlocks).
+ */
+export function withCrossTabLock(fn, name = LOCK_NAME) {
   const locks = typeof navigator !== "undefined" ? navigator.locks : undefined;
   if (!locks?.request) return fn();
-  return locks.request(LOCK_NAME, { mode: "exclusive" }, fn);
+  return locks.request(name, { mode: "exclusive" }, fn);
 }
 
 let inFlight = null;

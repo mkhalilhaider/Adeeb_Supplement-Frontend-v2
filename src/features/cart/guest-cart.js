@@ -4,7 +4,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 /**
  * Cart for shoppers who aren't logged in. The backend has no guest cart, so it lives on this
  * device; checkout sends these lines and the backend re-prices and re-checks stock.
- * (Phase 4 adds the logged-in server cart behind the same `useCart` interface.)
+ * Logged-in shoppers use the server cart instead; `useCart` hides the difference.
  *
  * @typedef {object} CartLine
  * @property {string} variantId
@@ -56,6 +56,21 @@ export const useGuestCart = create(
                 : l,
             )
             .filter((l) => l.quantity > 0),
+        }));
+      },
+
+      /** Update a line’s price/stock snapshot with live data (before checkout). */
+      refreshLine(variantId, { unitPrice, maxQuantity }) {
+        set((s) => ({
+          lines: s.lines.map((l) =>
+            l.variantId === variantId
+              ? {
+                  ...l,
+                  unitPrice: unitPrice ?? l.unitPrice,
+                  maxQuantity: maxQuantity ?? l.maxQuantity,
+                }
+              : l,
+          ),
         }));
       },
 

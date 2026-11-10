@@ -8,11 +8,39 @@ import { cn } from "../../lib/cn";
 import { useSession } from "../../features/auth/session-store";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { SearchCombobox } from "../../features/search/SearchCombobox";
-import { selectCartCount, useGuestCart } from "../../features/cart/guest-cart";
+import { useCart } from "../../features/cart/useCart";
+import { selectWishlistCount, useWishlist } from "../../features/wishlist/wishlist-store";
+
+/** Small count badge shared by the wishlist and cart icons. */
+function CountBadge({ count }) {
+  if (!count) return null;
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute top-1 right-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[11px] font-bold text-ink tabular-nums"
+    >
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
+function WishlistLink() {
+  const count = useWishlist(selectWishlistCount);
+  return (
+    <Link
+      to="/wishlist"
+      aria-label={count ? `Wishlist, ${count} saved` : "Wishlist"}
+      className="relative hidden size-11 items-center justify-center rounded-md hover:bg-shelf md:flex"
+    >
+      <Heart aria-hidden="true" className="size-5" />
+      <CountBadge count={count} />
+    </Link>
+  );
+}
 
 /** Cart icon with a live count badge. */
 function CartLink() {
-  const count = useGuestCart(selectCartCount);
+  const { count } = useCart();
   return (
     <Link
       to="/cart"
@@ -20,14 +48,7 @@ function CartLink() {
       className="relative -mr-2 flex size-11 items-center justify-center rounded-md hover:bg-shelf md:mr-0"
     >
       <ShoppingBag aria-hidden="true" className="size-5" />
-      {count > 0 && (
-        <span
-          aria-hidden="true"
-          className="absolute top-1 right-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand px-1 text-[11px] font-bold text-ink tabular-nums"
-        >
-          {count > 99 ? "99+" : count}
-        </span>
-      )}
+      <CountBadge count={count} />
     </Link>
   );
 }
@@ -129,13 +150,7 @@ export function Header({ onOpenMenu, onOpenSearch }) {
                 {status === "authenticated" ? "Your account" : "Log in"}
               </span>
             </Link>
-            <Link
-              to="/wishlist"
-              aria-label="Wishlist"
-              className="hidden size-11 items-center justify-center rounded-md hover:bg-shelf md:flex"
-            >
-              <Heart aria-hidden="true" className="size-5" />
-            </Link>
+            <WishlistLink />
             <CartLink />
           </div>
         </div>

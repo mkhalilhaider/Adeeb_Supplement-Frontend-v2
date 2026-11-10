@@ -30,6 +30,8 @@ export const router = createBrowserRouter([
           { path: "brand/:slug", ...page(() => import("./pages/store/BrandPage")) },
           { path: "brands", ...page(() => import("./pages/store/BrandsPage")) },
           { path: "product/:slug", ...page(() => import("./pages/store/ProductPage")) },
+          { path: "cart", ...page(() => import("./pages/store/CartPage")) },
+          { path: "wishlist", ...page(() => import("./pages/store/WishlistPage")) },
 
           // Customer account (Phase 6 fills these in).
           {
