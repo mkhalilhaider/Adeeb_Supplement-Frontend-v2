@@ -25,6 +25,10 @@ export const router = createBrowserRouter([
         errorElement: <RouteErrorPage />,
         children: [
           { index: true, ...page(() => import("./pages/store/HomePage")) },
+          { path: "shop", ...page(() => import("./pages/store/ShopPage")) },
+          { path: "category/:slug", ...page(() => import("./pages/store/CategoryPage")) },
+          { path: "brand/:slug", ...page(() => import("./pages/store/BrandPage")) },
+          { path: "brands", ...page(() => import("./pages/store/BrandsPage")) },
 
           // Customer account (Phase 6 fills these in).
           {

@@ -1,14 +1,32 @@
-import { Link, Outlet, ScrollRestoration } from "react-router";
-import { Suspense } from "react";
-import { site } from "../../config/site";
+import { lazy, Suspense, useState } from "react";
+import { Outlet, ScrollRestoration } from "react-router";
 import { PageLoader } from "../ui/PageLoader";
 import { SessionNotice } from "../../features/auth/SessionNotice";
+import { Header } from "./Header";
+import { Footer } from "./Footer";
+import { MobileTabBar } from "./MobileTabBar";
 
-/**
- * Shopper layout. Phase 0 shell: header/footer structure and landmarks only — the real header
- * (navigation, mega-menu, search, cart, mobile tab bar) is built in Phase 2.
- */
+// Overlays load on first use: most visits never open them, so their drawer/dialog code
+// stays off the critical path.
+const MobileMenu = lazy(() => import("./MobileMenu").then((m) => ({ default: m.MobileMenu })));
+const SearchOverlay = lazy(() =>
+  import("../../features/search/SearchOverlay").then((m) => ({ default: m.SearchOverlay })),
+);
+
+/** Shopper layout: header, page, footer; phones also get the bottom tab bar. */
 export default function StoreLayout() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [mounted, setMounted] = useState({ menu: false, search: false });
+  const openMenu = () => {
+    setMounted((m) => ({ ...m, menu: true }));
+    setMenuOpen(true);
+  };
+  const openSearch = () => {
+    setMounted((m) => ({ ...m, search: true }));
+    setSearchOpen(true);
+  };
+
   return (
     <div className="flex min-h-dvh flex-col">
       <a
@@ -18,16 +36,7 @@ export default function StoreLayout() {
         Skip to content
       </a>
 
-      <header className="border-b border-line bg-paper">
-        <div className="page-container flex h-16 items-center">
-          <Link to="/" className="flex items-baseline gap-1.5" aria-label={`${site.name} home`}>
-            <span className="text-[22px] font-extrabold tracking-wide font-condensed">ADEEB</span>
-            <span className="label-mono text-[10px] tracking-[0.24em] text-brand-ink">
-              Supplement
-            </span>
-          </Link>
-        </div>
-      </header>
+      <Header onOpenMenu={openMenu} onOpenSearch={openSearch} />
 
       <main id="main" className="flex-1">
         <Suspense fallback={<PageLoader />}>
@@ -35,12 +44,15 @@ export default function StoreLayout() {
         </Suspense>
       </main>
 
-      <footer className="bg-night text-night-text">
-        <div className="page-container py-10 text-small text-night-muted">
-          © {new Date().getFullYear()} {site.name} · {site.store.area}
-        </div>
-      </footer>
+      <Footer />
+      {/* Keeps the end of the footer clear of the phone tab bar. */}
+      <div aria-hidden="true" className="h-[calc(3.5rem+env(safe-area-inset-bottom))] md:hidden" />
 
+      <MobileTabBar onSearch={openSearch} />
+      <Suspense fallback={null}>
+        {mounted.menu && <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} />}
+        {mounted.search && <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />}
+      </Suspense>
       <SessionNotice />
       <ScrollRestoration />
     </div>

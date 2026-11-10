@@ -36,7 +36,11 @@ export function ProductCard({
 }) {
   const [hovered, setHovered] = useState(false);
   const badges = cardBadges(card);
-  const alt = `${card.brand} ${card.name}`.trim();
+  // Announce the brand only when the product name doesn’t already include it.
+  const linkLabel =
+    card.brand && !card.name.toLowerCase().includes(card.brand.toLowerCase())
+      ? `${card.brand} ${card.name}`
+      : undefined;
   const showSecond = hovered && card.secondImage;
 
   const handleIntent = () => {
@@ -145,7 +149,11 @@ export function ProductCard({
       <div className="mt-3 flex flex-col gap-1">
         {card.brand && <p className="truncate label-mono text-ink-3">{card.brand}</p>}
         <h3 className="line-clamp-2 text-small leading-snug font-medium text-ink md:text-body md:leading-snug">
-          <Link to={card.href} className="hover:underline focus-visible:underline" aria-label={alt}>
+          <Link
+            to={card.href}
+            className="hover:underline focus-visible:underline"
+            aria-label={linkLabel}
+          >
             {card.name}
           </Link>
         </h3>

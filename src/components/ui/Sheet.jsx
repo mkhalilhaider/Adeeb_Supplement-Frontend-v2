@@ -17,6 +17,7 @@ import { IconButton } from "./Button";
  * @param {import("react").ReactNode} [props.footer]   Sticky action area (e.g. "Show 24 results")
  * @param {"left"|"right"} [props.side]               Desktop side; menus use "left"
  * @param {boolean} [props.forceBottom]               Bottom sheet on every screen size
+ * @param {boolean} [props.alwaysSide]                Side drawer on phones too (navigation menu)
  */
 export function Sheet({
   open,
@@ -26,10 +27,11 @@ export function Sheet({
   footer,
   side = "right",
   forceBottom = false,
+  alwaysSide = false,
   children,
 }) {
   const isDesktop = useIsDesktop();
-  const bottom = forceBottom || !isDesktop;
+  const bottom = !alwaysSide && (forceBottom || !isDesktop);
   const direction = bottom ? "bottom" : side;
   // Vaul doesn't hand focus back to the opener on close, so keyboard users would land at the top
   // of the page. Remember the opener when the sheet takes focus, and restore it on close.
@@ -63,7 +65,7 @@ export function Sheet({
             bottom
               ? "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-lg shadow-sheet"
               : cn(
-                  "inset-y-0 w-full max-w-md shadow-overlay",
+                  "inset-y-0 w-[88vw] max-w-md shadow-overlay md:w-full",
                   side === "right" ? "right-0" : "left-0",
                 ),
           )}
