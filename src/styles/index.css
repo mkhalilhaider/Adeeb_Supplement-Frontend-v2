@@ -180,3 +180,26 @@
     }
   }
 }
+
+/* Dialog entrance: short rise + fade. Uses `transform`, which composes with Tailwind's
+   `translate` utilities used for centring, so nothing jumps. */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Skeleton shimmer: slow, low-contrast sweep (disabled for reduced motion via base layer). */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}

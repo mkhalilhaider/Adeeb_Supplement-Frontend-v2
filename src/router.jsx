@@ -34,7 +34,10 @@ export const router = createBrowserRouter([
           },
 
           ...(import.meta.env.DEV
-            ? [{ path: "dev/status", ...page(() => import("./pages/dev/StatusPage")) }]
+            ? [
+                { path: "dev/status", ...page(() => import("./pages/dev/StatusPage")) },
+                { path: "dev/ui", ...page(() => import("./pages/dev/UiGalleryPage")) },
+              ]
             : []),
 
           { path: "*", element: <NotFoundPage /> },
