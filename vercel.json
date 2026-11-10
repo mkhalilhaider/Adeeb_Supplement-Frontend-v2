@@ -6,6 +6,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    { "source": "/track", "destination": "/track-order", "permanent": true },
     {
       "source": "/shop",
       "has": [{ "type": "query", "key": "category", "value": "(?<slug>[a-z0-9-]+)" }],

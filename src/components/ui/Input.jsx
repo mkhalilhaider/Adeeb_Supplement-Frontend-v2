@@ -11,7 +11,7 @@ export const controlClasses =
 
 /**
  * Text input. `leading`/`trailing` render inside the box (icons, "+92", unit labels).
- * Spread react-hook-form's register() result straight onto it.
+ * Spread useForm's field() result straight onto it.
  */
 export function Input({ leading, trailing, className, ref, ...props }) {
   if (!leading && !trailing) {

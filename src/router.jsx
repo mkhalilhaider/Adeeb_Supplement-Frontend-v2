@@ -32,6 +32,12 @@ export const router = createBrowserRouter([
           { path: "product/:slug", ...page(() => import("./pages/store/ProductPage")) },
           { path: "cart", ...page(() => import("./pages/store/CartPage")) },
           { path: "wishlist", ...page(() => import("./pages/store/WishlistPage")) },
+          {
+            path: "order/:orderNumber/confirmed",
+            ...page(() => import("./pages/store/OrderConfirmedPage")),
+          },
+          { path: "track-order", ...page(() => import("./pages/store/TrackOrderPage")) },
+          { path: "track", ...page(() => import("./pages/store/TrackOrderPage")) },
 
           // Customer account (Phase 6 fills these in).
           {
@@ -51,6 +57,15 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+
+  // Checkout: its own quiet layout (no menus or search competing with the form).
+  {
+    path: "/checkout",
+    ...page(() => import("./components/layout/CheckoutLayout")),
+    errorElement: <RouteErrorPage />,
+    hydrateFallbackElement: <PageLoader />,
+    children: [{ index: true, ...page(() => import("./pages/checkout/CheckoutPage")) }],
   },
 
   // Admin: separate layout, separate chunks; never linked from the storefront.

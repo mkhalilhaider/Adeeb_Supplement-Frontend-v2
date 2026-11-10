@@ -44,6 +44,22 @@ export function useDeliveryQuote(zone, subtotal, { enabled = true } = {}) {
 }
 
 /**
+ * Delivery fee for the city typed at checkout (the backend recognises Karachi spellings).
+ * Pass an already-debounced city so typing doesn't send a request per letter.
+ */
+export function useCityDeliveryQuote(city, subtotal) {
+  const key = city.trim().toLowerCase();
+  return useQuery({
+    queryKey: ["delivery", "quote", "city", key, Math.round(subtotal)],
+    queryFn: ({ signal }) =>
+      fetchDeliveryQuote({ city: city.trim(), subtotal: Math.round(subtotal) }, { signal }),
+    enabled: key.length >= 2 && subtotal > 0,
+    placeholderData: keepPreviousData,
+    staleTime: 10 * 60_000,
+  });
+}
+
+/**
  * Re-check every cart line against live product data (one CDN-cached request per distinct
  * product, usually 1–3). Returns a map variantId → LineCheck, plus the brand and image the
  * server cart doesn't send.

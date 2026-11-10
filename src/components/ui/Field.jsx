@@ -14,7 +14,7 @@ import { cn } from "../../lib/cn";
  * @param {string} props.label
  * @param {string} [props.hint]
  * @param {string} [props.error]
- * @param {boolean} [props.required]   Shows a marker; validation itself lives in the schema
+ * @param {boolean} [props.required]   Shows a marker; validation itself lives in the form
  * @param {boolean} [props.hideLabel]  Visually hidden but still announced
  * @param {(field: { id: string, "aria-describedby"?: string, "aria-invalid"?: boolean, required?: boolean }) => import("react").ReactNode} props.children
  */
