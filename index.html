@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f6f4ef" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Title, description, canonical and Open Graph tags are rendered per page by <Seo>
+         (React 19 hoists them here). Keeping copies in this file would duplicate them. -->
+    <meta property="og:site_name" content="Adeeb Supplement" />
+
+    <!-- Early connections: product images (Cloudinary) and the API. -->
+    <link rel="preconnect" href="https://res.cloudinary.com" />
+    <link rel="dns-prefetch" href="https://e-commerce-five-sigma-76.vercel.app" />
+
+    <style>
+      /* Paint the page tone before CSS loads so there is no white flash. */
+      html {
+        background: #f6f4ef;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="padding: 16px; font-family: system-ui">
+        Please enable JavaScript to shop at Adeeb Supplement, or call / WhatsApp 0310 2987869.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

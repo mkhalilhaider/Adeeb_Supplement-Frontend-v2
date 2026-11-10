@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+.env
+.env.local
+.env.*.local
+.vercel
+*.log
+.DS_Store
+
+# Docs, notes and planning files stay local (not committed)
+docs/
+*.md
+!LICENSE.md
