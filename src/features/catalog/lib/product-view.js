@@ -1,4 +1,4 @@
-import { discountPercent, tidyAttribute } from "../../../lib/format";
+import { discountPercent, tidyAttribute } from "../../../lib/format.js";
 
 /** @typedef {import("../../../types").Product} Product */
 /** @typedef {import("../../../types").Variant} Variant */

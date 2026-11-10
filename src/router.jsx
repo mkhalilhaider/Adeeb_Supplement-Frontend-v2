@@ -38,6 +38,11 @@ export const router = createBrowserRouter([
           },
           { path: "track-order", ...page(() => import("./pages/store/TrackOrderPage")) },
           { path: "track", ...page(() => import("./pages/store/TrackOrderPage")) },
+          { path: "about", ...page(() => import("./pages/store/AboutPage")) },
+          { path: "contact", ...page(() => import("./pages/store/ContactPage")) },
+          { path: "privacy", ...page(() => import("./pages/store/LegalPage")) },
+          { path: "terms", ...page(() => import("./pages/store/LegalPage")) },
+          { path: "refund-policy", ...page(() => import("./pages/store/LegalPage")) },
 
           // Sign-in pages. The last four paths are fixed by backend emails and redirects.
           { path: "login", ...page(() => import("./pages/auth/LoginPage")) },

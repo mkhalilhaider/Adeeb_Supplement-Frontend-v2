@@ -12,7 +12,7 @@ const CORE_UI = new RegExp(
 );
 
 const RARE_PAGES =
-  /(Admin\w*|Account\w*|OrdersPage|OrderDetailPage|AddressesPage|SettingsPage|LoginPage|RegisterPage|ForgotPasswordPage|ResetPasswordPage|VerifyEmailPage|GoogleCallbackPage|StatusPage|UiGalleryPage)-[\w-]+\.js$/;
+  /(Admin\w*|Account\w*|OrdersPage|OrderDetailPage|AddressesPage|SettingsPage|LoginPage|RegisterPage|ForgotPasswordPage|ResetPasswordPage|VerifyEmailPage|GoogleCallbackPage|AboutPage|ContactPage|LegalPage|TrackOrderPage|StatusPage|UiGalleryPage)-[\w-]+\.js$/;
 
 // Port 3000 is in the backend's CORS allow-list, so local development works without backend changes.
 export default defineConfig({
@@ -47,6 +47,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.js"],
+    include: ["src/**/*.test.js", "api/**/*.test.js"],
   },
 });

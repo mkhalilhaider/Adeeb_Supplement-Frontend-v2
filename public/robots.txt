@@ -6,3 +6,5 @@ Disallow: /checkout
 Disallow: /cart
 Disallow: /order/
 Disallow: /api/
+
+Sitemap: https://www.adeebsupplement.pk/sitemap.xml

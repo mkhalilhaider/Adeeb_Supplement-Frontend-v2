@@ -32,7 +32,15 @@ export function ProductRail({
         )}
       >
         {items.map((card, i) => (
-          <li key={card?.id ?? i} className="w-[43%] shrink-0 snap-start sm:w-[30%] md:w-auto">
+          <li
+            key={card?.id ?? i}
+            className={cn(
+              "w-[43%] shrink-0 snap-start sm:w-[30%] md:w-auto",
+              // One row on desktop (4 then 5 columns); phones swipe through all of them.
+              i === 4 && "md:hidden xl:block",
+              i >= 5 && "md:hidden",
+            )}
+          >
             {card ? <ShopProductCard card={card} /> : <ProductCardSkeleton />}
           </li>
         ))}

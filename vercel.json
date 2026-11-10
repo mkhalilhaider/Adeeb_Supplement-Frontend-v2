@@ -25,7 +25,10 @@
     { "source": "/refund", "destination": "/refund-policy", "permanent": true },
     { "source": "/compare", "destination": "/shop", "permanent": true }
   ],
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
