@@ -50,6 +50,7 @@ export function Sheet({
     // autoFocus: Vaul defaults to false, which skips moving focus into the sheet — then Radix
     // never starts its focus trap and Tab reaches the page behind. Our sheets open with the
     // Close button first (not a text field), so this never pops the phone keyboard.
+    // eslint-disable-next-line jsx-a11y/no-autofocus -- Vaul option (not the HTML attribute): enables the focus trap
     <Drawer.Root open={open} onOpenChange={onOpenChange} direction={direction} autoFocus>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-ink/40" />
