@@ -60,12 +60,16 @@ let lastVerifiedAt = 0;
  * @property {"unknown"|"authenticated"|"guest"} status
  * @property {SessionUser|null} user
  * @property {boolean} expired   true right after a session ended involuntarily (show a notice once)
+ * @property {boolean} signedOut true after the shopper logged out themselves (guards send them home, not to login)
+ * @property {string} loginNotice message for the login page after a forced sign-out (e.g. password changed)
  */
 
 export const useSession = create((set, get) => ({
   status: "unknown",
   user: null,
   expired: false,
+  signedOut: false,
+  loginNotice: "",
 
   /** Restore the session on app start: instant from the snapshot, then verified in the background. */
   bootstrap() {
@@ -129,7 +133,7 @@ export const useSession = create((set, get) => ({
     writeSnapshot(user, scope);
     verifiedThisTab = true;
     dropPrivateQueries();
-    set({ status: "authenticated", user, expired: false });
+    set({ status: "authenticated", user, expired: false, signedOut: false, loginNotice: "" });
   },
 
   /** Voluntary logout of this device. Never blocks on the network. */
@@ -137,6 +141,9 @@ export const useSession = create((set, get) => ({
     const accessToken = tokenStorage.getAccessToken();
     const refreshToken = tokenStorage.getRefreshToken();
     get().clear();
+    // Long enough for the page being left to redirect home; after that, normal guest rules.
+    set({ signedOut: true });
+    setTimeout(() => set({ signedOut: false }), 1500);
     if (accessToken && refreshToken) {
       // Best effort: revoke this device's refresh token on the backend. If the access token has
       // already expired this fails quietly — the refresh token then simply expires on its own.
@@ -151,6 +158,15 @@ export const useSession = create((set, get) => ({
     verifiedThisTab = false;
     dropPrivateQueries();
     set({ status: "guest", user: null });
+  },
+
+  /**
+   * End the session locally because the backend already signed out every device (password
+   * changed), leaving a message for the login page the guard redirects to.
+   */
+  endWithNotice(notice) {
+    get().clear();
+    set({ loginNotice: notice });
   },
 
   /** Called by the API client when refresh fails. */

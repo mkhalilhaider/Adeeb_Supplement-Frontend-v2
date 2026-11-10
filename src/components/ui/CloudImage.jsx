@@ -60,7 +60,8 @@ export function CloudImage({
             imgClassName,
           )}
         />
-      ) : (
+      ) : src ? (
+        // The image exists but failed to load: say so.
         <span
           role="img"
           aria-label={alt || "Image unavailable"}
@@ -68,6 +69,9 @@ export function CloudImage({
         >
           <ImageOff aria-hidden="true" className="size-6" />
         </span>
+      ) : (
+        // No photo on record (e.g. a variant without its own image): a plain tile, not an error.
+        alt && <span role="img" aria-label={alt} className="absolute inset-0" />
       )}
     </span>
   );

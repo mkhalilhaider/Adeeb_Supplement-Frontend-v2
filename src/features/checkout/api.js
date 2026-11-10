@@ -11,5 +11,4 @@ export const placeOrder = (body) => getData("/orders/checkout", { method: "POST"
 export const saveCheckoutProgress = (sessionKey, body) =>
   api.put(`/abandoned-checkouts/${encodeURIComponent(sessionKey)}`, body);
 
-/** Saved delivery addresses of the logged-in shopper. */
-export const fetchAddresses = ({ signal } = {}) => getData("/users/addresses", { signal });
+export { fetchAddresses } from "../account/api";

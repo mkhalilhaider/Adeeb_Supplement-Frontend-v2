@@ -6,3 +6,14 @@ import { getData } from "../../lib/api";
  */
 export const trackOrder = (identifier, { signal } = {}) =>
   getData(`/orders/track/${encodeURIComponent(identifier)}`, { signal });
+
+/** The logged-in shopper's orders, newest first (the backend doesn't paginate). */
+export const fetchMyOrders = ({ signal } = {}) => getData("/orders", { signal });
+
+/** One of the shopper's own orders (Mongo id or order number). */
+export const fetchMyOrder = (id, { signal } = {}) =>
+  getData(`/orders/${encodeURIComponent(id)}`, { signal });
+
+/** Cancel while pending/confirmed/processing. Needs the Mongo `_id`, not the order number. */
+export const cancelMyOrder = (orderId) =>
+  getData(`/orders/${encodeURIComponent(orderId)}/cancel`, { method: "PATCH" });

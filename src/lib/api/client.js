@@ -12,6 +12,8 @@ const NO_REFRESH_PATHS = [
   "/auth/refresh",
   "/auth/forgot-password",
   "/auth/reset-password",
+  // 401 here means "current password is incorrect", not an expired session.
+  "/users/password",
 ];
 
 /** Hooks the session layer registers (keeps this module free of UI/state imports). */

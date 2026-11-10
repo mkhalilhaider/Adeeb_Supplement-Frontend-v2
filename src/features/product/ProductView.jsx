@@ -9,7 +9,6 @@ import { useAddToCart } from "../cart/useAddToCart";
 import { ProductGallery } from "./components/ProductGallery";
 import { ProductDescription, ProductSpecs } from "./components/ProductDetails";
 import { PurchasePanel, MAX_QTY } from "./components/PurchasePanel";
-import { StickyBuyBar } from "./components/StickyBuyBar";
 import { productJsonLd, productMeta } from "./lib/product-seo";
 import {
   galleryImages,
@@ -19,6 +18,21 @@ import {
 } from "./lib/variant-matrix";
 
 const ProductRails = lazy(() => import("./components/ProductRails"));
+const StickyBuyBar = lazy(() =>
+  import("./components/StickyBuyBar").then((m) => ({ default: m.StickyBuyBar })),
+);
+
+/** True after the first scroll: the sticky bar is only useful once the page has moved. */
+function useHasScrolled() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (scrolled) return undefined;
+    const onScroll = () => setScrolled(true);
+    window.addEventListener("scroll", onScroll, { passive: true, once: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrolled]);
+  return scrolled;
+}
 const ReviewsSection = lazy(() => import("../reviews/ReviewsSection"));
 
 /**
@@ -75,6 +89,8 @@ export function ProductView({ product }) {
   const max = Math.max(1, Math.min(variant?.stockQuantity ?? 1, MAX_QTY));
 
   const { add, pending } = useAddToCart();
+  // Its code loads on the first scroll — it can't be needed before the buy button moves away.
+  const scrolled = useHasScrolled();
   const addRef = useRef(null);
   const onAdd = () => add(product, variant, Math.min(quantity, max));
 
@@ -157,13 +173,17 @@ export function ProductView({ product }) {
 
       <BelowFoldRails product={product} />
 
-      <StickyBuyBar
-        targetRef={addRef}
-        variant={variant}
-        onAdd={onAdd}
-        adding={pending}
-        name={product.name}
-      />
+      {scrolled && (
+        <Suspense fallback={null}>
+          <StickyBuyBar
+            targetRef={addRef}
+            variant={variant}
+            onAdd={onAdd}
+            adding={pending}
+            name={product.name}
+          />
+        </Suspense>
+      )}
     </article>
   );
 }

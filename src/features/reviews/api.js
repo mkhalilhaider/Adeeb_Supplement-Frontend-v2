@@ -17,3 +17,11 @@ import { getData } from "../../lib/api";
  */
 export const fetchProductReviews = (productId, { signal } = {}) =>
   getData(`/products/${productId}/reviews`, { signal });
+
+/**
+ * Write a review (verified buyers only: the order must be confirmed or later). The backend
+ * reads productId from the body, not the path. 409 = already reviewed.
+ * @param {{ productId: string, orderId: string, rating: number, title?: string, comment?: string }} review
+ */
+export const createReview = (review) =>
+  getData(`/products/${review.productId}/reviews`, { method: "POST", body: review });

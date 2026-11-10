@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, MapPin, Truck } from "lucide-react";
 import { Field } from "../../components/ui/Field";
@@ -251,7 +251,20 @@ export function CheckoutView({ cart, user, loggedIn }) {
           aria-label="Delivery and payment details"
           className="flex flex-col gap-8"
         >
-          <Section step={1} title="Contact">
+          <Section
+            step={1}
+            title="Contact"
+            aside={
+              !loggedIn && (
+                <Link
+                  to="/login?returnTo=%2Fcheckout"
+                  className="text-small font-medium text-ink-2 underline hover:text-ink"
+                >
+                  Have an account? Log in
+                </Link>
+              )
+            }
+          >
             {loggedIn ? (
               <p className="text-small text-ink-2">
                 Ordering as <span className="font-semibold text-ink">{fullName || "you"}</span>

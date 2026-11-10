@@ -7,9 +7,12 @@ import NotFoundPage from "../../pages/store/NotFoundPage";
 /** Customer area: guests are sent to login and brought back afterwards. */
 export function RequireAuth() {
   const status = useSession((s) => s.status);
+  const signedOut = useSession((s) => s.signedOut);
   const location = useLocation();
 
   if (status === "unknown") return <PageLoader label="Checking your session" />;
+  // Just logged out from inside the account area: go home rather than to the login form.
+  if (status !== "authenticated" && signedOut) return <Navigate to="/" replace />;
   if (status !== "authenticated") {
     const returnTo = `${location.pathname}${location.search}`;
     return <Navigate to={`/login?returnTo=${encodeURIComponent(returnTo)}`} replace />;

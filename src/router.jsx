@@ -39,11 +39,37 @@ export const router = createBrowserRouter([
           { path: "track-order", ...page(() => import("./pages/store/TrackOrderPage")) },
           { path: "track", ...page(() => import("./pages/store/TrackOrderPage")) },
 
-          // Customer account (Phase 6 fills these in).
+          // Sign-in pages. The last four paths are fixed by backend emails and redirects.
+          { path: "login", ...page(() => import("./pages/auth/LoginPage")) },
+          { path: "register", ...page(() => import("./pages/auth/RegisterPage")) },
+          { path: "forgot-password", ...page(() => import("./pages/auth/ForgotPasswordPage")) },
+          { path: "reset-password", ...page(() => import("./pages/auth/ResetPasswordPage")) },
+          { path: "verify-email", ...page(() => import("./pages/auth/VerifyEmailPage")) },
+          {
+            path: "auth/google/callback",
+            ...page(() => import("./pages/auth/GoogleCallbackPage")),
+          },
+
+          // Customer account.
           {
             path: "account",
             element: <RequireAuth />,
-            children: [],
+            children: [
+              {
+                ...page(() => import("./pages/account/AccountLayout")),
+                children: [
+                  { index: true, ...page(() => import("./pages/account/AccountOverviewPage")) },
+                  { path: "orders", ...page(() => import("./pages/account/OrdersPage")) },
+                  {
+                    path: "orders/:orderId",
+                    ...page(() => import("./pages/account/OrderDetailPage")),
+                  },
+                  { path: "addresses", ...page(() => import("./pages/account/AddressesPage")) },
+                  { path: "settings", ...page(() => import("./pages/account/SettingsPage")) },
+                  { path: "*", element: <NotFoundPage /> },
+                ],
+              },
+            ],
           },
 
           ...(import.meta.env.DEV
