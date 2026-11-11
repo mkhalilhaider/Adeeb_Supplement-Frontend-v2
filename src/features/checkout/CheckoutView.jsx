@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { trackEvent } from "../../lib/analytics";
 import { Link, useNavigate } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, MapPin, Truck } from "lucide-react";
@@ -59,6 +60,11 @@ export function CheckoutView({ cart, user, loggedIn }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [sessionKey] = useState(checkoutKey);
+  // Checkout started (once per visit).
+  useEffect(() => {
+    trackEvent("begin_checkout", { value: cart.subtotal });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on arrival
+  }, []);
   const [submitError, setSubmitError] = useState(/** @type {ApiError|null} */ (null));
   const [placing, setPlacing] = useState(false);
   const [pending, setPending] = useState(false);
@@ -155,6 +161,18 @@ export function CheckoutView({ cart, user, loggedIn }) {
       );
       setPlacing(true);
       finishCheckout(order);
+      trackEvent("purchase", {
+        transaction_id: order.orderNumber,
+        value: order.total,
+        shipping: order.shippingFee,
+        coupon: order.couponCode || undefined,
+        items: (order.items ?? []).map((i) => ({
+          item_id: String(i.productId),
+          item_name: i.productName,
+          price: i.unitPrice,
+          quantity: i.quantity,
+        })),
+      });
       if (cart.source === "guest") useGuestCart.getState().clear();
       else {
         queryClient.setQueryData(cartKeys.server, (c) => (c ? { ...c, items: [] } : c));

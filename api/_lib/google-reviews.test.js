@@ -69,3 +69,49 @@ describe("page tokens and URLs", () => {
     expect(serpUrl({ apiKey: "k", dataId: "d", pageToken: "t" })).toContain("num=12");
   });
 });
+
+describe("Google Places source", () => {
+  it("maps details/text-search payloads to the slider shape", async () => {
+    const { mapPlacesReviews } = await import("./google-reviews.js");
+    const place = {
+      rating: 4.9,
+      userRatingCount: 120,
+      googleMapsUri: "https://maps.google.com/?cid=1",
+      reviews: [
+        {
+          name: "places/x/reviews/1",
+          rating: 5,
+          relativePublishTimeDescription: "a week ago",
+          text: { text: "Translated" },
+          originalText: { text: "Original  words" },
+          googleMapsUri: "https://www.google.com/maps/reviews/data=1",
+          authorAttribution: {
+            displayName: "Test Person",
+            photoUri: "https://lh3.googleusercontent.com/a/p",
+          },
+        },
+      ],
+    };
+    for (const payload of [place, { places: [place] }]) {
+      const result = mapPlacesReviews(payload);
+      expect(result).toMatchObject({ rating: 4.9, total: 120, next: null });
+      expect(result.reviews[0]).toEqual({
+        id: "places/x/reviews/1",
+        author: "Test Person",
+        avatar: "https://lh3.googleusercontent.com/a/p",
+        rating: 5,
+        date: "a week ago",
+        text: "Original words",
+        link: "https://www.google.com/maps/reviews/data=1",
+      });
+    }
+    expect(mapPlacesReviews({ places: [] })).toBeNull();
+  });
+
+  it("finds a key under any of its usual names", async () => {
+    const { firstEnv, SERPAPI_KEY_NAMES } = await import("./google-reviews.js");
+    expect(firstEnv({ SERPAPI_KEY: " k1 " }, SERPAPI_KEY_NAMES)).toBe("k1");
+    expect(firstEnv({ SERPAPI_API_KEY: "k2", SERPAPI_KEY: "k1" }, SERPAPI_KEY_NAMES)).toBe("k2");
+    expect(firstEnv({}, SERPAPI_KEY_NAMES)).toBe("");
+  });
+});

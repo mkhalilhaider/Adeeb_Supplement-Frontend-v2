@@ -33,7 +33,8 @@ export const env = Object.freeze({
   apiUrl,
   siteUrl,
   googleAuthEnabled: String(source.VITE_GOOGLE_AUTH_ENABLED ?? "").trim() === "true",
-  gaId: String(source.VITE_GA_ID ?? "").trim(),
+  // Either name works (VITE_GA_MEASUREMENT_ID is what the Vercel project uses).
+  gaId: String(source.VITE_GA_ID || source.VITE_GA_MEASUREMENT_ID || "").trim(),
   metaPixelId: String(source.VITE_META_PIXEL_ID ?? "").trim(),
   isDev: Boolean(source.DEV),
 });

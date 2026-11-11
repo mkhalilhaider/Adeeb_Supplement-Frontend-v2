@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router";
+import { InlineSearch } from "./InlineSearch";
 import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { IconButton } from "../ui/Button";
 import { Logo } from "./Logo";
@@ -7,7 +8,6 @@ import { site, whatsappLink } from "../../config/site";
 import { cn } from "../../lib/cn";
 import { useSession } from "../../features/auth/session-store";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
-import { SearchCombobox } from "../../features/search/SearchCombobox";
 import { useCart } from "../../features/cart/useCart";
 import { selectWishlistCount, useWishlist } from "../../features/wishlist/wishlist-store";
 
@@ -131,7 +131,7 @@ export function Header({ onOpenMenu, onOpenSearch }) {
           <Logo />
 
           <div className="ml-auto hidden w-full max-w-md md:block lg:ml-6 lg:max-w-lg">
-            <SearchCombobox variant="inline" />
+            <InlineSearch />
           </div>
 
           <div className="ml-auto flex items-center md:ml-0">

@@ -198,7 +198,7 @@ export function SearchCombobox({
           aria-activedescendant={active >= 0 ? optionId(active) : undefined}
           autoComplete="off"
           enterKeyHint="search"
-          // eslint-disable-next-line jsx-a11y/no-autofocus -- only in the search overlay the user just opened
+          // eslint-disable-next-line jsx-a11y/no-autofocus -- only when the user just opened search (overlay, or focused the header field)
           autoFocus={focusOnMount}
           placeholder="Search whey, creatine, brands…"
           value={term}

@@ -93,12 +93,13 @@ export default function WishlistPage() {
         />
       ) : (
         <>
+          <h2 className="sr-only">Saved products</h2>
           <ul className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {items
               .filter((card) => !gone.has(card.id))
               .map((card, i) => (
                 <li key={card.id}>
-                  <ShopProductCard card={card} priority={i < 4} />
+                  <ShopProductCard card={card} priority={i < 2} />
                 </li>
               ))}
           </ul>

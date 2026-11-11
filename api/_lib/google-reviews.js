@@ -64,3 +64,76 @@ export function mapSerpReviews(payload, { dataId }) {
     next: payload?.serpapi_pagination?.next_page_token ?? null,
   };
 }
+
+// ── Key lookup ──────────────────────────────────────────────────────────────
+
+/** First non-empty value among several possible variable names. */
+export const firstEnv = (env, names) => names.map((n) => env[n]?.trim()).find(Boolean) ?? "";
+
+/** SerpAPI key under any of the names people commonly use (the template says SERPAPI_API_KEY). */
+export const SERPAPI_KEY_NAMES = ["SERPAPI_API_KEY", "SERPAPI_KEY", "SERP_API_KEY"];
+/** Google Maps Platform key with the Places API (New) enabled. */
+export const PLACES_KEY_NAMES = ["GOOGLE_PLACES_API_KEY", "GOOGLE_MAPS_API_KEY", "GOOGLE_API_KEY"];
+
+/** Text used to find the listing when no place id is configured. */
+export const PLACE_QUERY = "Adeeb Supplement, Gulshan-e-Iqbal, Karachi";
+
+// ── Google Places API (New) ─────────────────────────────────────────────────
+// Official API: rating, review count and the 5 most relevant reviews (no further pages).
+
+export const PLACES_FIELDS = ["id", "rating", "userRatingCount", "reviews", "googleMapsUri"];
+
+/**
+ * Request for the listing's reviews: Place Details when the place id is known, otherwise a
+ * text search for the shop (the first result).
+ */
+export function placesRequest({ apiKey, placeId }) {
+  const headers = { "X-Goog-Api-Key": apiKey, "Content-Type": "application/json" };
+  if (placeId) {
+    return {
+      url: `https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`,
+      init: { headers: { ...headers, "X-Goog-FieldMask": PLACES_FIELDS.join(",") } },
+    };
+  }
+  return {
+    url: "https://places.googleapis.com/v1/places:searchText",
+    init: {
+      method: "POST",
+      headers: {
+        ...headers,
+        "X-Goog-FieldMask": PLACES_FIELDS.map((f) => `places.${f}`).join(","),
+      },
+      body: JSON.stringify({ textQuery: PLACE_QUERY, maxResultCount: 1 }),
+    },
+  };
+}
+
+/** Places payload (details or text search) → the same shape as the SerpAPI mapping. */
+export function mapPlacesReviews(payload) {
+  const place = payload?.places ? payload.places[0] : payload;
+  if (!place) return null;
+  const reviews = (place.reviews ?? [])
+    .filter((r) => Number(r.rating) >= 1)
+    .map((r, i) => ({
+      id: String(r.name ?? `review-${i}`),
+      author: text(r.authorAttribution?.displayName, 80) || "Google user",
+      avatar: /^https:\/\/[\w.-]+\.googleusercontent\.com\//.test(
+        r.authorAttribution?.photoUri ?? "",
+      )
+        ? r.authorAttribution.photoUri
+        : undefined,
+      rating: Math.max(1, Math.min(5, Math.round(Number(r.rating)))),
+      date: text(r.relativePublishTimeDescription, 40),
+      text: text(r.originalText?.text ?? r.text?.text, 1200),
+      link: /^https:\/\/(www\.)?google\.[a-z.]+\//.test(r.googleMapsUri ?? "")
+        ? r.googleMapsUri
+        : undefined,
+    }));
+  return {
+    rating: Number(place.rating) || null,
+    total: Number(place.userRatingCount) || null,
+    placeUrl: /^https:\/\//.test(place.googleMapsUri ?? "") ? place.googleMapsUri : undefined,
+    reviews,
+    next: null,
+  };
+}

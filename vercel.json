@@ -7,6 +7,23 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/track", "destination": "/track-order", "permanent": true },
+    { "source": "/account/password", "destination": "/account/settings", "permanent": true },
+    {
+      "source": "/orders/:id/success",
+      "destination": "/track-order?orderId=:id",
+      "permanent": true
+    },
+    { "source": "/orders/:id/pay", "destination": "/track-order?orderId=:id", "permanent": true },
+    {
+      "source": "/orders/:id/safepay-return",
+      "destination": "/track-order?orderId=:id",
+      "permanent": false
+    },
+    {
+      "source": "/admin/abandoned-checkouts",
+      "destination": "/admin/abandoned",
+      "permanent": true
+    },
     {
       "source": "/shop",
       "has": [{ "type": "query", "key": "category", "value": "(?<slug>[a-z0-9-]+)" }],

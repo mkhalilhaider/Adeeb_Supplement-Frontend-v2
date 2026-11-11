@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState } from "react";
+import { PageViews } from "./PageViews";
 import { Outlet, ScrollRestoration } from "react-router";
 import { PageLoader } from "../ui/PageLoader";
 import { SessionNotice } from "../../features/auth/SessionNotice";
@@ -80,6 +81,7 @@ export default function StoreLayout() {
           <SessionSync />
         </Suspense>
       )}
+      <PageViews />
       <ScrollRestoration />
     </div>
   );

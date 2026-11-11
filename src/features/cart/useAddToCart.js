@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackEvent } from "../../lib/analytics";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchProduct } from "../catalog/api";
 import { catalogKeys } from "../catalog/queries";
@@ -57,6 +58,10 @@ export function useAddToCart() {
           description: `Your cart now has ${inCart}, the most we can send.`,
         });
       }
+      trackEvent("add_to_cart", {
+        value: paidPrice(current) * quantity,
+        items: [{ item_id: fresh._id, item_name: fresh.name, price: paidPrice(current), quantity }],
+      });
       openDrawer(current._id);
       return true;
     } catch (error) {

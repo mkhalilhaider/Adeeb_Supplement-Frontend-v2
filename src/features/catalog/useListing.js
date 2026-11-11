@@ -38,8 +38,10 @@ export function useListing(page) {
     () => toProductQuery(state, { categoryId: category?._id, brandId: brand?._id }),
     [state, category?._id, brand?._id],
   );
-  // Wait for slug → id resolution, otherwise we'd briefly fetch unfiltered products.
-  const ready = !taxonomy.isPending && !notFound;
+  // Wait for slug → id resolution, otherwise we'd briefly fetch unfiltered products. With no
+  // category/brand in play there's nothing to resolve, so don't wait for the taxonomy at all.
+  const needsTaxonomy = Boolean(state.category || state.brand);
+  const ready = !needsTaxonomy || (!taxonomy.isPending && !notFound);
   const list = useProductPages(query, { enabled: ready });
 
   // Restore "Load more" depth after a refresh or a shared link (?page=3 → load pages 1–3).

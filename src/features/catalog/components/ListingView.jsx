@@ -82,7 +82,7 @@ export function ListingView({ listing, header }) {
         >
           {cards.map((card, i) => (
             <li key={card.id}>
-              <ShopProductCard card={card} priority={i < 4} />
+              <ShopProductCard card={card} priority={i < 2} />
             </li>
           ))}
           {list.isFetchingNextPage &&
@@ -172,7 +172,13 @@ export function ListingView({ listing, header }) {
             />
           </div>
         </aside>
-        <section aria-label="Products">{body}</section>
+        <section aria-labelledby="listing-results">
+          {/* Keeps headings in order: page title (h1) → results (h2) → product names (h3). */}
+          <h2 id="listing-results" className="sr-only">
+            Products
+          </h2>
+          {body}
+        </section>
       </div>
 
       {sheetKey > 0 && (

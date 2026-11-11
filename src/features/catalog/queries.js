@@ -21,7 +21,7 @@ export const catalogKeys = {
  * responses contain the full product, so the product page can render instantly from them.
  * @returns {{ product: import("../../types").Product, updatedAt: number } | null}
  */
-function findProductInLists(queryClient, slug) {
+export function findProductInLists(queryClient, slug) {
   let best = null;
   for (const query of queryClient.getQueryCache().findAll({ queryKey: catalogKeys.all })) {
     const { data, dataUpdatedAt } = query.state;
@@ -61,14 +61,21 @@ export function useProduct(slug) {
  */
 export function useProductPages(query, { enabled = true } = {}) {
   return useInfiniteQuery({
+    ...productPagesOptions(query),
+    placeholderData: keepPreviousData,
+    enabled,
+  });
+}
+
+/** Shared by the listing hook and the route prefetch, so both hit the same cache entry. */
+export function productPagesOptions(query) {
+  return {
     queryKey: catalogKeys.productPages(query),
     queryFn: ({ pageParam, signal }) => fetchProducts({ ...query, page: pageParam }, { signal }),
     initialPageParam: 1,
     getNextPageParam: (last) =>
       last.meta && last.meta.page < last.meta.pages ? last.meta.page + 1 : undefined,
-    placeholderData: keepPreviousData,
-    enabled,
-  });
+  };
 }
 
 /**

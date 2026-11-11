@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+import { prefetchProduct } from "./features/catalog/prefetch";
 import RouteErrorPage from "./pages/RouteErrorPage";
 // Static: also used by the guards and error screen, so it ships in the main chunk anyway.
 import NotFoundPage from "./pages/store/NotFoundPage";
@@ -30,7 +31,11 @@ export const router = createBrowserRouter([
           { path: "category/:slug", ...page(() => import("./pages/store/CategoryPage")) },
           { path: "brand/:slug", ...page(() => import("./pages/store/BrandPage")) },
           { path: "brands", ...page(() => import("./pages/store/BrandsPage")) },
-          { path: "product/:slug", ...page(() => import("./pages/store/ProductPage")) },
+          {
+            path: "product/:slug",
+            loader: prefetchProduct,
+            ...page(() => import("./pages/store/ProductPage")),
+          },
           { path: "cart", ...page(() => import("./pages/store/CartPage")) },
           { path: "wishlist", ...page(() => import("./pages/store/WishlistPage")) },
           {

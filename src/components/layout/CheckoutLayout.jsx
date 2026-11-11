@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { PageViews } from "./PageViews";
 import { Link, Outlet, ScrollRestoration } from "react-router";
 import { ChevronLeft, LockKeyhole, MessageCircle } from "lucide-react";
 import { site, whatsappLink } from "../../config/site";
@@ -62,6 +63,7 @@ export default function CheckoutLayout() {
           </a>
         </div>
       </footer>
+      <PageViews />
       <ScrollRestoration />
     </div>
   );
