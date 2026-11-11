@@ -33,6 +33,7 @@ export function productToForm(product) {
       category: "",
       brand: "",
       isFeatured: false,
+      live: true,
       metaTitle: "",
       metaDescription: "",
       keywords: "",
@@ -45,6 +46,7 @@ export function productToForm(product) {
     category: product.category?._id ?? product.category ?? "",
     brand: product.brand?._id ?? product.brand ?? "",
     isFeatured: Boolean(product.isFeatured),
+    live: product.status !== "inactive",
     metaTitle: product.metaTitle ?? "",
     metaDescription: product.metaDescription ?? "",
     keywords: Array.isArray(product.keywords)
@@ -108,6 +110,7 @@ export function formToBody(form) {
     category: form.category,
     brand: form.brand,
     isFeatured: form.isFeatured,
+    status: form.live ? "active" : "inactive",
     metaTitle: form.metaTitle.trim(),
     metaDescription: form.metaDescription.trim(),
     keywords: form.keywords

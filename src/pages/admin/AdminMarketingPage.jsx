@@ -88,10 +88,11 @@ export default function MarketingPage() {
   const [typed, setTyped] = useState("");
   const [error, setError] = useState("");
 
-  const audience =
-    form.values.targetAudience === "verified"
-      ? stats.data?.verifiedCount
-      : stats.data?.totalRegistered;
+  const audience = {
+    all: stats.data?.totalRegistered,
+    verified: stats.data?.verifiedCount,
+    buyers: stats.data?.buyersCount,
+  }[form.values.targetAudience];
 
   const body = (v, testEmail) => ({
     subject: v.subject.trim(),
@@ -163,7 +164,7 @@ export default function MarketingPage() {
         <p className="mb-4 text-small text-ink-2">
           {stats.isPending
             ? "Counting customers…"
-            : `${stats.data.totalRegistered} registered customers, ${stats.data.verifiedCount} with a verified email.`}
+            : `${stats.data.totalRegistered} registered customers, ${stats.data.verifiedCount} with a verified email, ${stats.data.buyersCount ?? 0} who have ordered.`}
         </p>
       )}
 
@@ -200,6 +201,7 @@ export default function MarketingPage() {
                   <Select {...p} {...form.field("targetAudience")}>
                     <option value="all">All registered customers</option>
                     <option value="verified">Verified emails only</option>
+                    <option value="buyers">Customers who have ordered</option>
                   </Select>
                 )}
               </Field>

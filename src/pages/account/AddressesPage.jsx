@@ -55,12 +55,7 @@ export default function AddressesPage() {
     setBusy(removing._id);
     try {
       await deleteAddress(removing._id);
-      // Backend quirk: deleting the default of two addresses doesn't promote the other one.
-      // Make the first remaining address the default so checkout still preselects one.
-      if (removing.isDefault) {
-        const remaining = (addresses.data ?? []).filter((a) => a._id !== removing._id);
-        if (remaining.length > 0) await updateAddress(remaining[0]._id, { isDefault: true });
-      }
+      // The backend makes another address the default when the default one is deleted.
       await refresh();
       notify.success("Address deleted");
       setRemoving(null);

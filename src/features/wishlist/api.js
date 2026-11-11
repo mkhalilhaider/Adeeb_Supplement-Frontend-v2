@@ -1,10 +1,12 @@
 import { api } from "../../lib/api";
 
 /**
- * Write-only wishlist sync. The backend's read (GET /wishlist) always returns an empty product
- * list (see BACKEND_ANALYSIS §8), so the device list is the source of truth and the server only
- * receives changes — enough for the admin "wishlists" view to stay meaningful.
+ * Account wishlist. The device list stays the one the store renders from (instant, works
+ * logged out); the server copy follows every change and, on login, brings items saved on
+ * other devices into this one (see SessionSync).
  */
 export const addToServerWishlist = (productId) => api.post(`/wishlist/${productId}`);
 export const removeFromServerWishlist = (productId) => api.delete(`/wishlist/${productId}`);
-export const syncServerWishlist = (productIds) => api.post("/wishlist/sync", { productIds });
+/** Adds these ids to the account list and returns the whole list (populated products). */
+export const syncServerWishlist = (productIds) =>
+  api.post("/wishlist/sync", { productIds }).then((envelope) => envelope.data?.products ?? []);

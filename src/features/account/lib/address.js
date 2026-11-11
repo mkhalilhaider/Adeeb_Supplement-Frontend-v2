@@ -25,8 +25,9 @@ export function validateAddress(v) {
   if (v.addressLine1.trim().length < 5)
     errors.addressLine1 = "Add the house number, street and area";
   if (v.city.trim().length < 2) errors.city = "Enter the city";
-  // The backend requires a postal code for saved addresses (not at checkout).
-  if (!/^\d{5}$/.test(v.postalCode.trim())) errors.postalCode = "Enter the 5-digit postal code";
+  // Optional (as at checkout), but if given it must look like a Pakistani postal code.
+  if (v.postalCode.trim() && !/^\d{5}$/.test(v.postalCode.trim()))
+    errors.postalCode = "Postal codes have 5 digits — or leave it empty";
   return errors;
 }
 

@@ -16,6 +16,7 @@ import {
   adminKeys,
   deleteProduct,
   fetchAdminProducts,
+  restoreProduct,
   updateProduct,
 } from "../../features/admin/api";
 import { AdminHeader, EmptyRow, Pagination, Table, Toggle } from "../../features/admin/ui";
@@ -40,7 +41,14 @@ const usesSharedImage = (product, counts) =>
     return url && counts.get(url) > 1;
   });
 
-/** /admin/products — active products with search, filters, featured switch and delete. */
+const STATUSES = [
+  { value: "", label: "All products" },
+  { value: "active", label: "In store" },
+  { value: "inactive", label: "Hidden" },
+  { value: "deleted", label: "Deleted" },
+];
+
+/** /admin/products — every product (any state) with filters, on/off and featured switches. */
 export default function ProductsPage() {
   const queryClient = useQueryClient();
   const { categories, brands } = useTaxonomy();
@@ -48,6 +56,8 @@ export default function ProductsPage() {
   const page = Math.max(1, Number(params.get("page")) || 1);
   const category = params.get("category") ?? "";
   const brand = params.get("brand") ?? "";
+  const status = params.get("status") ?? "";
+  const showingDeleted = status === "deleted";
   const [search, setSearch] = useState(params.get("q") ?? "");
   const term = useDebouncedValue(search.trim(), 400);
   const [removing, setRemoving] = useState(/** @type {any} */ (null));
@@ -59,6 +69,7 @@ export default function ProductsPage() {
     search: term,
     category: category || undefined,
     brand: brand || undefined,
+    status: status || undefined,
     sort: "newest",
   };
   const query = useQuery({
@@ -97,6 +108,38 @@ export default function ProductsPage() {
     }
   };
 
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
+    queryClient.invalidateQueries({ queryKey: ["catalog"] });
+  };
+
+  /** Show or hide a product in the store without deleting it. */
+  const toggleLive = async (product, live) => {
+    setBusy(product._id);
+    try {
+      await updateProduct(product._id, { status: live ? "active" : "inactive" });
+      notify.success(live ? `${product.name} is in the store` : `${product.name} is hidden`);
+      refresh();
+    } catch (err) {
+      notify.error(err);
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const restore = async (product) => {
+    setBusy(product._id);
+    try {
+      await restoreProduct(product._id);
+      notify.success(`${product.name} restored — hidden until you switch it on`);
+      refresh();
+    } catch (err) {
+      notify.error(err);
+    } finally {
+      setBusy("");
+    }
+  };
+
   const confirmDelete = async () => {
     setBusy(removing._id);
     try {
@@ -116,7 +159,7 @@ export default function ProductsPage() {
     <div>
       <AdminHeader
         title="Products"
-        description="Shows active products only — the backend can't list inactive or deleted ones, so they can't be found here again."
+        description="Hidden products stay in the panel but not in the store. Deleted ones can be restored from the Deleted filter."
         actions={
           <>
             <Button to="/admin/products/bulk" variant="outline">
@@ -129,7 +172,7 @@ export default function ProductsPage() {
         }
       />
 
-      <div className="mb-4 grid gap-2 sm:grid-cols-[1fr_12rem_12rem]">
+      <div className="mb-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_11rem_11rem_11rem]">
         <label>
           <span className="sr-only">Search products</span>
           <Input
@@ -142,6 +185,16 @@ export default function ProductsPage() {
             placeholder="Search by name"
             leading={<TextSearch aria-hidden="true" className="size-4" />}
           />
+        </label>
+        <label>
+          <span className="sr-only">Status</span>
+          <Select value={status} onChange={(e) => setParam("status", e.target.value)}>
+            {STATUSES.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </Select>
         </label>
         <label>
           <span className="sr-only">Category</span>
@@ -180,6 +233,7 @@ export default function ProductsPage() {
                 <th className={th}>Variants</th>
                 <th className={th}>Price</th>
                 <th className={th}>Stock</th>
+                <th className={th}>In store</th>
                 <th className={th}>Featured</th>
                 <th className={th}>
                   <span className="sr-only">Actions</span>
@@ -187,7 +241,7 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {items.length === 0 && <EmptyRow colSpan={6}>No products found.</EmptyRow>}
+              {items.length === 0 && <EmptyRow colSpan={7}>No products found.</EmptyRow>}
               {items.map((p) => {
                 const stock = p.variants.reduce((n, v) => n + (v.stockQuantity ?? 0), 0);
                 const shared = usesSharedImage(p, imageUse);
@@ -232,6 +286,19 @@ export default function ProductsPage() {
                       {stock}
                     </td>
                     <td className={td}>
+                      {showingDeleted ? (
+                        <span className="text-ink-3">Deleted</span>
+                      ) : (
+                        <Toggle
+                          checked={p.status === "active"}
+                          onChange={(v) => toggleLive(p, v)}
+                          disabled={busy === p._id}
+                          label={`Show ${p.name} in the store`}
+                          hideLabel
+                        />
+                      )}
+                    </td>
+                    <td className={td}>
                       <Toggle
                         checked={Boolean(p.isFeatured)}
                         onChange={(v) => toggleFeatured(p, v)}
@@ -241,24 +308,40 @@ export default function ProductsPage() {
                       />
                     </td>
                     <td className={`${td} text-right whitespace-nowrap`}>
-                      <Link to={`/admin/products/${p.slug}/edit`} className="font-medium underline">
-                        Edit
-                      </Link>
-                      <a
-                        href={`/product/${p.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-3 text-ink-2 underline"
-                      >
-                        View
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => setRemoving(p)}
-                        className="ml-3 text-danger underline"
-                      >
-                        Delete
-                      </button>
+                      {showingDeleted ? (
+                        <button
+                          type="button"
+                          onClick={() => restore(p)}
+                          disabled={busy === p._id}
+                          className="font-medium underline disabled:opacity-50"
+                        >
+                          Restore
+                        </button>
+                      ) : (
+                        <>
+                          <Link
+                            to={`/admin/products/${p.slug}/edit`}
+                            className="font-medium underline"
+                          >
+                            Edit
+                          </Link>
+                          <a
+                            href={`/product/${p.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ml-3 text-ink-2 underline"
+                          >
+                            View
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => setRemoving(p)}
+                            className="ml-3 text-danger underline"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 );
@@ -281,7 +364,7 @@ export default function ProductsPage() {
             open
             onOpenChange={(o) => !o && setRemoving(null)}
             title={`Delete ${removing.name}?`}
-            description="It disappears from the store and from this panel. The backend has no way to list deleted products, so you couldn't restore it from here."
+            description="It disappears from the store. You can bring it back later from the Deleted filter (it returns hidden). To just take it off the store for now, switch “In store” off instead."
             confirmLabel="Delete product"
             pending={busy === removing._id}
             onConfirm={confirmDelete}

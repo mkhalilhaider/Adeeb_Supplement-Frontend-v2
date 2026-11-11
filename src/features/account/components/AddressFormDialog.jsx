@@ -102,8 +102,7 @@ export default function AddressFormDialog({ open, onOpenChange, address }) {
         </Field>
         <Field
           label="Postal code"
-          required
-          hint="5 digits — it's on any utility bill"
+          hint="Optional — 5 digits, on any utility bill"
           error={form.errors.postalCode}
         >
           {(f) => (

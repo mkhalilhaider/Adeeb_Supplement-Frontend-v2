@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { useLocation } from "react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CirclePlus } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { CloudImage } from "../../components/ui/CloudImage";
@@ -10,11 +10,16 @@ import { Skeleton } from "../../components/ui/Skeleton";
 import { ErrorState } from "../../components/ui/States";
 import { errorMessage } from "../../lib/api/errors";
 import { notify } from "../../lib/notify";
-import { useTaxonomy } from "../../features/catalog/useTaxonomy";
-import { createTaxon, deleteTaxon, updateTaxon } from "../../features/admin/api";
+import {
+  adminKeys,
+  createTaxon,
+  deleteTaxon,
+  fetchAdminTaxons,
+  updateTaxon,
+} from "../../features/admin/api";
 import { ImageUpload } from "../../features/admin/components/ImageUpload";
-import { AdminHeader, EmptyRow, Table } from "../../features/admin/ui";
-import { td, th } from "../../features/admin/format";
+import { AdminHeader, EmptyRow, Table, Toggle } from "../../features/admin/ui";
+import { adminQuery, td, th } from "../../features/admin/format";
 
 const Dialog = lazy(() =>
   import("../../components/ui/Dialog").then((m) => ({ default: m.Dialog })),
@@ -66,7 +71,10 @@ function EditDialog({ kind, item, onClose }) {
       };
       if (item) await updateTaxon(kind, item._id, body);
       else await createTaxon(kind, body);
-      await queryClient.invalidateQueries({ queryKey: ["catalog"] });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["catalog"] }),
+        queryClient.invalidateQueries({ queryKey: adminKeys.taxons(kind) }),
+      ]);
       notify.success(item ? `Saved ${body.name}` : `Added ${body.name}`);
       onClose();
     } catch (err) {
@@ -138,8 +146,28 @@ export default function TaxonomyPage() {
   const kind = pathname.includes("brands") ? "brands" : "categories";
   const conf = KINDS[kind];
   const queryClient = useQueryClient();
-  const taxonomy = useTaxonomy();
-  const list = kind === "brands" ? taxonomy.brands : taxonomy.categories;
+  // The admin list includes switched-off entries (the store's list hides them).
+  const taxonomy = useQuery({
+    queryKey: adminKeys.taxons(kind),
+    queryFn: ({ signal }) => fetchAdminTaxons(kind, { signal }),
+    ...adminQuery,
+  });
+  const list = taxonomy.data ?? [];
+  const refresh = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["catalog"] }),
+      queryClient.invalidateQueries({ queryKey: adminKeys.taxons(kind) }),
+    ]);
+
+  const toggleActive = async (item, isActive) => {
+    try {
+      await updateTaxon(kind, item._id, { isActive });
+      await refresh();
+      notify.success(isActive ? `${item.name} is shown in the store` : `${item.name} is hidden`);
+    } catch (err) {
+      notify.error(err);
+    }
+  };
   const [editing, setEditing] = useState(/** @type {any} */ (null));
   const [removing, setRemoving] = useState(/** @type {any} */ (null));
   const [pending, setPending] = useState(false);
@@ -148,7 +176,7 @@ export default function TaxonomyPage() {
     setPending(true);
     try {
       await deleteTaxon(kind, removing._id);
-      await queryClient.invalidateQueries({ queryKey: ["catalog"] });
+      await refresh();
       notify.success(`Deleted ${removing.name}`);
       setRemoving(null);
     } catch (err) {
@@ -170,7 +198,7 @@ export default function TaxonomyPage() {
         }
       />
       {taxonomy.error && !list.length ? (
-        <ErrorState error={taxonomy.error} onRetry={taxonomy.refetch} />
+        <ErrorState error={taxonomy.error} onRetry={() => taxonomy.refetch()} />
       ) : taxonomy.isPending && !list.length ? (
         <Skeleton className="h-80 w-full" />
       ) : (
@@ -179,13 +207,14 @@ export default function TaxonomyPage() {
             <tr>
               <th className={th}>Name</th>
               <th className={th}>Address</th>
+              <th className={th}>In store</th>
               <th className={th}>
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {list.length === 0 && <EmptyRow colSpan={3}>Nothing here yet.</EmptyRow>}
+            {list.length === 0 && <EmptyRow colSpan={4}>Nothing here yet.</EmptyRow>}
             {list.map((item) => (
               <tr key={item._id}>
                 <td className={td}>
@@ -205,6 +234,14 @@ export default function TaxonomyPage() {
                 </td>
                 <td className={`${td} font-mono text-[12px] text-ink-2`}>
                   /{kind === "brands" ? "brand" : "category"}/{item.slug}
+                </td>
+                <td className={td}>
+                  <Toggle
+                    checked={item.isActive !== false}
+                    onChange={(v) => toggleActive(item, v)}
+                    label={`Show ${item.name} in the store`}
+                    hideLabel
+                  />
                 </td>
                 <td className={`${td} text-right whitespace-nowrap`}>
                   <button

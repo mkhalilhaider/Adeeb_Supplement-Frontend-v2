@@ -256,11 +256,18 @@ function ProductForm({ product }) {
             )}
           </Field>
           <div className="md:col-span-2">
-            <Toggle
-              checked={form.isFeatured}
-              onChange={(isFeatured) => set({ isFeatured })}
-              label="Featured on the homepage"
-            />
+            <div className="flex flex-wrap gap-x-8 gap-y-3">
+              <Toggle
+                checked={form.live}
+                onChange={(live) => set({ live })}
+                label="Shown in the store"
+              />
+              <Toggle
+                checked={form.isFeatured}
+                onChange={(isFeatured) => set({ isFeatured })}
+                label="Featured on the homepage"
+              />
+            </div>
           </div>
         </div>
       </Panel>
@@ -376,7 +383,13 @@ export default function ProductEditPage() {
             : "New products are visible in the store right away."
         }
       />
-      <ProductForm key={slug ?? "new"} product={slug ? query.data : null} />
+      {slug && query.data.isDeleted ? (
+        <p role="status" className="rounded-sm bg-warning-soft p-4 text-small">
+          This product is deleted. Restore it from Products → Deleted before editing it.
+        </p>
+      ) : (
+        <ProductForm key={slug ?? "new"} product={slug ? query.data : null} />
+      )}
     </div>
   );
 }

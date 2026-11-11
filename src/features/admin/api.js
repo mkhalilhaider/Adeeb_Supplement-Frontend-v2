@@ -28,27 +28,34 @@ export const bookInstaWorld = (orderId) =>
   getData(`/orders/admin/${orderId}/instaworld`, { method: "POST" });
 
 // ── Catalog ─────────────────────────────────────────────────────────────────
-/** Active products only (the backend has no admin list that includes inactive ones). */
+/**
+ * Admin product list in any state: status "all" (default, not deleted), "active",
+ * "inactive" or "deleted".
+ */
 export async function fetchAdminProducts(
-  { page = 1, limit = 25, search, category, brand, sort },
+  { page = 1, limit = 25, search, category, brand, sort, status },
   { signal } = {},
 ) {
-  const envelope = await request("/catalog/products", {
-    // _t skips the CDN cache so edits show immediately.
-    query: { page, limit, search: search || undefined, category, brand, sort, _t: Date.now() },
+  const envelope = await request("/catalog/admin/products", {
+    query: { page, limit, search: search || undefined, category, brand, sort, status },
     signal,
   });
   return { items: envelope.data ?? [], meta: envelope.meta ?? {} };
 }
 
+/** One product by slug, whatever its state (inactive and deleted included). */
 export const fetchAdminProduct = (slug, { signal } = {}) =>
-  getData(`/catalog/products/${encodeURIComponent(slug)}`, { query: { _t: Date.now() }, signal });
+  getData(`/catalog/admin/products/by-slug/${encodeURIComponent(slug)}`, { signal });
+
+/** Undo a delete: the product comes back inactive, to be switched on when ready. */
+export const restoreProduct = (id) =>
+  getData(`/catalog/admin/products/${id}/restore`, { method: "POST" });
 
 export const createProduct = (body) => getData("/catalog/admin/products", { method: "POST", body });
 /** Send variant _ids to keep their SKUs; variants without _id get new SKUs. */
 export const updateProduct = (id, body) =>
   getData(`/catalog/admin/products/${id}`, { method: "PATCH", body });
-/** Soft delete: hidden everywhere (and from this panel — there's no way to list it again). */
+/** Soft delete: hidden from the store; listed under "Deleted" here and can be restored. */
 export const deleteProduct = (id) => getData(`/catalog/admin/products/${id}`, { method: "DELETE" });
 
 /** Multipart image upload (≤5 MB) → { image: { url, publicId } } */
@@ -69,6 +76,10 @@ export function bulkUploadProducts(file) {
   });
 }
 
+/** Every category or brand, switched-off ones included. kind: "categories" | "brands" */
+export const fetchAdminTaxons = (kind, { signal } = {}) =>
+  getData(`/catalog/admin/${kind}`, { signal });
+
 /** kind: "categories" | "brands" */
 export const createTaxon = (kind, body) =>
   getData(`/catalog/admin/${kind}`, { method: "POST", body });
@@ -79,8 +90,9 @@ export const deleteTaxon = (kind, id) =>
 
 // ── Coupons & delivery ──────────────────────────────────────────────────────
 export const fetchCoupons = ({ signal } = {}) => getData("/coupons/admin", { signal });
-/** No edit endpoint: change a coupon by deleting and re-creating it. */
 export const createCoupon = (body) => getData("/coupons/admin", { method: "POST", body });
+export const updateCoupon = (id, body) =>
+  getData(`/coupons/admin/${id}`, { method: "PATCH", body });
 export const deleteCoupon = (id) => getData(`/coupons/admin/${id}`, { method: "DELETE" });
 
 export const fetchDeliverySettings = ({ signal } = {}) =>
@@ -127,6 +139,7 @@ export const adminKeys = {
   dashboard: ["admin", "dashboard"],
   orders: (params) => ["admin", "orders", params],
   products: (params) => ["admin", "products", params],
+  taxons: (kind) => ["admin", "taxons", kind],
   product: (slug) => ["admin", "product", slug],
   coupons: ["admin", "coupons"],
   delivery: ["admin", "delivery"],

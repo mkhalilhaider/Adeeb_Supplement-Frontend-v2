@@ -210,7 +210,7 @@ export default function ReelsPage() {
     <div className="max-w-5xl">
       <AdminHeader
         title="Reels"
-        description="Customer videos on the homepage. The homepage shows the newest first, so the order below only breaks ties."
+        description="Customer videos on the homepage, shown in the order below. New uploads appear first until you reorder them."
       />
       <AddReel onAdded={refresh} />
 

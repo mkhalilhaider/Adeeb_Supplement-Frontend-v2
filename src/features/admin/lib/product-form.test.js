@@ -37,6 +37,7 @@ describe("product form round trip", () => {
   it("keeps variant ids (and so their SKUs) and exactly one default", () => {
     const body = formToBody(productToForm(product));
     expect(body.category).toBe("c1");
+    expect(body.status).toBe("active");
     expect(body.keywords).toEqual(["whey", "protein"]);
     expect(body.variants.map((v) => v._id)).toEqual(["v1", "v2"]);
     expect(body.variants.filter((v) => v.isDefault)).toHaveLength(1);
@@ -48,6 +49,12 @@ describe("product form round trip", () => {
       status: "active",
     });
     expect(body.variants[1]).toMatchObject({ salePrice: null, status: "out_of_stock" });
+  });
+
+  it("hides the whole product when switched off", () => {
+    const form = productToForm({ ...product, status: "inactive" });
+    expect(form.live).toBe(false);
+    expect(formToBody({ ...form, live: true }).status).toBe("active");
   });
 
   it("marks hidden variants inactive", () => {

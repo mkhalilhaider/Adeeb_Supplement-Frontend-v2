@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "../auth/session-store";
+import { toProductCard } from "../catalog/lib/product-view";
 import { syncServerWishlist } from "../wishlist/api";
 import { useWishlist } from "../wishlist/wishlist-store";
 import { notify } from "../../lib/notify";
@@ -50,8 +51,17 @@ function syncWishlistOnce(userId) {
   } catch {
     /* storage blocked: sync anyway */
   }
+  // Send this device's items, get the account's full list back, and add what's missing here
+  // (items saved on a phone show up on the laptop after logging in).
   const ids = useWishlist.getState().items.map((c) => c.id);
-  if (ids.length) syncServerWishlist(ids).catch(() => {});
+  syncServerWishlist(ids)
+    .then((products) => {
+      const cards = products
+        .filter((p) => p?.slug && p.variants?.length)
+        .map((p) => toProductCard(p));
+      if (cards.length) useWishlist.getState().merge(cards);
+    })
+    .catch(() => {});
 }
 
 /**

@@ -21,9 +21,9 @@ describe("validateAddress", () => {
       "phone",
       "addressLine1",
       "city",
-      "postalCode",
     ]);
-    expect(validateAddress({ ...good, postalCode: "4400" }).postalCode).toMatch(/5-digit/);
+    expect(validateAddress({ ...good, postalCode: "" })).toEqual({});
+    expect(validateAddress({ ...good, postalCode: "4400" }).postalCode).toMatch(/5 digits/);
     expect(validateAddress({ ...good, phone: "051 1234567" }).phone).toMatch(/Pakistani mobile/);
   });
 });

@@ -37,6 +37,14 @@ export const useWishlist = create(
         const byId = new Map(cards.map((c) => [c.id, c]));
         set((s) => ({ items: s.items.map((c) => byId.get(c.id) ?? c) }));
       },
+      /** Add products saved on other devices (keeps this device's order, newest first). */
+      merge(cards) {
+        set((s) => {
+          const have = new Set(s.items.map((c) => c.id));
+          const extra = cards.filter((c) => !have.has(c.id));
+          return extra.length ? { items: [...s.items, ...extra].slice(0, MAX) } : s;
+        });
+      },
       remove(productId) {
         set((s) => ({ items: s.items.filter((c) => c.id !== productId) }));
         syncToServer(removeFromServerWishlist, productId);
