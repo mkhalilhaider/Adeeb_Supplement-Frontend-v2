@@ -2,7 +2,8 @@ import { createBrowserRouter } from "react-router";
 import RouteErrorPage from "./pages/RouteErrorPage";
 // Static: also used by the guards and error screen, so it ships in the main chunk anyway.
 import NotFoundPage from "./pages/store/NotFoundPage";
-import { RequireAdmin, RequireAuth } from "./features/auth/guards";
+import { RequireAuth } from "./features/auth/guards";
+import AdminEntry from "./pages/admin/AdminEntry";
 import { PageLoader } from "./components/ui/PageLoader";
 
 /**
@@ -107,18 +108,11 @@ export const router = createBrowserRouter([
     hydrateFallbackElement: <PageLoader />,
   },
   {
-    path: "/admin",
-    element: <RequireAdmin />,
+    // The admin's own pages are defined inside its lazily loaded app (pages/admin/AdminApp),
+    // so shoppers download one route entry for the whole admin area.
+    path: "/admin/*",
+    element: <AdminEntry />,
     errorElement: <RouteErrorPage />,
     hydrateFallbackElement: <PageLoader />,
-    children: [
-      {
-        ...page(() => import("./components/layout/AdminLayout")),
-        children: [
-          { index: true, ...page(() => import("./pages/admin/AdminDashboardPage")) },
-          { path: "*", element: <NotFoundPage /> },
-        ],
-      },
-    ],
   },
 ]);

@@ -25,7 +25,7 @@ export function RequireAuth() {
  * snapshot). Signed-out visitors go to the admin login; signed-in non-admins see the regular
  * 404 page, so the route's existence isn't confirmed.
  */
-export function RequireAdmin() {
+export function RequireAdmin({ children }) {
   const status = useSession((s) => s.status);
   const isAdmin = useSession(selectIsAdmin);
   const verify = useSession((s) => s.verify);
@@ -49,5 +49,5 @@ export function RequireAdmin() {
   }
   if (!checked || status === "unknown") return <PageLoader label="Verifying access" />;
   if (!isAdmin) return <NotFoundPage />;
-  return <Outlet />;
+  return children ?? <Outlet />;
 }

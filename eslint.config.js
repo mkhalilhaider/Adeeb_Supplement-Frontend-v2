@@ -20,6 +20,11 @@ export default [
     rules: {
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      // Our Input/Select/Textarea render native controls, so a wrapping <label> is associated.
+      "jsx-a11y/label-has-associated-control": [
+        "error",
+        { controlComponents: ["Input", "Select", "Textarea", "PasswordInput"], depth: 3 },
+      ],
       "no-unused-vars": [
         "error",
         { varsIgnorePattern: "^[A-Z_]", argsIgnorePattern: "^(_|[A-Z])" },
