@@ -4,6 +4,7 @@ import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { IconButton } from "../ui/Button";
 import { Logo } from "./Logo";
 import { BrandsMenu } from "./BrandsMenu";
+import { ShopMenu } from "./ShopMenu";
 import { site, whatsappLink } from "../../config/site";
 import { cn } from "../../lib/cn";
 import { formatPrice } from "../../lib/format";
@@ -144,9 +145,7 @@ function CategoryNav() {
   return (
     <nav aria-label="Categories" className="relative hidden border-t border-night-line lg:block">
       <div className="page-container flex items-center gap-7">
-        <NavLink to="/shop" end className={catLink}>
-          Shop all
-        </NavLink>
+        <ShopMenu />
         {isPending
           ? Array.from({ length: 7 }, (_, i) => (
               <span key={i} aria-hidden="true" className="h-3 w-20 rounded-sm bg-night-2" />

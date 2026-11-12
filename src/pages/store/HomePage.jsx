@@ -4,7 +4,7 @@ import { env } from "../../config/env";
 import { site } from "../../config/site";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { Hero } from "../../features/home/Hero";
-import { CategoryChips, CategoryTiles, QueryRail } from "../../features/home/sections";
+import { GoalTiles, ProductTabs, TrustStrip } from "../../features/home/sections";
 import { WhenNear } from "../../features/home/WhenNear";
 
 const ReelsSection = lazy(() => import("../../features/home/ReelsSection"));
@@ -13,6 +13,7 @@ const GoogleReviewsSection = lazy(() => import("../../features/home/GoogleReview
 const lower = () => import("../../features/home/lower-sections");
 const BrandsGrid = lazy(() => lower().then((m) => ({ default: m.BrandsGrid })));
 const StatsBand = lazy(() => lower().then((m) => ({ default: m.StatsBand })));
+const EditorialBand = lazy(() => lower().then((m) => ({ default: m.EditorialBand })));
 const StoreBand = lazy(() => lower().then((m) => ({ default: m.StoreBand })));
 
 /** The store as a business (search engines: address, phone, hours-free LocalBusiness). */
@@ -47,63 +48,28 @@ export default function HomePage() {
         canonicalPath="/"
         jsonLd={storeJsonLd}
       />
-
-      <div className="flex flex-col gap-7 md:gap-9">
+      <div>
         <Hero brandCount={brands.length || undefined} />
-        <CategoryChips />
+        <TrustStrip />
       </div>
-
-      <div className="page-container">
-        <QueryRail
-          id="best-heading"
-          eyebrow="Most ordered"
-          title="Best sellers"
-          query={{ sort: "bestselling" }}
-          action={{ label: "View all", to: "/shop?sort=bestselling" }}
-        />
-      </div>
-
-      <div className="page-container">
-        <CategoryTiles />
-      </div>
-
-      <WhenNear className="page-container" minHeight={420}>
-        <QueryRail
-          id="featured-heading"
-          eyebrow="Hand-picked"
-          title="Featured"
-          query={{ featured: true }}
-          action={{ label: "View all", to: "/shop?featured=1" }}
-        />
+      <GoalTiles />
+      <ProductTabs />
+      <WhenNear minHeight={460}>
+        <EditorialBand />
       </WhenNear>
-
+      <WhenNear minHeight={300}>
+        <BrandsGrid />
+      </WhenNear>
       <WhenNear minHeight={560}>
         <ReelsSection />
       </WhenNear>
-
-      <WhenNear className="page-container" minHeight={360}>
-        <BrandsGrid />
+      <WhenNear minHeight={260}>
+        <StatsBand />
       </WhenNear>
-
-      <WhenNear className="page-container" minHeight={420}>
-        <QueryRail
-          id="new-heading"
-          eyebrow="Just in"
-          title="New arrivals"
-          query={{ sort: "newest" }}
-          action={{ label: "View all", to: "/shop?sort=newest" }}
-        />
-      </WhenNear>
-
       <WhenNear minHeight={320}>
         <GoogleReviewsSection />
       </WhenNear>
-
-      <WhenNear minHeight={200}>
-        <StatsBand />
-      </WhenNear>
-
-      <WhenNear minHeight={260}>
+      <WhenNear minHeight={300}>
         <StoreBand />
       </WhenNear>
     </div>

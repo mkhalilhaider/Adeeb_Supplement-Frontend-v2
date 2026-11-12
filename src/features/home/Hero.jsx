@@ -1,64 +1,13 @@
 import { Link } from "react-router";
-import { ArrowRight, Banknote, House, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "../../components/ui/Button";
-import { site } from "../../config/site";
 import { cn } from "../../lib/cn";
-
-const CLOUD = "https://res.cloudinary.com/ztiwmftk/image/upload";
-
-/**
- * Real catalog packshots on a "shelf" (approved mockup: design/hero-mockup.html). White padding
- * is trimmed by Cloudinary and the white background disappears with multiply blending, so the
- * tubs stand on the paper-coloured page. `from` hides smaller packs on narrow screens.
- */
-const PACKS = [
-  {
-    id: "qz7bnwkscqumhccxxvh8",
-    slug: "kevin-levrone-gold-creatine-unflavored-60-servings-in-pakistan",
-    label: "Kevin Levrone · Creatine",
-    alt: "Kevin Levrone Gold Creatine tub",
-    height: "50%",
-    from: "2xl",
-  },
-  {
-    id: "jv4yyhm8touiq3d9ucq8",
-    slug: "dymatize-iso100-3-lb-42-servings-hydrolyzed-isolate-protein",
-    label: "Dymatize · ISO100",
-    alt: "Dymatize ISO100 hydrolyzed whey tub",
-    height: "74%",
-  },
-  {
-    id: "j3fvjcuok3csqjt9cp0p",
-    slug: "optimum-nutrition-gold-standard-100-whey-5-64-lb-80-servings",
-    label: "Optimum Nutrition · Gold Standard",
-    alt: "Optimum Nutrition Gold Standard 100% Whey bag",
-    height: "100%",
-    priority: true,
-  },
-  {
-    id: "zitpb3rfe5gmiv9fzass",
-    slug: "c4-original-pre-workout-50-servings",
-    label: "Cellucor · C4 Original",
-    alt: "Cellucor C4 Original pre-workout tub",
-    height: "56%",
-  },
-  {
-    id: "jaotsscwebaoj7yuwjyi",
-    slug: "muscletech-nitro-tech-ripped-4lbs",
-    label: "MuscleTech · Nitro-Tech",
-    alt: "MuscleTech Nitro-Tech Ripped tub",
-    height: "66%",
-    from: "xl",
-  },
-];
-
-const packSrc = (id, h) => `${CLOUD}/e_trim:8/f_auto,q_auto,h_${h}/adeeb-supplement/variants/${id}`;
-
-const TRUST_ICONS = { authentic: ShieldCheck, cod: Banknote, delivery: Truck, store: House };
+import { cutoutSrc, HERO_PACKS, LEAD_PACK } from "./hero-packs";
 
 /**
- * Homepage hero: static markup (no API call), so it renders with the first paint. The tallest
- * pack is the LCP image and is fetched with high priority; phones get a smaller rendition.
+ * Homepage hero: cinematic charcoal stage with real packshots (cut out by Cloudinary) under a
+ * warm orange light. Static markup, no API call, so it renders with the first paint; the centre
+ * pack is the LCP image and loads with high priority (phones get the 400px rendition).
  *
  * @param {{ brandCount?: number }} props
  */
@@ -66,109 +15,112 @@ export function Hero({ brandCount }) {
   return (
     <section
       aria-labelledby="hero-title"
-      className={cn(
-        "page-container grid gap-7 pt-7 md:pt-10",
-        "lg:grid-cols-2 lg:items-center lg:gap-x-8 lg:gap-y-0 lg:pt-12 lg:[grid-template-areas:'copy_stage''trust_stage']",
-        "xl:grid-cols-[5fr_7fr] xl:gap-x-10 xl:pt-14",
-      )}
+      className="relative overflow-hidden bg-night-deep text-night-text"
+      style={{
+        backgroundImage:
+          "radial-gradient(60% 70% at 74% 62%, rgb(243 107 39 / 0.26) 0%, rgb(243 107 39 / 0) 62%), linear-gradient(180deg, #141414 0%, #0b0b0b 100%)",
+      }}
     >
-      <div className="lg:self-end lg:pb-6 lg:[grid-area:copy]">
-        <p className="flex items-center gap-2.5 label-caps text-ink-3 before:h-px before:w-6 before:bg-ink">
-          Authentic sports nutrition · Since 2026
-        </p>
-        <h1
-          id="hero-title"
-          className="mt-3.5 text-[42px] leading-[0.98] font-extrabold tracking-[-0.005em] uppercase font-condensed md:text-[64px] xl:text-[84px]"
-        >
-          Genuine supplements.
-          <br />
-          <span className="text-brand-ink">Delivered</span> across Pakistan.
-        </h1>
-        <p className="mt-4 max-w-[46ch] leading-relaxed text-ink-2 lg:text-[17px]">
-          {brandCount ? `${brandCount} trusted brands` : "Trusted brands"}, from Optimum Nutrition
-          to Kevin Levrone. Pay cash on delivery anywhere in Pakistan, or visit our store in
-          Karachi.
-        </p>
-        <div className="mt-5.5 grid gap-2.5 md:flex md:flex-wrap">
-          <Button
-            to="/shop?sort=bestselling"
-            size="lg"
-            trailingIcon={<ArrowRight className="size-4.5" />}
+      <div className="page-container grid gap-8 pt-9 lg:min-h-[620px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center lg:gap-10 lg:py-14">
+        <div>
+          <p className="label-caps text-brand">Authentic sports nutrition · Karachi</p>
+          <h1
+            id="hero-title"
+            className="mt-4 text-[3.5rem] font-display md:text-[5rem] xl:text-[6.25rem] 2xl:text-[7rem]"
           >
-            Shop best sellers
-          </Button>
-          <Button to="/brands" size="lg" variant="outline">
-            Browse brands
-          </Button>
-        </div>
-      </div>
-
-      <div className="[container-type:inline-size] lg:[grid-area:stage]">
-        <div
-          className={cn(
-            "relative flex h-[calc(100cqw/2.35)] items-end justify-center gap-[3%]",
-            "after:absolute after:inset-x-[-16px] after:bottom-0 after:h-px after:bg-ink lg:after:inset-x-0",
-            "xl:h-[calc(100cqw/2.95)] 2xl:h-[calc(100cqw/3.45)]",
-          )}
-        >
-          {PACKS.map((pack) => (
-            <Link
-              key={pack.id}
-              to={`/product/${pack.slug}`}
-              aria-label={pack.alt.replace(/ (tub|bag)$/, "")}
-              style={{ height: pack.height }}
-              className={cn(
-                "group relative block flex-none mix-blend-multiply",
-                pack.from === "xl" && "hidden xl:block",
-                pack.from === "2xl" && "hidden 2xl:block",
-              )}
+            Train hard.
+            <br />
+            <span className="text-brand">Fuel genuine.</span>
+          </h1>
+          <p className="mt-5 max-w-[44ch] text-[17px] leading-relaxed text-night-muted lg:text-[19px]">
+            Whey, creatine, pre-workout and mass gainers from{" "}
+            {brandCount ? `${brandCount} trusted brands` : "trusted brands"} — sourced, never
+            repacked. Cash on delivery anywhere in Pakistan.
+          </p>
+          <div className="mt-7 grid gap-3 sm:flex">
+            <Button
+              to="/shop?sort=bestselling"
+              size="lg"
+              trailingIcon={<ArrowRight aria-hidden="true" className="size-4.5" />}
             >
-              <picture>
-                <source media="(min-width: 1024px)" srcSet={packSrc(pack.id, 640)} />
-                <img
-                  src={packSrc(pack.id, 400)}
-                  alt={pack.alt}
-                  className="block h-full w-auto"
-                  fetchPriority={pack.priority ? "high" : "auto"}
-                  decoding={pack.priority ? "sync" : "async"}
-                />
-              </picture>
-              <span
-                aria-hidden="true"
-                className="absolute -bottom-7.5 left-1/2 hidden -translate-x-1/2 label-caps whitespace-nowrap text-ink-3 opacity-0 transition-opacity duration-(--duration-base) group-hover:opacity-100 lg:block"
-              >
-                {pack.label}
-              </span>
-            </Link>
-          ))}
+              Shop best sellers
+            </Button>
+            <Button href="#goals" size="lg" variant="onDark">
+              Shop by goal
+            </Button>
+          </div>
+          <dl className="mt-9 hidden max-w-md grid-cols-3 gap-6 border-t border-night-line pt-6 sm:grid">
+            {[
+              [brandCount ? String(brandCount) : "Top", "trusted brands"],
+              ["COD", "pay when it arrives"],
+              ["PK", "nationwide delivery"],
+            ].map(([value, label]) => (
+              <div key={label} className="flex flex-col-reverse gap-1">
+                <dt className="text-[13px] text-night-muted">{label}</dt>
+                <dd className="text-[2.5rem] font-display text-white">{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <div className="flex items-center justify-between pt-2.5 label-caps text-ink-3 lg:pt-10">
-          <span>On the shelf now</span>
-          <Link to="/shop" className="border-b border-ink pb-px text-ink">
-            All products
+
+        <div className="relative h-[300px] sm:h-[380px] lg:h-[560px]">
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-[8%] bottom-[34px] h-16 rounded-[50%] bg-black/70 blur-md"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 bottom-[52px] h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          />
+          <div className="absolute inset-x-0 top-[4%] bottom-[46px]">
+            {HERO_PACKS.map((pack) => (
+              <Link
+                key={pack.id}
+                to={`/product/${pack.slug}`}
+                aria-label={pack.name}
+                style={{ height: pack.height, ...pack.place }}
+                className={cn(
+                  "group absolute bottom-0 block transition-[translate,filter] duration-(--duration-sheet) ease-(--ease-out-soft) hover:-translate-y-1.5",
+                  pack.lead ? "z-10" : "z-0",
+                  pack.from === "xl" && "hidden xl:block",
+                  pack.from === "sm" && "hidden sm:block",
+                  !pack.lead && "brightness-[0.88] hover:brightness-100",
+                )}
+              >
+                <picture>
+                  <source media="(min-width: 1024px)" srcSet={cutoutSrc(pack.id, 640)} />
+                  <img
+                    src={cutoutSrc(pack.id, 400)}
+                    alt=""
+                    className={cn(
+                      "block h-full w-auto",
+                      pack.lead && "drop-shadow-[0_30px_40px_rgb(0_0_0/0.6)]",
+                    )}
+                    fetchPriority={pack.lead ? "high" : "auto"}
+                    decoding={pack.lead ? "sync" : "async"}
+                  />
+                </picture>
+              </Link>
+            ))}
+          </div>
+          <Link
+            to={`/product/${LEAD_PACK.slug}`}
+            className="absolute top-0 right-0 hidden items-center gap-3 rounded-card bg-night/85 px-4 py-3 ring-1 ring-night-line backdrop-blur-sm transition-colors hover:ring-brand lg:flex"
+          >
+            <span
+              aria-hidden="true"
+              className="size-2 rounded-full bg-brand ring-4 ring-brand/25"
+            />
+            <span className="flex flex-col">
+              <span className="text-[12px] text-night-muted">{LEAD_PACK.brand}</span>
+              <span className="text-small font-bold text-white">{LEAD_PACK.short}</span>
+            </span>
+            <span className="ml-2 flex items-center gap-1 text-small font-bold text-brand">
+              Shop now <ArrowRight aria-hidden="true" className="size-4" />
+            </span>
           </Link>
         </div>
       </div>
-
-      <ul className="grid grid-cols-2 border-t border-line md:flex md:flex-wrap md:gap-7 lg:grid lg:max-w-[520px] lg:grid-cols-2 lg:gap-x-6 lg:gap-y-0 lg:self-start lg:[grid-area:trust]">
-        {site.trust.map((point) => {
-          const Icon = TRUST_ICONS[point.id] ?? ShieldCheck;
-          return (
-            <li
-              key={point.id}
-              className="flex items-start gap-2.5 py-3 pr-2.5 text-[13px] leading-snug text-ink-2"
-            >
-              <Icon aria-hidden="true" className="mt-px size-4.5 flex-none text-ink" />
-              <span>
-                <strong className="block text-[13.5px] font-semibold text-ink">
-                  {point.title}
-                </strong>
-                {point.detail}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
     </section>
   );
 }

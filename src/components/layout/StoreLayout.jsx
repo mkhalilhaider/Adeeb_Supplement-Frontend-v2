@@ -4,13 +4,14 @@ import { Outlet, ScrollRestoration } from "react-router";
 import { PageLoader } from "../ui/PageLoader";
 import { SessionNotice } from "../../features/auth/SessionNotice";
 import { Header } from "./Header";
-import { Footer } from "./Footer";
 import { MobileTabBar } from "./MobileTabBar";
 import { useCartUi } from "../../features/cart/cart-ui";
 import { useSession } from "../../features/auth/session-store";
 
 // Overlays load on first use: most visits never open them, so their drawer/dialog code
 // stays off the critical path.
+// Always below the fold: loads right after the page instead of with it.
+const Footer = lazy(() => import("./Footer").then((m) => ({ default: m.Footer })));
 const MobileMenu = lazy(() => import("./MobileMenu").then((m) => ({ default: m.MobileMenu })));
 // Guest → account cart merge and wishlist push: only logged-in shoppers download it.
 const SessionSync = lazy(() =>
@@ -64,7 +65,9 @@ export default function StoreLayout() {
         </Suspense>
       </main>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       {/* Keeps the end of the footer clear of the phone tab bar. */}
       <div aria-hidden="true" className="h-[calc(3.5rem+env(safe-area-inset-bottom))] md:hidden" />
 
