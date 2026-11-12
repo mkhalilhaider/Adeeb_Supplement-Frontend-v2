@@ -147,7 +147,7 @@ export function ProductCard({
       </div>
 
       <div className="mt-3 flex flex-col gap-1">
-        {card.brand && <p className="truncate label-mono text-ink-3">{card.brand}</p>}
+        {card.brand && <p className="truncate label-caps text-ink-3">{card.brand}</p>}
         <h3 className="line-clamp-2 text-small leading-snug font-medium text-ink md:text-body md:leading-snug">
           <Link
             to={card.href}

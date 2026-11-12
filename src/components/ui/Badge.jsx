@@ -8,7 +8,7 @@ import { cn } from "../../lib/cn";
 const tones = {
   sale: "bg-brand text-ink",
   success: "bg-success-soft text-success",
-  warning: "bg-warning-soft text-warning",
+  warning: "bg-brand-soft text-[#9a3b0f]",
   danger: "bg-danger-soft text-danger",
   neutral: "bg-shelf text-ink-2",
   ink: "bg-ink text-paper",
@@ -18,7 +18,7 @@ export function Badge({ tone = "neutral", className, children }) {
   return (
     <span
       className={cn(
-        "inline-flex h-6 items-center rounded-sm px-2 font-mono text-[11px] font-medium tracking-[0.06em] uppercase",
+        "inline-flex h-6 items-center rounded-sm px-2 text-[12px] leading-none font-bold tracking-[0.02em] tabular-nums",
         tones[tone],
         className,
       )}

@@ -49,7 +49,7 @@ function QuickAddBody({ product, onDone }) {
           />
         </span>
         <div className="min-w-0">
-          <p className="label-mono text-ink-3">{product.brand?.name}</p>
+          <p className="label-caps text-ink-3">{product.brand?.name}</p>
           <p className="line-clamp-2 font-medium">{product.name}</p>
           {variant && (
             <Price price={variant.price} salePrice={variant.salePrice} size="sm" className="mt-1" />

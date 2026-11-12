@@ -34,8 +34,10 @@ export function BrandsMenu() {
         aria-controls="brands-menu"
         onClick={toggle}
         className={cn(
-          "flex h-11 items-center gap-1 border-b-2 text-small font-semibold transition-colors",
-          open ? "border-ink text-ink" : "border-transparent text-ink-2 hover:text-ink",
+          "flex h-12 items-center gap-1 border-b-2 text-small font-semibold transition-colors",
+          open
+            ? "border-brand text-white"
+            : "border-transparent text-night-muted hover:border-brand hover:text-white",
         )}
       >
         Brands
@@ -52,11 +54,11 @@ export function BrandsMenu() {
         <div
           ref={panelRef}
           id="brands-menu"
-          className="absolute inset-x-0 top-full z-40 border-y border-line bg-surface shadow-overlay"
+          className="absolute inset-x-0 top-full z-40 border-b border-line bg-surface text-ink shadow-overlay"
         >
           <div className="page-container py-6">
             <div className="flex items-baseline justify-between">
-              <p className="label-mono text-ink-3">{brands.length} brands we stock</p>
+              <p className="label-caps text-ink-3">{brands.length} brands we stock</p>
               <Link
                 to="/brands"
                 className="text-small font-semibold underline-offset-4 hover:underline"

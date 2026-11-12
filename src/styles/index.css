@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-/* Self-hosted fonts: one Archivo file covers both weight and width (condensed headlines),
-   plus IBM Plex Mono 500 for spec labels. */
-@import "@fontsource/ibm-plex-mono/latin-500.css";
+/* Self-hosted font: one Archivo file covers both weight and width (condensed headlines). */
 
 /*
  * Archivo, trimmed to what the site uses: weights 400–800, widths 72–100 % and Latin text
@@ -34,32 +32,38 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  --color-paper: #f6f4ef; /* page background */
-  --color-surface: #ffffff; /* inputs, sheets, popovers */
-  --color-shelf: #edebe5; /* product image tiles, alternate sections */
-  --color-ink: #121212; /* primary text, dark buttons */
+  /* Hybrid identity: cinematic charcoal bands for impact, warm-white surfaces for shopping,
+     orange only for the main action and real highlights (sale, focus, active state). */
+  --color-paper: #f7f5f1; /* warm white page background */
+  --color-surface: #ffffff; /* cards, inputs, sheets, popovers */
+  --color-shelf: #f1eee8; /* product image tiles, quiet fills */
+  --color-ink: #101010; /* primary text, dark buttons */
   --color-ink-2: #3e3b36; /* secondary text */
-  --color-ink-3: #6b675f; /* meta text (AA on paper) */
-  --color-line: #e2ded6; /* hairline rules, borders */
+  --color-ink-3: #6b6b6b; /* meta text (AA 5:1 on paper) */
+  --color-line: #e6e1d8; /* hairline rules, borders */
   --color-line-strong: #c8c3b8; /* input borders, emphasised rules */
-  --color-brand: #e8641a; /* primary CTA fill — always with ink text */
-  --color-brand-hover: #d9570f;
-  --color-brand-ink: #b4470b; /* orange text on light backgrounds */
+  --color-brand: #f36b27; /* Athletic Orange — CTA fill, always with ink text (7:1) */
+  --color-brand-hover: #ff7a36;
+  --color-brand-ink: #c2501a; /* orange text on light backgrounds (AA) */
+  --color-brand-soft: #fbeadf;
   --color-success: #1e7a4c;
   --color-success-soft: #e3f1e8;
-  --color-warning: #a86200;
+  --color-warning: #9a5a00;
   --color-warning-soft: #f7ecd9;
   --color-danger: #c42b2b;
   --color-danger-soft: #f8e3e1;
-  --color-night: #111110; /* footer, dark band */
-  --color-night-2: #1c1b19;
-  --color-night-text: #e9e6df;
-  --color-night-muted: #a7a297;
+  --color-night: #171717; /* charcoal: navbar, hero, story bands */
+  --color-night-2: #262626; /* raised surfaces and inputs on charcoal */
+  --color-night-deep: #0b0b0b; /* announcement bar, footer */
+  --color-night-line: #2a2a2a; /* rules on charcoal */
+  --color-night-text: #f2efe9;
+  --color-night-muted: #a7a297; /* secondary text on charcoal (AA) */
 
   --font-sans:
     "Archivo Variable", "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     Arial, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-mono:
+    ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; /* order numbers only, no download */
 
   /* Type scale (mobile-first; larger sizes applied with md:/lg: variants). */
   --text-display: 2.625rem; /* 42px */
@@ -74,14 +78,16 @@
   --text-body--line-height: 1.625;
   --text-small: 0.875rem;
   --text-small--line-height: 1.55;
-  --text-label: 0.6875rem; /* 11px mono labels */
-  --text-label--line-height: 1.45;
-  --text-label--letter-spacing: 0.08em;
+  --text-label: 0.75rem; /* 12px caps labels */
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.14em;
 
   --radius-xs: 2px;
   --radius-sm: 4px; /* badges, inputs, chips */
-  --radius-md: 6px; /* buttons, cards */
+  --radius-md: 6px; /* buttons, inputs */
+  --radius-card: 10px; /* product cards, tiles, panels */
   --radius-lg: 12px; /* sheet & dialog corners */
+  --radius-band: 14px; /* feature bands */
 
   --shadow-overlay: 0 8px 24px -8px rgb(18 18 18 / 0.18), 0 0 0 1px rgb(18 18 18 / 0.06);
   --shadow-sheet: 0 -12px 32px -12px rgb(18 18 18 / 0.25);
@@ -113,16 +119,25 @@
   }
 }
 
-/* Condensed headline style: Archivo at 72% width. */
+/* Condensed headline style: Archivo at 72% width (the narrowest the bundled file holds). */
 @utility font-condensed {
   font-stretch: 72%;
   font-variation-settings: "wdth" 72;
 }
 
-/* Small uppercase spec label (brand, weight, servings, SKU). */
-@utility label-mono {
-  font-family: var(--font-mono);
-  font-weight: 500;
+/* Display headings: heavy, condensed, uppercase, tight. Size comes from text-* utilities. */
+@utility font-display {
+  font-weight: 800;
+  font-stretch: 72%;
+  font-variation-settings: "wdth" 72;
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.005em;
+}
+
+/* Small uppercase label (eyebrows, brand names, spec labels). */
+@utility label-caps {
+  font-weight: 700;
   font-size: var(--text-label);
   line-height: var(--text-label--line-height);
   letter-spacing: var(--text-label--letter-spacing);
@@ -169,7 +184,7 @@
 
   /* One clear, consistent focus ring for keyboard users. */
   :focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-brand-ink);
     outline-offset: 2px;
   }
 

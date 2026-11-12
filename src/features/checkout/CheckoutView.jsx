@@ -35,7 +35,7 @@ function Section({ step, title, icon: Icon, children, aside }) {
         <h2 id={id} className="flex items-center gap-2.5 text-h3 font-bold">
           <span
             aria-hidden="true"
-            className="flex size-7 items-center justify-center rounded-full bg-ink label-mono text-[12px] text-paper"
+            className="flex size-7 items-center justify-center rounded-full bg-ink label-caps text-[12px] text-paper"
           >
             {step}
           </span>

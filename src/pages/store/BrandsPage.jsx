@@ -26,7 +26,7 @@ export default function BrandsPage() {
       />
       <header className="pt-4 md:pt-6">
         <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Brands" }]} />
-        <p className="mt-6 label-mono text-ink-3">Authentic brands only</p>
+        <p className="mt-6 label-caps text-ink-3">Authentic brands only</p>
         <h1 className="mt-1 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
           Brands A–Z
         </h1>

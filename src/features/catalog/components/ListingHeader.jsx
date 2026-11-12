@@ -36,7 +36,7 @@ export function ListingHeader({ crumbs, eyebrow, title, description, image, logo
           </span>
         )}
         <div className="min-w-0">
-          {eyebrow && <p className="label-mono text-ink-3">{eyebrow}</p>}
+          {eyebrow && <p className="label-caps text-ink-3">{eyebrow}</p>}
           <h1 className="mt-1 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
             {title}
           </h1>

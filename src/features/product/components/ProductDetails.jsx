@@ -63,7 +63,7 @@ export function ProductSpecs({ product, variants, variant }) {
     <dl className="border-t-2 border-ink">
       {rows.map(([label, value]) => (
         <div key={label} className="grid grid-cols-[7.5rem_1fr] gap-4 border-b border-line py-3">
-          <dt className="pt-0.5 label-mono text-ink-3">{label}</dt>
+          <dt className="pt-0.5 label-caps text-ink-3">{label}</dt>
           <dd className="min-w-0 break-words">{value}</dd>
         </div>
       ))}

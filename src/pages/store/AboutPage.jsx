@@ -39,11 +39,11 @@ export default function AboutPage() {
               className="aspect-[4/5] w-full object-cover"
             />
           </a>
-          <figcaption className="mt-3 label-mono text-ink-3">{STORY.pinLine}</figcaption>
+          <figcaption className="mt-3 label-caps text-ink-3">{STORY.pinLine}</figcaption>
         </figure>
 
         <article>
-          <p className="label-mono text-ink-3">{STORY.eyebrow}</p>
+          <p className="label-caps text-ink-3">{STORY.eyebrow}</p>
           <h1 className="mt-2 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
             {STORY.title}
           </h1>

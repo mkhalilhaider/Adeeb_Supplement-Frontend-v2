@@ -73,7 +73,7 @@ export function Hero({ brandCount }) {
       )}
     >
       <div className="lg:self-end lg:pb-6 lg:[grid-area:copy]">
-        <p className="flex items-center gap-2.5 label-mono text-ink-3 before:h-px before:w-6 before:bg-ink">
+        <p className="flex items-center gap-2.5 label-caps text-ink-3 before:h-px before:w-6 before:bg-ink">
           Authentic sports nutrition · Since 2026
         </p>
         <h1
@@ -135,14 +135,14 @@ export function Hero({ brandCount }) {
               </picture>
               <span
                 aria-hidden="true"
-                className="absolute -bottom-7.5 left-1/2 hidden -translate-x-1/2 label-mono whitespace-nowrap text-ink-3 opacity-0 transition-opacity duration-(--duration-base) group-hover:opacity-100 lg:block"
+                className="absolute -bottom-7.5 left-1/2 hidden -translate-x-1/2 label-caps whitespace-nowrap text-ink-3 opacity-0 transition-opacity duration-(--duration-base) group-hover:opacity-100 lg:block"
               >
                 {pack.label}
               </span>
             </Link>
           ))}
         </div>
-        <div className="flex items-center justify-between pt-2.5 label-mono text-ink-3 lg:pt-10">
+        <div className="flex items-center justify-between pt-2.5 label-caps text-ink-3 lg:pt-10">
           <span>On the shelf now</span>
           <Link to="/shop" className="border-b border-ink pb-px text-ink">
             All products

@@ -26,7 +26,7 @@ function RadioRow({ name, value, checked, onChange, children }) {
 function Section({ legend, children }) {
   return (
     <fieldset className="border-t border-line py-5 first:border-t-0 first:pt-0">
-      <legend className="float-left mb-3 w-full label-mono text-ink-3">{legend}</legend>
+      <legend className="float-left mb-3 w-full label-caps text-ink-3">{legend}</legend>
       <div className="clear-both">{children}</div>
     </fieldset>
   );

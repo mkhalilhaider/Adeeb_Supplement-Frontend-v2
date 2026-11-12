@@ -1,6 +1,6 @@
 /** Admin table classes and small formatters (kept out of ui.jsx for fast refresh). */
 export const th =
-  "border-b border-line bg-shelf px-3 py-2.5 text-left label-mono text-ink-3 whitespace-nowrap";
+  "border-b border-line bg-shelf px-3 py-2.5 text-left label-caps text-ink-3 whitespace-nowrap";
 export const td = "border-b border-line px-3 py-3 align-top";
 
 const DATE_TIME = new Intl.DateTimeFormat("en-PK", {

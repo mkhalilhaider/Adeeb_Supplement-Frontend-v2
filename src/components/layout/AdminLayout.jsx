@@ -70,7 +70,7 @@ function NavLinks() {
     <div className="flex flex-col gap-5">
       {NAV.map(({ group, links }) => (
         <div key={group ?? "main"}>
-          {group && <p className="mb-1.5 px-3 label-mono text-ink-3">{group}</p>}
+          {group && <p className="mb-1.5 px-3 label-caps text-ink-3">{group}</p>}
           <ul className="flex flex-col gap-0.5">
             {links.map(({ to, label, icon: Icon, end }) => (
               <li key={to}>
@@ -123,7 +123,7 @@ export default function AdminLayout() {
 
       {/* Phones and tablets: top bar + menu panel */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface px-4 lg:hidden">
-        <span className="label-mono text-ink-2">Adeeb · Admin</span>
+        <span className="label-caps text-ink-2">Adeeb · Admin</span>
         <button
           type="button"
           onClick={menu.toggle}
@@ -149,7 +149,7 @@ export default function AdminLayout() {
         )}
       >
         <div className="hidden h-16 items-center border-b border-line px-5 lg:flex">
-          <span className="label-mono text-ink-2">Adeeb · Admin</span>
+          <span className="label-caps text-ink-2">Adeeb · Admin</span>
         </div>
         <nav aria-label="Admin sections" className="flex-1 overflow-y-auto p-3">
           <NavLinks />

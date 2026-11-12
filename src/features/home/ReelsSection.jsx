@@ -103,7 +103,7 @@ function Reel({ reel, onBroken }) {
         </span>
       )}
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-night/80 to-transparent p-3 pt-10">
-        <p className="label-mono text-paper">{label}</p>
+        <p className="label-caps text-paper">{label}</p>
         {loaded && (
           <button
             type="button"

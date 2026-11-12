@@ -105,11 +105,11 @@ export default function TrackOrderPage() {
           {order.trackingNumber && (
             <dl className="grid gap-3 rounded-sm bg-surface p-4 text-small sm:grid-cols-2">
               <div>
-                <dt className="label-mono text-ink-3">Tracking number</dt>
+                <dt className="label-caps text-ink-3">Tracking number</dt>
                 <dd className="mt-1 font-mono font-semibold">{order.trackingNumber}</dd>
               </div>
               <div>
-                <dt className="label-mono text-ink-3">Shipment</dt>
+                <dt className="label-caps text-ink-3">Shipment</dt>
                 <dd className="mt-1 font-semibold">
                   {SHIPMENT_LABEL[order.shipmentStatus] ?? order.shipmentStatus}
                 </dd>

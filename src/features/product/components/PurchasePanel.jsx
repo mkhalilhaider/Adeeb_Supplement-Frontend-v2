@@ -59,7 +59,7 @@ export function PurchasePanel({
         {product.brand && (
           <Link
             to={`/brand/${product.brand.slug}`}
-            className="label-mono text-ink-3 hover:text-ink"
+            className="label-caps text-ink-3 hover:text-ink"
           >
             {product.brand.name}
           </Link>

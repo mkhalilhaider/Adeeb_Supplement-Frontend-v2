@@ -23,7 +23,7 @@ export default function ImageViewer({ open, onOpenChange, images, index, setInde
           className="fixed inset-0 z-50 flex flex-col bg-surface outline-none"
         >
           <div className="flex items-center justify-between px-4 py-3">
-            <RadixDialog.Title className="label-mono text-ink-3">
+            <RadixDialog.Title className="label-caps text-ink-3">
               {count > 1 ? `Image ${index + 1} of ${count}` : "Image"}
             </RadixDialog.Title>
             <RadixDialog.Close asChild>

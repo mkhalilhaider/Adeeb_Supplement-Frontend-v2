@@ -68,7 +68,7 @@ export function CartLineItem({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             {(line.brand || check?.brand) && (
-              <p className="truncate label-mono text-ink-3">{line.brand || check.brand}</p>
+              <p className="truncate label-caps text-ink-3">{line.brand || check.brand}</p>
             )}
             <Name
               {...(href ? { to: href } : {})}

@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
         noValidate
         className="w-full max-w-sm"
       >
-        <p className="label-mono text-ink-3">Adeeb · Admin</p>
+        <p className="label-caps text-ink-3">Adeeb · Admin</p>
         <h1 className="mt-2 text-h1 font-extrabold uppercase font-condensed">Sign in</h1>
 
         <div className="mt-8 flex flex-col gap-4">

@@ -3,7 +3,7 @@ import { cn } from "../../lib/cn";
 import { Spinner } from "./Spinner";
 
 const base =
-  "relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-semibold " +
+  "relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold " +
   "transition-[background-color,color,border-color,opacity] duration-(--duration-fast) ease-(--ease-out-soft) " +
   "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
 
@@ -18,7 +18,9 @@ const base =
 const variants = {
   primary: "bg-brand text-ink hover:bg-brand-hover",
   secondary: "bg-ink text-paper hover:bg-ink-2",
-  outline: "border border-ink text-ink hover:bg-ink hover:text-paper",
+  outline: "border-[1.5px] border-ink text-ink hover:bg-ink hover:text-paper",
+  /** Secondary action on charcoal bands (hero, story sections). */
+  onDark: "text-white ring-[1.5px] ring-white/40 ring-inset hover:ring-white",
   ghost: "text-ink hover:bg-shelf",
   link: "text-ink underline decoration-1 underline-offset-4 hover:text-brand-ink",
   danger: "bg-danger text-white hover:opacity-90",
@@ -26,9 +28,9 @@ const variants = {
 
 /** Heights: 36 / 44 / 48px. Touch targets stay ≥ 44px except `sm` (dense desktop UI). */
 const sizes = {
-  sm: "h-9 rounded-md px-3 text-small",
-  md: "h-11 rounded-md px-5 text-body",
-  lg: "h-12 rounded-md px-6 text-body",
+  sm: "h-10 rounded-md px-4 text-small",
+  md: "h-11 rounded-md px-5 text-[15px]",
+  lg: "h-13 rounded-md px-7 text-[15px]",
 };
 
 /**

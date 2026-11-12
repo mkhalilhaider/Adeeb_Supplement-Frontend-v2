@@ -39,7 +39,7 @@ export default function LegalPage() {
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_16rem] lg:gap-16">
         <article className="max-w-[68ch]">
-          <p className="label-mono text-ink-3">Last updated {doc.lastUpdated}</p>
+          <p className="label-caps text-ink-3">Last updated {doc.lastUpdated}</p>
           <h1 className="mt-2 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
             {doc.title}
           </h1>
@@ -56,7 +56,7 @@ export default function LegalPage() {
 
         <aside className="flex flex-col gap-6 text-small lg:sticky lg:top-24 lg:self-start">
           <nav aria-label="Policies">
-            <p className="label-mono text-ink-3">Policies</p>
+            <p className="label-caps text-ink-3">Policies</p>
             <ul className="mt-3 flex flex-col gap-2">
               {OTHERS.map((o) => (
                 <li key={o.to}>

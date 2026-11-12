@@ -7,7 +7,7 @@ import { useSession } from "../../features/auth/session-store";
 function Row({ label, value, ok }) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-line py-3">
-      <span className="label-mono text-ink-3">{label}</span>
+      <span className="label-caps text-ink-3">{label}</span>
       <span className={ok === false ? "text-danger" : ok ? "text-success" : "text-ink"}>
         {value}
       </span>

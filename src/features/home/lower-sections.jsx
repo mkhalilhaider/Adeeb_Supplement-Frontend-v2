@@ -71,7 +71,7 @@ export function StatsBand() {
       <dl className="page-container grid grid-cols-2 gap-y-8 py-10 md:grid-cols-4 md:py-14">
         {items.map((i) => (
           <div key={i.label} className="flex flex-col-reverse gap-1">
-            <dt className="label-mono text-night-muted">{i.label}</dt>
+            <dt className="label-caps text-night-muted">{i.label}</dt>
             <dd className="text-[40px] leading-none font-extrabold font-condensed tabular-nums md:text-[56px]">
               {STAT_FORMAT.format(i.value)}
             </dd>
@@ -88,7 +88,7 @@ export function StoreBand() {
     <section aria-labelledby="store-heading" className="page-container">
       <div className="grid gap-6 border border-line bg-surface p-6 md:grid-cols-[1fr_auto] md:items-end md:p-10">
         <div>
-          <p className="label-mono text-ink-3">{site.store.label}</p>
+          <p className="label-caps text-ink-3">{site.store.label}</p>
           <h2
             id="store-heading"
             className="mt-2 text-h2 font-extrabold uppercase font-condensed md:text-[2rem]"

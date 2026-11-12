@@ -13,7 +13,7 @@ export function SearchOverlay({ open, onOpenChange }) {
           className="fixed inset-0 z-50 flex flex-col bg-paper px-4 pt-[max(0.75rem,env(safe-area-inset-top))] outline-none"
         >
           <div className="flex items-center justify-between pb-3">
-            <RadixDialog.Title className="label-mono text-ink-3">Search</RadixDialog.Title>
+            <RadixDialog.Title className="label-caps text-ink-3">Search</RadixDialog.Title>
             <RadixDialog.Close asChild>
               <IconButton label="Close search" size="sm">
                 <X aria-hidden="true" className="size-5" />

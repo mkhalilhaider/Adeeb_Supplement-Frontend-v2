@@ -36,7 +36,7 @@ function validate(v, { test }) {
 function Preview({ v }) {
   return (
     <div className="rounded-sm border border-line bg-surface p-5 text-small">
-      <p className="label-mono text-ink-3">Subject: {v.subject || "—"}</p>
+      <p className="label-caps text-ink-3">Subject: {v.subject || "—"}</p>
       {v.headline && <p className="mt-3 text-h3 font-bold">{v.headline}</p>}
       <div className="mt-3 flex flex-col gap-3">
         {v.content

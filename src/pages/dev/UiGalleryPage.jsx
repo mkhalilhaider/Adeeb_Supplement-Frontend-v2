@@ -24,7 +24,7 @@ import { useProducts } from "../../features/catalog/queries";
 function Block({ title, children }) {
   return (
     <section className="border-t border-line py-10">
-      <h2 className="mb-6 label-mono text-ink-3">{title}</h2>
+      <h2 className="mb-6 label-caps text-ink-3">{title}</h2>
       {children}
     </section>
   );
@@ -62,7 +62,7 @@ export default function UiGalleryPage() {
       <title>UI gallery</title>
       <meta name="robots" content="noindex" />
       <header className="py-10">
-        <p className="label-mono text-ink-3">Dev only · Phase 1</p>
+        <p className="label-caps text-ink-3">Dev only · Phase 1</p>
         <h1 className="mt-2 text-display font-extrabold uppercase font-condensed md:text-6xl">
           Design system
         </h1>
@@ -73,7 +73,7 @@ export default function UiGalleryPage() {
           {COLORS.map(([name, cls]) => (
             <div key={name} className="flex flex-col gap-1.5">
               <span className={`h-14 rounded-sm border border-line ${cls}`} />
-              <span className="label-mono text-ink-2">{name}</span>
+              <span className="label-caps text-ink-2">{name}</span>
             </div>
           ))}
         </div>
@@ -93,7 +93,7 @@ export default function UiGalleryPage() {
           across Pakistan.
         </p>
         <p className="mt-2 text-small text-ink-2">Small 14 — secondary text</p>
-        <p className="mt-2 label-mono text-ink-3">
+        <p className="mt-2 label-caps text-ink-3">
           Label mono · 5 lbs · 74 servings · SKU ADEEB-123
         </p>
       </Block>

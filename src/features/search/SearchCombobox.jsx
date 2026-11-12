@@ -185,7 +185,10 @@ export function SearchCombobox({
         </label>
         <Search
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-ink-3"
+          className={cn(
+            "pointer-events-none absolute top-1/2 z-10 size-5 -translate-y-1/2 text-ink-3",
+            variant === "inline" ? "left-3.5" : "left-3",
+          )}
         />
         <input
           ref={inputRef}
@@ -210,8 +213,9 @@ export function SearchCombobox({
           onFocus={() => setFocused(true)}
           onKeyDown={onKeyDown}
           className={cn(
-            "h-11 w-full rounded-sm border border-line-strong bg-surface pr-10 pl-10 text-body outline-none",
-            "placeholder:text-ink-3 focus-visible:border-ink [&::-webkit-search-cancel-button]:hidden",
+            variant === "inline"
+              ? "h-12 w-full rounded-lg bg-night-2 pr-10 pl-11 text-body text-night-text ring-1 ring-night-line transition-colors duration-(--duration-fast) outline-none placeholder:text-night-muted hover:ring-night-muted focus:bg-surface focus:text-ink focus:ring-2 focus:ring-brand focus:placeholder:text-ink-3 [&::-webkit-search-cancel-button]:hidden"
+              : "h-12 w-full rounded-md border border-line-strong bg-surface pr-10 pl-10 text-body outline-none placeholder:text-ink-3 focus-visible:border-ink [&::-webkit-search-cancel-button]:hidden",
           )}
         />
         {term && (
@@ -233,7 +237,7 @@ export function SearchCombobox({
         <div
           className={cn(
             variant === "inline"
-              ? "absolute top-full right-0 left-0 z-40 mt-1.5 max-h-[70vh] overflow-y-auto rounded-md border border-line bg-surface p-2 shadow-overlay lg:-right-24"
+              ? "absolute top-full right-0 left-0 z-40 mt-2 max-h-[70vh] overflow-y-auto rounded-card border border-line bg-surface p-2 text-ink shadow-overlay lg:-right-24"
               : "mt-3 flex-1 overflow-y-auto overscroll-contain pb-6",
           )}
         >
@@ -242,7 +246,7 @@ export function SearchCombobox({
               <li key={group.key} role="presentation" className="py-1">
                 {group.label && (
                   <div className="flex items-center justify-between px-2 pt-1.5 pb-1">
-                    <span className="label-mono text-ink-3">{group.label}</span>
+                    <span className="label-caps text-ink-3">{group.label}</span>
                     {group.action && (
                       <button
                         type="button"
@@ -313,7 +317,7 @@ function OptionContent({ option }) {
           <CloudImage src={card.image?.url} alt="" ratio="square" sizes="48px" trim blend />
         </span>
         <span className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate label-mono text-ink-3">{card.brand}</span>
+          <span className="truncate label-caps text-ink-3">{card.brand}</span>
           <span className="line-clamp-2 text-small font-medium md:line-clamp-1">{card.name}</span>
           {/* Phones: price under the name so the name gets the full width. */}
           <Price
