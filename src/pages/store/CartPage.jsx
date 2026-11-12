@@ -99,7 +99,7 @@ export default function CartPage() {
       {body ?? (
         <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_24rem] lg:gap-12">
           <section aria-label="Items">
-            <ul className="border-t border-line">
+            <ul className="rounded-card border border-line bg-surface px-4 md:px-6">
               {cart.lines.map((line) => (
                 <CartLineItem
                   key={line.variantId}

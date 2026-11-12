@@ -74,7 +74,7 @@ export function OrderSummary({
   return (
     <section
       aria-labelledby="summary-heading"
-      className="flex flex-col gap-5 bg-surface p-5 md:p-6"
+      className="flex flex-col gap-5 rounded-card border border-line bg-surface p-5 md:p-6"
     >
       <div className="flex items-baseline justify-between gap-4">
         <h2 id="summary-heading" className="text-[1.75rem] font-display md:text-[2rem]">

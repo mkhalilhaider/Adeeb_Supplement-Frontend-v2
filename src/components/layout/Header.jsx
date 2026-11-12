@@ -56,7 +56,7 @@ function CartLink() {
       to="/cart"
       aria-label={count ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart, empty"}
       className={cn(
-        "relative flex h-11 items-center gap-2 rounded-md transition-colors duration-(--duration-fast)",
+        "relative flex h-11 shrink-0 items-center gap-2 rounded-md whitespace-nowrap transition-colors duration-(--duration-fast)",
         "w-11 justify-center md:w-auto md:bg-brand md:px-3.5 md:text-ink md:hover:bg-brand-hover",
       )}
     >
@@ -83,7 +83,7 @@ function AccountLink() {
   return (
     <Link
       to={signedIn ? "/account" : "/login"}
-      className="hidden h-11 items-center gap-2.5 rounded-md px-2.5 hover:bg-night-2 md:flex"
+      className="hidden h-11 shrink-0 items-center gap-2.5 rounded-md px-2.5 whitespace-nowrap hover:bg-night-2 md:flex"
     >
       <User aria-hidden="true" className="size-[22px]" />
       <span className="hidden flex-col leading-tight xl:flex">
@@ -226,7 +226,7 @@ export function Header({ onOpenMenu, onOpenSearch }) {
           <div className="ml-auto hidden w-full max-w-md md:block lg:ml-0 lg:max-w-xl xl:max-w-2xl">
             <InlineSearch />
           </div>
-          <div className="ml-auto flex items-center gap-1 md:ml-0">
+          <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
             <IconButton
               label="Search"
               onClick={onOpenSearch}

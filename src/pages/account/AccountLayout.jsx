@@ -26,19 +26,22 @@ export default function AccountLayout() {
 
   const linkClass = ({ isActive }) =>
     cn(
-      "flex shrink-0 items-center gap-2.5 rounded-sm px-3 py-2.5 text-small font-medium whitespace-nowrap transition-colors duration-(--duration-fast)",
-      isActive ? "bg-ink text-paper" : "text-ink-2 hover:bg-shelf hover:text-ink",
+      "flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2.5 text-small font-semibold whitespace-nowrap transition-colors duration-(--duration-fast)",
+      isActive ? "bg-ink text-white" : "text-ink-2 hover:bg-shelf hover:text-ink",
     );
 
   return (
     <div className="page-container pt-6 pb-16 md:pt-10">
-      <p className="label-caps text-ink-3">My account</p>
+      <p className="label-caps text-brand-ink">My account</p>
       <p className="mt-1 text-[2.25rem] font-display md:text-[2.75rem]">
         Hi, {user?.firstName || "there"}
       </p>
 
       <div className="mt-6 grid gap-6 md:mt-8 md:grid-cols-[13rem_1fr] md:gap-10">
-        <nav aria-label="Account" className="-mx-4 md:mx-0">
+        <nav
+          aria-label="Account"
+          className="-mx-4 md:mx-0 md:self-start md:rounded-card md:border md:border-line md:bg-surface md:p-2"
+        >
           <ul className="flex [scrollbar-width:none] gap-1 overflow-x-auto px-4 md:flex-col md:px-0">
             {LINKS.map(({ to, label, icon: Icon, end }) => (
               <li key={to}>
@@ -52,7 +55,7 @@ export default function AccountLayout() {
               <button
                 type="button"
                 onClick={logOut}
-                className="flex shrink-0 items-center gap-2.5 rounded-sm px-3 py-2.5 text-small font-medium whitespace-nowrap text-ink-2 hover:bg-shelf hover:text-ink"
+                className="flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2.5 text-small font-semibold whitespace-nowrap text-ink-2 hover:bg-shelf hover:text-ink"
               >
                 <LogOut aria-hidden="true" className="size-4" />
                 Log out
