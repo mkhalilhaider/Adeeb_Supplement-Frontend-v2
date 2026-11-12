@@ -77,7 +77,7 @@ export function OrderSummary({
       className="flex flex-col gap-5 bg-surface p-5 md:p-6"
     >
       <div className="flex items-baseline justify-between gap-4">
-        <h2 id="summary-heading" className="text-h2 font-extrabold uppercase font-condensed">
+        <h2 id="summary-heading" className="text-[1.75rem] font-display md:text-[2rem]">
           Your order
         </h2>
         <Link to="/cart" className="text-small font-medium text-ink-2 underline hover:text-ink">

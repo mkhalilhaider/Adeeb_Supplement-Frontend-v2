@@ -54,17 +54,19 @@ export function PurchasePanel({
   const max = Math.max(1, Math.min(variant?.stockQuantity ?? 1, MAX_QTY));
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 md:rounded-card md:border md:border-line md:bg-surface md:p-7">
       <div>
         {product.brand && (
           <Link
             to={`/brand/${product.brand.slug}`}
-            className="label-caps text-ink-3 hover:text-ink"
+            className="label-caps text-brand-ink hover:text-ink"
           >
             {product.brand.name}
           </Link>
         )}
-        <h1 className="mt-1.5 text-h2 leading-tight font-bold md:text-[2rem]">{product.name}</h1>
+        <h1 className="mt-2 text-[1.625rem] leading-tight font-extrabold tracking-[-0.01em] md:text-[2.125rem]">
+          {product.name}
+        </h1>
         {product.reviewCount > 0 && (
           <a href="#reviews" className="mt-2 inline-flex items-center gap-2 hover:underline">
             <Rating value={product.averageRating} count={product.reviewCount} size={15} showValue />

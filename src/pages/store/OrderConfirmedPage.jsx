@@ -102,7 +102,7 @@ export default function OrderConfirmedPage() {
       <div className="mx-auto max-w-3xl">
         <div className="flex flex-col items-start gap-3">
           <CheckCircle2 aria-hidden="true" className="size-10 text-success" />
-          <h1 className="text-h1 font-extrabold uppercase font-condensed md:text-5xl">
+          <h1 className="text-[2.75rem] font-display md:text-[4rem]">
             {fromCheckout ? `Thank you${firstName ? `, ${firstName}` : ""}!` : "Your order"}
           </h1>
           <p className="text-ink-2">

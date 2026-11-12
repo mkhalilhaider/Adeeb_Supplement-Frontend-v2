@@ -74,7 +74,7 @@ export default function WishlistPage() {
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="mt-4 text-h1 font-extrabold uppercase font-condensed outline-none md:text-5xl"
+        className="mt-4 text-[2.75rem] font-display outline-none md:text-[4rem]"
       >
         Wishlist{items.length ? ` (${items.length})` : ""}
       </h1>

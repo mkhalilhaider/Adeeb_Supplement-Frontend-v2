@@ -171,7 +171,7 @@ export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <Seo title="Account settings" noIndex />
-      <h1 className="text-h2 font-extrabold uppercase font-condensed">Settings</h1>
+      <h1 className="text-[2rem] font-display md:text-[2.5rem]">Settings</h1>
 
       {profile.isPending ? (
         <Skeleton className="h-60 w-full" />

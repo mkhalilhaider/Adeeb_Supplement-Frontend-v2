@@ -11,13 +11,13 @@ import { cn } from "../../../lib/cn";
 export function ListingHeader({ crumbs, eyebrow, title, description, image, logo }) {
   const visual = image || logo;
   return (
-    <header className="pt-4 md:pt-6">
+    <header className="pt-5 md:pt-8">
       <Breadcrumbs items={crumbs} />
       <div className={cn("mt-4 flex items-center gap-4 md:mt-6 md:gap-6", !visual && "block")}>
         {visual && (
           <span
             className={cn(
-              "shrink-0 bg-shelf",
+              "shrink-0 overflow-hidden rounded-card border border-line bg-surface",
               logo
                 ? "flex size-16 items-center justify-center p-2 md:size-24 md:p-3"
                 : "size-16 md:size-24",
@@ -36,10 +36,8 @@ export function ListingHeader({ crumbs, eyebrow, title, description, image, logo
           </span>
         )}
         <div className="min-w-0">
-          {eyebrow && <p className="label-caps text-ink-3">{eyebrow}</p>}
-          <h1 className="mt-1 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
-            {title}
-          </h1>
+          {eyebrow && <p className="label-caps text-brand-ink">{eyebrow}</p>}
+          <h1 className="mt-1 text-[2.75rem] font-display md:text-[4rem]">{title}</h1>
         </div>
       </div>
       {description && (

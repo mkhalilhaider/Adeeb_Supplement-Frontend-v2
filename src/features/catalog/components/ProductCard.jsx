@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Heart, Plus, SlidersHorizontal } from "lucide-react";
+import { Heart, ShoppingBag, SlidersHorizontal } from "lucide-react";
 import { Badge } from "../../../components/ui/Badge";
 import { CloudImage } from "../../../components/ui/CloudImage";
 import { Price } from "../../../components/ui/Price";
@@ -50,12 +50,17 @@ export function ProductCard({
 
   return (
     <article
-      className={cn("group relative flex flex-col", className)}
+      className={cn(
+        "group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface",
+        "transition-[border-color,box-shadow] duration-(--duration-base) ease-(--ease-out-soft)",
+        "hover:border-ink hover:shadow-[0_18px_32px_-20px_rgb(0_0_0/0.35)]",
+        className,
+      )}
       onPointerEnter={handleIntent}
       onTouchStart={() => onIntent?.(card)}
       onFocus={() => onIntent?.(card)}
     >
-      <div className="relative aspect-square bg-shelf">
+      <div className="relative aspect-square overflow-hidden bg-shelf bg-[radial-gradient(70%_60%_at_50%_55%,#ffffff,var(--color-shelf))]">
         {/* Duplicate of the title link for pointer users; hidden from keyboard/screen readers. */}
         <Link
           to={card.href}
@@ -72,7 +77,7 @@ export function ProductCard({
             trim
             blend
             className={cn(
-              "size-full transition-opacity duration-(--duration-base)",
+              "size-full transition-[opacity,scale] duration-(--duration-sheet) ease-(--ease-out-soft) md:group-hover:scale-[1.04]",
               showSecond && "md:group-hover:opacity-0",
             )}
           />
@@ -92,7 +97,7 @@ export function ProductCard({
         </Link>
 
         {badges.length > 0 && (
-          <div className="pointer-events-none absolute top-2 left-2 flex flex-col items-start gap-1">
+          <div className="pointer-events-none absolute top-2.5 left-2.5 flex flex-col items-start gap-1">
             {badges.map((b) => (
               <Badge key={b.label} tone={b.tone}>
                 {b.label}
@@ -109,44 +114,22 @@ export function ProductCard({
             }
             aria-pressed={wishlisted}
             onClick={() => onToggleWishlist(card)}
-            className="absolute top-1 right-1 flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-surface/70"
+            className={cn(
+              "absolute top-2 right-2 flex size-10 items-center justify-center rounded-full border transition-colors duration-(--duration-fast)",
+              wishlisted
+                ? "border-ink bg-ink text-brand"
+                : "border-line bg-surface text-ink hover:border-ink",
+            )}
           >
             <Heart
               aria-hidden="true"
-              className={cn(
-                "size-5",
-                wishlisted ? "fill-brand stroke-brand-ink" : "fill-transparent",
-              )}
+              className={cn("size-5", wishlisted ? "fill-brand stroke-brand" : "fill-transparent")}
             />
-          </button>
-        )}
-
-        {onQuickAdd && card.inStock && (
-          <button
-            type="button"
-            onClick={() => onQuickAdd(card)}
-            aria-label={
-              card.quickAddVariantId
-                ? `Add ${card.name} to cart`
-                : `Choose options for ${card.name}`
-            }
-            className={cn(
-              "absolute right-2 bottom-2 flex h-9 items-center gap-1.5 rounded-md bg-ink px-2.5 text-small font-semibold text-paper",
-              "transition-[opacity,background-color] duration-(--duration-fast) hover:bg-ink-2",
-              "md:opacity-0 md:group-focus-within:opacity-100 md:group-hover:opacity-100",
-            )}
-          >
-            {card.quickAddVariantId ? (
-              <Plus aria-hidden="true" className="size-4" />
-            ) : (
-              <SlidersHorizontal aria-hidden="true" className="size-4" />
-            )}
-            <span className="hidden sm:inline">{card.quickAddVariantId ? "Add" : "Options"}</span>
           </button>
         )}
       </div>
 
-      <div className="mt-3 flex flex-col gap-1">
+      <div className="flex flex-1 flex-col gap-1 p-3 md:p-4">
         {card.brand && <p className="truncate label-caps text-ink-3">{card.brand}</p>}
         <h3 className="line-clamp-2 text-small leading-snug font-medium text-ink md:text-body md:leading-snug">
           <Link
@@ -166,6 +149,36 @@ export function ProductCard({
           className="mt-0.5"
         />
         {card.variantHint && <p className="text-[12px] text-ink-3">{card.variantHint}</p>}
+
+        {onQuickAdd &&
+          (card.inStock ? (
+            <button
+              type="button"
+              onClick={() => onQuickAdd(card)}
+              aria-label={
+                card.quickAddVariantId
+                  ? `Add ${card.name} to cart`
+                  : `Choose options for ${card.name}`
+              }
+              className="mt-auto flex h-10 translate-y-0 items-center justify-center gap-1.5 rounded-md bg-ink text-small font-bold text-white transition-colors duration-(--duration-fast) group-hover:bg-brand group-hover:text-ink hover:bg-brand-hover md:h-11"
+            >
+              {card.quickAddVariantId ? (
+                <ShoppingBag aria-hidden="true" className="size-4" />
+              ) : (
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+              )}
+              {card.quickAddVariantId ? "Add to cart" : "Choose options"}
+            </button>
+          ) : (
+            <Link
+              to={card.href}
+              tabIndex={-1}
+              aria-hidden="true"
+              className="mt-auto flex h-10 items-center justify-center rounded-md border-[1.5px] border-ink text-small font-bold md:h-11"
+            >
+              View details
+            </Link>
+          ))}
       </div>
     </article>
   );
@@ -174,13 +187,14 @@ export function ProductCard({
 /** Same footprint as ProductCard, for loading grids. */
 export function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden rounded-card border border-line bg-surface">
       <Skeleton className="aspect-square w-full rounded-none" />
-      <div className="mt-3 flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-3 md:p-4">
         <Skeleton className="h-3 w-1/3" />
         <Skeleton className="h-4 w-11/12" />
         <Skeleton className="h-4 w-2/3" />
         <Skeleton className="mt-1 h-4 w-1/3" />
+        <Skeleton className="mt-2 h-10 w-full md:h-11" />
       </div>
     </div>
   );

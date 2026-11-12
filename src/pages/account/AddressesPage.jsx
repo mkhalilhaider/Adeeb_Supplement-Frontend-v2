@@ -142,7 +142,7 @@ export default function AddressesPage() {
         <h1
           ref={headingRef}
           tabIndex={-1}
-          className="text-h2 font-extrabold uppercase font-condensed outline-none"
+          className="text-[2rem] font-display outline-none md:text-[2.5rem]"
         >
           Addresses
         </h1>

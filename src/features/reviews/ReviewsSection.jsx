@@ -45,7 +45,7 @@ export function ReviewsSection({ productId, average, count }) {
 
   return (
     <section ref={ref} aria-labelledby="reviews-heading">
-      <h2 id="reviews-heading" className="text-h2 font-extrabold uppercase font-condensed">
+      <h2 id="reviews-heading" className="text-[2rem] font-display md:text-[2.5rem]">
         Reviews{total > 0 ? ` (${total})` : ""}
       </h2>
 
@@ -72,9 +72,7 @@ export function ReviewsSection({ productId, average, count }) {
       ) : (
         <div className="mt-6 grid gap-8 md:grid-cols-[16rem_1fr] md:gap-12">
           <div>
-            <p className="text-6xl font-extrabold font-condensed tabular-nums">
-              {(average || 0).toFixed(1)}
-            </p>
+            <p className="text-6xl font-display tabular-nums">{(average || 0).toFixed(1)}</p>
             <Rating value={average} count={total} size={16} />
             <dl className="mt-4 flex flex-col gap-1.5">
               {[5, 4, 3, 2, 1].map((star) => (

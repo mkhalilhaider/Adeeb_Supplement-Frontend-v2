@@ -143,9 +143,7 @@ export default function TrackOrderPage() {
       />
 
       <div className="mx-auto max-w-3xl">
-        <h1 className="mt-4 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
-          Track your order
-        </h1>
+        <h1 className="mt-4 text-[2.75rem] font-display md:text-[4rem]">Track your order</h1>
         <p className="mt-2 text-ink-2">
           Enter the order number from your confirmation page or email.
         </p>

@@ -33,7 +33,7 @@ export default function RouteErrorPage() {
     <section role="alert" className="page-container py-20 md:py-28">
       <title>Something went wrong | Adeeb Supplement</title>
       <p className="label-caps text-ink-3">{chunk ? "Update available" : "Error"}</p>
-      <h1 className="mt-3 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
+      <h1 className="mt-3 text-[2.75rem] font-display md:text-[4rem]">
         {chunk
           ? "The site was just updated"
           : offline

@@ -33,7 +33,7 @@ export default function AccountLayout() {
   return (
     <div className="page-container pt-6 pb-16 md:pt-10">
       <p className="label-caps text-ink-3">My account</p>
-      <p className="mt-1 text-h2 font-extrabold uppercase font-condensed md:text-h1">
+      <p className="mt-1 text-[2.25rem] font-display md:text-[2.75rem]">
         Hi, {user?.firstName || "there"}
       </p>
 

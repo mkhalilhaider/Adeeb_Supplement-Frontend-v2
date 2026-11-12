@@ -12,8 +12,7 @@ const FilterSheet = lazy(() => import("./FilterSheet"));
 import { ProductCardSkeleton } from "./ProductCard";
 import { ShopProductCard } from "./ShopProductCard";
 
-const GRID =
-  "grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
+const GRID = "grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4 2xl:grid-cols-5";
 
 /**
  * Shared body of /shop, /category/:slug and /brand/:slug.
@@ -128,7 +127,7 @@ export function ListingView({ listing, header }) {
     <div className="page-container pb-16">
       {header}
 
-      <div className="sticky top-14 z-20 -mx-4 mt-6 flex items-center justify-between gap-3 border-y border-line bg-paper px-4 py-2 md:top-16 lg:static lg:mx-0 lg:border-t-0 lg:px-0 lg:py-3">
+      <div className="sticky top-14 z-20 -mx-4 mt-6 flex items-center justify-between gap-3 border-y border-line bg-paper px-4 py-2 md:top-[72px] lg:static lg:mx-0 lg:border-t-0 lg:px-0 lg:py-3">
         <Button
           variant="outline"
           size="sm"
@@ -160,9 +159,9 @@ export function ListingView({ listing, header }) {
         />
       </div>
 
-      <div className="mt-6 lg:grid lg:grid-cols-[15rem_1fr] lg:gap-10">
+      <div className="mt-6 lg:grid lg:grid-cols-[16.5rem_1fr] lg:gap-8">
         <aside aria-label="Filters" className="hidden lg:block">
-          <div className="pb-6">
+          <div className="sticky top-[136px] max-h-[calc(100vh-152px)] overflow-y-auto overscroll-contain rounded-card border border-line bg-surface p-5">
             <FilterPanel
               idPrefix="side"
               state={state}

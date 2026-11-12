@@ -32,7 +32,7 @@ export default function StatusPage() {
     <section className="page-container max-w-2xl py-12">
       <title>Dev status</title>
       <meta name="robots" content="noindex" />
-      <h1 className="text-h1 font-extrabold uppercase font-condensed">Foundation status</h1>
+      <h1 className="text-[2.75rem] font-display">Foundation status</h1>
       <div className="mt-6">
         <Row label="API base" value={env.apiUrl} />
         <Row

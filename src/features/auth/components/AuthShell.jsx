@@ -11,7 +11,7 @@ export function AuthShell({ title, subtitle, footer, children, seoTitle }) {
     <div className="page-container flex justify-center py-10 md:py-16">
       <Seo title={seoTitle ?? title} noIndex />
       <div className="w-full max-w-md">
-        <h1 className="text-h1 font-extrabold uppercase font-condensed md:text-5xl">{title}</h1>
+        <h1 className="text-[2.75rem] font-display md:text-[4rem]">{title}</h1>
         {subtitle && <p className="mt-2 text-ink-2">{subtitle}</p>}
         <div className="mt-8">{children}</div>
         {footer && (

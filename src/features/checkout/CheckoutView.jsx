@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { trackEvent } from "../../lib/analytics";
+import { trackEvent } from "../../lib/track";
 import { Link, useNavigate } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, MapPin, Truck } from "lucide-react";
@@ -243,7 +243,7 @@ export function CheckoutView({ cart, user, loggedIn }) {
 
   return (
     <div className="page-container pt-6 pb-16 md:pt-10">
-      <h1 className="text-h1 font-extrabold uppercase font-condensed md:text-5xl">Checkout</h1>
+      <h1 className="text-[2.75rem] font-display md:text-[4rem]">Checkout</h1>
       {/* Phones: the summary sits below the form, so show the amount up front. */}
       <a
         href="#summary-heading"

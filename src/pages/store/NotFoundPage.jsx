@@ -6,7 +6,7 @@ export default function NotFoundPage() {
     <section className="page-container py-20 md:py-28">
       <Seo title="Page not found" noIndex />
       <p className="label-caps text-ink-3">Error 404</p>
-      <h1 className="mt-3 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
+      <h1 className="mt-3 text-[2.75rem] font-display md:text-[4rem]">
         This page isn't on the shelf
       </h1>
       <p className="mt-4 max-w-prose text-ink-2">

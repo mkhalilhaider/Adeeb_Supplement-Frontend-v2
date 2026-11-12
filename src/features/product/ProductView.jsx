@@ -126,7 +126,7 @@ export function ProductView({ product }) {
 
       <div className="mt-4 grid gap-8 md:mt-6 md:grid-cols-[7fr_5fr] lg:gap-14">
         <ProductGallery key={images.map((i) => i.url).join("|")} images={images} alt={alt} />
-        <div className="md:sticky md:top-24 md:self-start">
+        <div className="md:sticky md:top-24 md:self-start lg:top-[140px]">
           <PurchasePanel
             product={product}
             variants={variants}
@@ -152,7 +152,7 @@ export function ProductView({ product }) {
 
       <div className="mt-14 grid gap-10 md:mt-20 md:grid-cols-[7fr_5fr] lg:gap-14">
         <section aria-labelledby="about-heading">
-          <h2 id="about-heading" className="text-h2 font-extrabold uppercase font-condensed">
+          <h2 id="about-heading" className="text-[2.25rem] font-display md:text-[2.75rem]">
             About this product
           </h2>
           <div className="mt-4">
@@ -160,7 +160,7 @@ export function ProductView({ product }) {
           </div>
         </section>
         <section aria-labelledby="details-heading">
-          <h2 id="details-heading" className="text-h2 font-extrabold uppercase font-condensed">
+          <h2 id="details-heading" className="text-[2.25rem] font-display md:text-[2.75rem]">
             Details
           </h2>
           <div className="mt-4">

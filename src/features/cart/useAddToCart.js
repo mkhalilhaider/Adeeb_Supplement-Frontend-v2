@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { trackEvent } from "../../lib/analytics";
+import { trackEvent } from "../../lib/track";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchProduct } from "../catalog/api";
 import { catalogKeys } from "../catalog/queries";

@@ -40,9 +40,7 @@ export default function LegalPage() {
       <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_16rem] lg:gap-16">
         <article className="max-w-[68ch]">
           <p className="label-caps text-ink-3">Last updated {doc.lastUpdated}</p>
-          <h1 className="mt-2 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
-            {doc.title}
-          </h1>
+          <h1 className="mt-2 text-[2.75rem] font-display md:text-[4rem]">{doc.title}</h1>
           {doc.intro && <p className="mt-5 text-body leading-relaxed text-ink-2">{doc.intro}</p>}
           <div className="mt-8 flex flex-col gap-7">
             {doc.sections.map((section) => (

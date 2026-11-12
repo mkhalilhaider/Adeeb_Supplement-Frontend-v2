@@ -44,9 +44,7 @@ export default function AboutPage() {
 
         <article>
           <p className="label-caps text-ink-3">{STORY.eyebrow}</p>
-          <h1 className="mt-2 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
-            {STORY.title}
-          </h1>
+          <h1 className="mt-2 text-[2.75rem] font-display md:text-[4rem]">{STORY.title}</h1>
           <div className="mt-6 flex max-w-[62ch] flex-col gap-4 leading-relaxed text-ink-2">
             {STORY.paragraphs.map((p) => (
               <p key={p}>{p}</p>

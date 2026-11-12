@@ -81,7 +81,7 @@ export function CartSummary({ subtotal, blocked, onCheckout, checking }) {
       aria-labelledby="summary-heading"
       className="flex flex-col gap-5 bg-surface p-5 md:p-6"
     >
-      <h2 id="summary-heading" className="text-h2 font-extrabold uppercase font-condensed">
+      <h2 id="summary-heading" className="text-[1.75rem] font-display md:text-[2rem]">
         Order summary
       </h2>
 

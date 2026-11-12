@@ -26,7 +26,7 @@ function ZoomImage({ image, alt, priority, onOpen }) {
         );
       }}
       onMouseLeave={() => setOrigin(null)}
-      className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden bg-shelf"
+      className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-card border border-line bg-shelf bg-[radial-gradient(70%_60%_at_50%_55%,#ffffff,var(--color-shelf))]"
     >
       <span
         className="absolute inset-[6%] block transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
@@ -103,7 +103,7 @@ export function ProductGallery({ images, alt }) {
                 aria-label={`Show image ${i + 1}`}
                 aria-current={i === index}
                 className={cn(
-                  "block aspect-square w-full border bg-shelf p-1.5",
+                  "block aspect-square w-full overflow-hidden rounded-md border bg-shelf p-1.5",
                   i === index ? "border-ink" : "border-transparent hover:border-line-strong",
                 )}
               >
