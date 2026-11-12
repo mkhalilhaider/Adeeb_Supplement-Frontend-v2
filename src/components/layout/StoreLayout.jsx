@@ -59,7 +59,8 @@ export default function StoreLayout() {
 
       <Header onOpenMenu={openMenu} onOpenSearch={openSearch} />
 
-      <main id="main" className="flex-1">
+      {/* At least a screen tall: the footer stays below the fold while content loads (no layout shift). */}
+      <main id="main" className="min-h-svh flex-1">
         <Suspense fallback={<PageLoader />}>
           <Outlet />
         </Suspense>

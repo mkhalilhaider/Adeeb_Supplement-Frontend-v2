@@ -178,12 +178,24 @@ function CategoryNav() {
 /** Phones and tablets: categories as a swipeable chip strip under the bar (not sticky). */
 function CategoryChips() {
   const { categories } = useTaxonomy();
-  if (!categories.length) return null;
   const chip =
     "flex h-9 flex-none items-center rounded-full px-3.5 text-small font-semibold whitespace-nowrap";
+  // Same height before the categories arrive, so the page below never jumps.
+  if (!categories.length) {
+    return (
+      <div
+        aria-hidden="true"
+        className="flex h-12 gap-2 overflow-hidden bg-night px-4 pb-3 md:px-6 lg:hidden"
+      >
+        {[72, 88, 72, 80, 96].map((w, i) => (
+          <span key={i} style={{ width: w }} className="h-9 flex-none rounded-full bg-night-2" />
+        ))}
+      </div>
+    );
+  }
   return (
     <nav aria-label="Categories" className="bg-night lg:hidden">
-      <div className="flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-3 md:px-6">
+      <div className="flex h-12 [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-3 md:px-6">
         <NavLink
           to="/shop"
           end

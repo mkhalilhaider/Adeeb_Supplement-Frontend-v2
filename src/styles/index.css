@@ -44,7 +44,7 @@
   --color-line-strong: #c8c3b8; /* input borders, emphasised rules */
   --color-brand: #f36b27; /* Athletic Orange — CTA fill, always with ink text (7:1) */
   --color-brand-hover: #ff7a36;
-  --color-brand-ink: #c2501a; /* orange text on light backgrounds (AA) */
+  --color-brand-ink: #b4470b; /* orange text on light backgrounds (AA ≈5:1 on paper) */
   --color-brand-soft: #fbeadf;
   --color-success: #1e7a4c;
   --color-success-soft: #e3f1e8;
