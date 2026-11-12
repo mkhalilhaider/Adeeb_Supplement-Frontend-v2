@@ -4,9 +4,10 @@ import { env } from "../../config/env";
 import { site } from "../../config/site";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { Hero } from "../../features/home/Hero";
-import { GoalTiles, ProductTabs, TrustStrip } from "../../features/home/sections";
+import { GoalTiles, TrustStrip } from "../../features/home/sections";
 import { WhenNear } from "../../features/home/WhenNear";
 
+const ProductTabs = lazy(() => import("../../features/home/ProductTabs"));
 const ReelsSection = lazy(() => import("../../features/home/ReelsSection"));
 const GoogleReviewsSection = lazy(() => import("../../features/home/GoogleReviewsSection"));
 // Lower sections: their code loads as the shopper scrolls toward them.
@@ -53,7 +54,9 @@ export default function HomePage() {
         <TrustStrip />
       </div>
       <GoalTiles />
-      <ProductTabs />
+      <WhenNear minHeight={620}>
+        <ProductTabs />
+      </WhenNear>
       <WhenNear minHeight={460}>
         <EditorialBand />
       </WhenNear>

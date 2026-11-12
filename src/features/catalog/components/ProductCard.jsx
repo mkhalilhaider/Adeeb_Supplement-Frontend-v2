@@ -115,7 +115,7 @@ export function ProductCard({
             aria-pressed={wishlisted}
             onClick={() => onToggleWishlist(card)}
             className={cn(
-              "absolute top-2 right-2 flex size-10 items-center justify-center rounded-full border transition-colors duration-(--duration-fast)",
+              "absolute top-2 right-2 flex size-10 items-center justify-center rounded-full border transition-colors duration-(--duration-fast) motion-safe:aria-pressed:animate-[pop_320ms_ease-out]",
               wishlisted
                 ? "border-ink bg-ink text-brand"
                 : "border-line bg-surface text-ink hover:border-ink",
