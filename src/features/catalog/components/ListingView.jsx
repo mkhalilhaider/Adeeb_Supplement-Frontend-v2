@@ -12,7 +12,7 @@ const FilterSheet = lazy(() => import("./FilterSheet"));
 import { ProductCardSkeleton } from "./ProductCard";
 import { ShopProductCard } from "./ShopProductCard";
 
-const GRID = "grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4 2xl:grid-cols-5";
+const GRID = "grid grid-cols-2 gap-x-3 gap-y-5 md:grid-cols-3 md:gap-x-4 md:gap-y-8 xl:grid-cols-4";
 
 /**
  * Shared body of /shop, /category/:slug and /brand/:slug.

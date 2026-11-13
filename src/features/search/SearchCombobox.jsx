@@ -203,7 +203,7 @@ export function SearchCombobox({
           enterKeyHint="search"
           // eslint-disable-next-line jsx-a11y/no-autofocus -- only when the user just opened search (overlay, or focused the header field)
           autoFocus={focusOnMount}
-          placeholder="Search whey, creatine, brands…"
+          placeholder="Search products, categories, brands…"
           value={term}
           onChange={(e) => {
             setTerm(e.target.value);

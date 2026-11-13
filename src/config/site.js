@@ -33,13 +33,43 @@ export const site = Object.freeze({
     youtube: "https://www.youtube.com/@adeebsupplement",
   },
 
-  /** Confirmed by the owner: authentic brands, COD, nationwide delivery, Karachi store. */
+  /** Confirmed by the owner: authentic brands, same-day Karachi, COD nationwide, Karachi store. */
   trust: [
     { id: "authentic", title: "Authentic brands", detail: "Sourced, never repacked" },
-    { id: "cod", title: "Cash on delivery", detail: "Pay when it arrives" },
-    { id: "delivery", title: "Nationwide delivery", detail: "Karachi riders & courier" },
+    {
+      id: "sameday",
+      title: "Same-day delivery in Karachi",
+      detail: "Karachi riders, delivered today",
+    },
+    {
+      id: "cod",
+      title: "Cash on delivery nationwide",
+      detail: "Pay when it arrives, anywhere in Pakistan",
+    },
     { id: "store", title: "Walk-in store", detail: "Gulshan-e-Iqbal, Karachi" },
   ],
+
+  /** Footer "top 5" lists (most products first). Slugs, so renames in admin don't break them. */
+  footer: {
+    categories: ["protein", "creatine", "preworkout", "health-recovery", "fat-burner"],
+    brands: ["muscletech", "optimum-nutrition", "kevin-leverone", "cellucor", "rule-1"],
+  },
+
+  google: {
+    /** "See all on Google": the shop's Google Maps listing. */
+    reviewsUrl:
+      "https://www.google.com/maps/place/Adeeb+supplement/@24.9021552,67.0739073,17z/data=!4m8!3m7!1s0x3eb33f006bebfe79:0xf3122b83a6454335!8m2!3d24.9021552!4d67.0739073!9m1!1b1",
+    /**
+     * "Write a review on Google". Best: the owner's own "Ask for reviews" link from Google
+     * Business Profile (g.page/r/…/review). Until it's set, the listing opens and the customer
+     * taps "Write a review" there.
+     */
+    writeReviewUrl:
+      "https://www.google.com/maps/place/Adeeb+supplement/@24.9021552,67.0739073,17z/data=!4m8!3m7!1s0x3eb33f006bebfe79:0xf3122b83a6454335!8m2!3d24.9021552!4d67.0739073!9m1!1b1",
+    /** Embedded map (no API key needed). */
+    mapEmbedUrl:
+      "https://maps.google.com/maps?q=Adeeb%20Supplement%2C%20Gulshan-e-Iqbal%2C%20Karachi&ll=24.9021552,67.0739073&z=16&output=embed",
+  },
 });
 
 /** wa.me link with an optional pre-filled message. */

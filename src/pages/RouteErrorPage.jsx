@@ -51,7 +51,7 @@ export default function RouteErrorPage() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-colors duration-(--duration-fast) hover:bg-brand-hover"
+          className="lift-brand inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-[background-color,color,box-shadow,translate,scale] duration-(--duration-fast) hover:bg-brand-hover active:scale-[0.97]"
         >
           Reload page
         </button>

@@ -15,6 +15,7 @@ const Taxonomy = lazy(() => import("./AdminTaxonomyPage"));
 const Inquiries = lazy(() => import("./AdminInquiriesPage"));
 const Wishlists = lazy(() => import("./AdminWishlistsPage"));
 const Reels = lazy(() => import("./AdminReelsPage"));
+const Reviews = lazy(() => import("./AdminReviewsPage"));
 const Seo = lazy(() => import("./AdminSeoPage"));
 const Marketing = lazy(() => import("./AdminMarketingPage"));
 
@@ -41,6 +42,7 @@ export default function AdminApp() {
         <Route path="inquiries" element={<Inquiries />} />
         <Route path="wishlists" element={<Wishlists />} />
         <Route path="reels" element={<Reels />} />
+        <Route path="reviews" element={<Reviews />} />
         <Route path="seo" element={<Seo />} />
         <Route path="marketing" element={<Marketing />} />
         <Route path="*" element={<NotFoundPage />} />

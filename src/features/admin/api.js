@@ -134,6 +134,16 @@ export const sendBroadcast = (body) =>
   api.post("/marketing/broadcast", body, { timeout: 10 * 60_000 });
 
 /** Query keys (all private: dropped on logout). */
+// ── Reviews from Google (homepage) ─────────────────────────────────────────────
+export const fetchAdminTestimonials = ({ signal } = {}) =>
+  getData("/testimonials/admin", { signal });
+export const createTestimonial = (body) => getData("/testimonials/admin", { method: "POST", body });
+export const updateTestimonial = (id, body) =>
+  getData(`/testimonials/admin/${id}`, { method: "PATCH", body });
+export const deleteTestimonial = (id) => getData(`/testimonials/admin/${id}`, { method: "DELETE" });
+export const reorderTestimonials = (ids) =>
+  getData("/testimonials/admin/reorder", { method: "POST", body: { ids } });
+
 export const adminKeys = {
   all: ["admin"],
   dashboard: ["admin", "dashboard"],
@@ -147,6 +157,7 @@ export const adminKeys = {
   abandoned: ["admin", "abandoned"],
   wishlists: (page) => ["admin", "wishlists", page],
   reels: ["admin", "reels"],
+  testimonials: ["admin", "testimonials"],
   seo: ["admin", "seo"],
   marketing: ["admin", "marketing"],
 };

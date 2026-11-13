@@ -71,7 +71,7 @@ export function ProductGallery({ images, alt }) {
   const slides = images.length ? images : [null];
 
   return (
-    <div className="md:grid md:grid-cols-[4.5rem_1fr] md:gap-3">
+    <div className="md:flex md:flex-col md:gap-3">
       {/* Phones. Only one layout is rendered, so the main image downloads once. */}
       {!isDesktop &&
         (slides.length > 1 ? (
@@ -92,11 +92,17 @@ export function ProductGallery({ images, alt }) {
           <GallerySlide image={slides[0]} alt={alt} priority onOpen={openViewer} bleed />
         ))}
 
-      {/* Desktop: thumbnails + zoomable main image */}
+      {/* Desktop: zoomable main image */}
+      {isDesktop && (
+        <div>
+          <ZoomImage image={slides[index]} alt={alt} priority onOpen={openViewer} />
+        </div>
+      )}
+      {/* Desktop: thumbnails under the main image, so the image lines up with the page's left edge */}
       {isDesktop && slides.length > 1 && (
-        <ul className="flex flex-col gap-2" aria-label="Choose image">
+        <ul className="flex flex-wrap gap-2.5" aria-label="Choose image">
           {slides.map((image, i) => (
-            <li key={image?.url ?? i}>
+            <li key={image?.url ?? i} className="w-[84px]">
               <button
                 type="button"
                 onClick={() => setIndex(i)}
@@ -111,7 +117,7 @@ export function ProductGallery({ images, alt }) {
                   src={image?.url}
                   alt=""
                   ratio={null}
-                  sizes="72px"
+                  sizes="84px"
                   trim
                   blend
                   className="size-full"
@@ -120,12 +126,6 @@ export function ProductGallery({ images, alt }) {
             </li>
           ))}
         </ul>
-      )}
-      {isDesktop && slides.length <= 1 && <span />}
-      {isDesktop && (
-        <div>
-          <ZoomImage image={slides[index]} alt={alt} priority onOpen={openViewer} />
-        </div>
       )}
 
       {viewerLoaded && (

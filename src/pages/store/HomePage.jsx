@@ -9,7 +9,7 @@ import { WhenNear } from "../../features/home/WhenNear";
 
 const ProductTabs = lazy(() => import("../../features/home/ProductTabs"));
 const ReelsSection = lazy(() => import("../../features/home/ReelsSection"));
-const GoogleReviewsSection = lazy(() => import("../../features/home/GoogleReviewsSection"));
+const TestimonialsSection = lazy(() => import("../../features/home/TestimonialsSection"));
 // Lower sections: their code loads as the shopper scrolls toward them.
 const lower = () => import("../../features/home/lower-sections");
 const BrandsGrid = lazy(() => lower().then((m) => ({ default: m.BrandsGrid })));
@@ -36,7 +36,7 @@ const storeJsonLd = {
 
 /**
  * Homepage. At load it needs one request (best sellers); the hero is static. Everything else
- * — more rails, videos, Google reviews, numbers — loads as the shopper scrolls near it.
+ * — more rails, videos, customer reviews, numbers — loads as the shopper scrolls near it.
  */
 export default function HomePage() {
   const { brands } = useTaxonomy();
@@ -70,7 +70,7 @@ export default function HomePage() {
         <StatsBand />
       </WhenNear>
       <WhenNear minHeight={320}>
-        <GoogleReviewsSection />
+        <TestimonialsSection />
       </WhenNear>
       <WhenNear minHeight={300}>
         <StoreBand />

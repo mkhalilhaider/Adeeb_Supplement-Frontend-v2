@@ -37,7 +37,7 @@ export function InlineSearch() {
         type="search"
         autoComplete="off"
         enterKeyHint="search"
-        placeholder="Search whey, creatine, brands…"
+        placeholder="Search products, categories, brands…"
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onFocus={() => setReady(true)}

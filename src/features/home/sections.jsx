@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Banknote, House, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight, Banknote, House, ShieldCheck, Truck, Zap } from "lucide-react";
 import { CloudImage } from "../../components/ui/CloudImage";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { site } from "../../config/site";
@@ -8,7 +8,13 @@ import { cn } from "../../lib/cn";
 import { useTaxonomy } from "../catalog/useTaxonomy";
 import { cutoutSrc, LEAD_PACK } from "./hero-packs";
 
-const TRUST_ICONS = { authentic: ShieldCheck, cod: Banknote, delivery: Truck, store: House };
+const TRUST_ICONS = {
+  authentic: ShieldCheck,
+  sameday: Zap,
+  cod: Banknote,
+  delivery: Truck,
+  store: House,
+};
 
 /** The four owner-confirmed promises, right under the hero. */
 export function TrustStrip() {
@@ -25,6 +31,7 @@ export function TrustStrip() {
                 i % 2 === 1 && "pl-4 md:pl-7",
                 i > 0 && "lg:border-l lg:border-line lg:pl-7",
                 i > 1 && "border-t border-line lg:border-t-0",
+                point.id === "sameday" && "bg-gradient-to-r from-brand/10 to-transparent",
               )}
             >
               <Icon aria-hidden="true" className="size-6 flex-none text-brand-ink md:size-7" />
@@ -118,7 +125,7 @@ function GoalTile({ category, big = false }) {
     return (
       <Link
         to={`/category/${category.slug}`}
-        className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-card bg-night-deep p-5 text-white md:p-7 lg:min-h-0"
+        className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-card bg-night-deep p-5 text-white transition-[translate,box-shadow] duration-(--duration-base) ease-(--ease-out-soft) md:p-7 md:hover:-translate-y-1.5 md:hover:shadow-[0_22px_40px_-16px_rgb(0_0_0/0.45)] lg:min-h-0"
         style={{
           backgroundImage:
             "radial-gradient(70% 55% at 60% 30%, rgb(243 107 39 / 0.35), rgb(243 107 39 / 0) 70%)",
@@ -147,7 +154,7 @@ function GoalTile({ category, big = false }) {
   return (
     <Link
       to={`/category/${category.slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-shelf transition-colors duration-(--duration-fast) hover:border-ink"
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-shelf transition-[translate,box-shadow] duration-(--duration-base) ease-(--ease-out-soft) md:hover:-translate-y-1.5 md:hover:shadow-[0_22px_40px_-18px_rgb(0_0_0/0.28),0_2px_6px_rgb(0_0_0/0.04)]"
     >
       {category.imageUrl && (
         <CloudImage

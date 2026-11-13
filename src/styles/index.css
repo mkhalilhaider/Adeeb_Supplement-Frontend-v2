@@ -163,6 +163,14 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-padding-top: 5rem;
+    /* Clicking plain text must not leave a blinking text cursor (Chrome shows one when caret
+       browsing is on). Only places you can type keep it. */
+    caret-color: transparent;
+  }
+  input,
+  textarea,
+  [contenteditable]:not([contenteditable="false"]) {
+    caret-color: auto;
   }
 
   body {
@@ -292,5 +300,31 @@
     transition:
       opacity 600ms var(--ease-out-soft),
       translate 600ms var(--ease-out-soft);
+  }
+}
+
+/* Brand row: two copies side by side, moving one copy's width, so the loop is seamless. */
+/* Button hover lift (used by Button and a few hand-built buttons): rise 2px with a soft
+   shadow in the button's own colour. Pointer devices only, like Tailwind's hover variant. */
+@media (hover: hover) {
+  .lift:hover,
+  .lift-ink:hover,
+  .lift-brand:hover {
+    translate: 0 -2px;
+  }
+  .lift-ink:hover {
+    box-shadow: 0 12px 24px -12px rgb(0 0 0 / 0.7);
+  }
+  .lift-brand:hover {
+    box-shadow: 0 12px 24px -12px rgb(243 107 39 / 0.9);
+  }
+}
+
+@keyframes marquee {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: -50% 0;
   }
 }

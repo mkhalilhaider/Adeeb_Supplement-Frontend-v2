@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router";
 import { InlineSearch } from "./InlineSearch";
-import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Heart, Menu, PackageSearch, Search, ShoppingBag, User, Zap } from "lucide-react";
 import { IconButton } from "../ui/Button";
 import { Logo } from "./Logo";
 import { BrandsMenu } from "./BrandsMenu";
@@ -56,8 +56,8 @@ function CartLink() {
       to="/cart"
       aria-label={count ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart, empty"}
       className={cn(
-        "relative flex h-11 shrink-0 items-center gap-2 rounded-md whitespace-nowrap transition-colors duration-(--duration-fast)",
-        "w-11 justify-center md:w-auto md:bg-brand md:px-3.5 md:text-ink md:hover:bg-brand-hover",
+        "relative flex h-11 shrink-0 items-center gap-2 rounded-md whitespace-nowrap transition-[background-color,box-shadow,translate,scale] duration-(--duration-fast) active:scale-95",
+        "w-11 justify-center md:w-auto md:bg-brand md:px-3.5 md:text-ink md:hover:-translate-y-px md:hover:bg-brand-hover md:hover:shadow-[0_10px_22px_-10px_rgb(243_107_39/0.9)]",
       )}
     >
       <ShoppingBag aria-hidden="true" className="size-[22px]" />
@@ -102,19 +102,20 @@ function UtilityBar() {
     <div className="hidden bg-night-deep text-night-muted md:block">
       <div className="page-container flex h-9 items-center justify-between gap-6 text-[13px]">
         <p className="flex items-center gap-6">
-          <span className="flex items-center gap-2">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
-            Authentic brands — sourced, never repacked
+          <span className="flex items-center gap-2 font-bold text-white">
+            <Zap aria-hidden="true" className="size-3.5 fill-brand text-brand" />
+            Same-day delivery in Karachi
           </span>
-          <span className="hidden items-center gap-2 lg:flex">
+          <span className="flex items-center gap-2">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
             Cash on delivery nationwide
           </span>
+          <span className="hidden items-center gap-2 xl:flex">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
+            Authentic brands — never repacked
+          </span>
         </p>
         <p className="flex items-center gap-5">
-          <Link to="/track-order" className="hover:text-white">
-            Track your order
-          </Link>
           <a href={whatsappLink()} className="hover:text-white">
             WhatsApp {site.contact.phoneDisplay}
           </a>
@@ -157,18 +158,13 @@ function CategoryNav() {
             ))}
         <BrandsMenu />
         <span className="ml-auto flex items-center gap-6">
-          <Link
-            to="/shop?featured=1"
-            className="flex h-12 items-center text-small font-semibold text-brand hover:text-brand-hover"
-          >
-            Featured picks
-          </Link>
-          <Link
-            to="/shop?sort=newest"
-            className="flex h-12 items-center text-small font-semibold text-night-muted hover:text-white"
-          >
-            New arrivals
-          </Link>
+          <NavLink to="/track-order" className={catLink}>
+            <PackageSearch aria-hidden="true" className="mr-1.5 size-4 text-brand" />
+            Track your order
+          </NavLink>
+          <NavLink to="/about" className={catLink}>
+            About
+          </NavLink>
         </span>
       </div>
     </nav>

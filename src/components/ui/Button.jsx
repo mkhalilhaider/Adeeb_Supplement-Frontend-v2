@@ -2,9 +2,12 @@ import { Link } from "react-router";
 import { cn } from "../../lib/cn";
 import { Spinner } from "./Spinner";
 
+// Every button answers the pointer: solid ones lift a little with a soft shadow, all of them
+// press in on click, and a trailing arrow nudges forward (see `content` below).
 const base =
-  "relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold " +
-  "transition-[background-color,color,border-color,opacity] duration-(--duration-fast) ease-(--ease-out-soft) " +
+  "group/btn relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold " +
+  "transition duration-(--duration-fast) ease-(--ease-out-soft) " +
+  "active:scale-[0.97] " +
   "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
 
 /**
@@ -16,14 +19,15 @@ const base =
  * danger    — destructive confirmations only
  */
 const variants = {
-  primary: "bg-brand text-ink hover:bg-brand-hover",
-  secondary: "bg-ink text-paper hover:bg-ink-2",
-  outline: "border-[1.5px] border-ink text-ink hover:bg-ink hover:text-paper",
+  primary: "bg-brand text-ink lift-brand hover:bg-brand-hover",
+  secondary: "bg-ink text-paper lift-ink hover:bg-ink-2",
+  outline: "border-[1.5px] border-ink text-ink lift-ink hover:bg-ink hover:text-paper",
   /** Secondary action on charcoal bands (hero, story sections). */
-  onDark: "text-white ring-[1.5px] ring-white/40 ring-inset hover:ring-white",
+  onDark:
+    "text-white ring-[1.5px] ring-white/40 ring-inset lift hover:bg-white hover:text-ink hover:ring-white",
   ghost: "text-ink hover:bg-shelf",
   link: "text-ink underline decoration-1 underline-offset-4 hover:text-brand-ink",
-  danger: "bg-danger text-white hover:opacity-90",
+  danger: "bg-danger text-white lift-ink hover:opacity-90",
 };
 
 /** Heights: 36 / 44 / 48px. Touch targets stay ≥ 44px except `sm` (dense desktop UI). */
@@ -81,7 +85,11 @@ export function Button({
       <span className={cn("inline-flex items-center gap-2", loading && "invisible")}>
         {leadingIcon}
         {children}
-        {trailingIcon}
+        {trailingIcon && (
+          <span className="inline-flex transition-transform duration-(--duration-fast) group-hover/btn:translate-x-0.5">
+            {trailingIcon}
+          </span>
+        )}
       </span>
     </>
   );
@@ -117,7 +125,7 @@ export function Button({
 const iconSizes = { sm: "size-9", md: "size-11", lg: "size-12" };
 const iconVariants = {
   ghost: "text-ink hover:bg-shelf",
-  outline: "border border-line-strong text-ink hover:border-ink",
+  outline: "border border-line-strong text-ink hover:border-ink hover:bg-shelf",
   solid: "bg-ink text-paper hover:bg-ink-2",
 };
 
@@ -142,7 +150,7 @@ export function IconButton({
       aria-label={label}
       title={label}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-md transition-colors duration-(--duration-fast)",
+        "inline-flex shrink-0 items-center justify-center rounded-md transition duration-(--duration-fast) active:scale-95",
         "disabled:pointer-events-none disabled:opacity-50",
         iconSizes[size],
         iconVariants[variant],

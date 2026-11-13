@@ -15,7 +15,7 @@ export default function NotFoundPage() {
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
           to="/shop"
-          className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-colors duration-(--duration-fast) hover:bg-brand-hover"
+          className="lift-brand inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-[background-color,color,box-shadow,translate,scale] duration-(--duration-fast) hover:bg-brand-hover active:scale-[0.97]"
         >
           Browse all products
         </Link>

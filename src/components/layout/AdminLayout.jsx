@@ -8,6 +8,7 @@ import {
   ExternalLink,
   FileSpreadsheet,
   Film,
+  Star,
   HeartHandshake,
   Inbox,
   LayoutDashboard,
@@ -59,6 +60,7 @@ const NAV = [
     group: "Content",
     links: [
       { to: "/admin/reels", label: "Reels", icon: Film },
+      { to: "/admin/reviews", label: "Reviews", icon: Star },
       { to: "/admin/seo", label: "SEO", icon: TextSearch },
       { to: "/admin/marketing", label: "Marketing email", icon: Mail },
     ],

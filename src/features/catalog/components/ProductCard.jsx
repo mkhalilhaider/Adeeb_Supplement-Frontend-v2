@@ -4,14 +4,13 @@ import { Heart, ShoppingBag, SlidersHorizontal } from "lucide-react";
 import { Badge } from "../../../components/ui/Badge";
 import { CloudImage } from "../../../components/ui/CloudImage";
 import { Price } from "../../../components/ui/Price";
-import { Rating } from "../../../components/ui/Rating";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { cn } from "../../../lib/cn";
 import { cardBadges } from "../lib/product-view";
 
 /** Grid columns this card is used in: 2 (phone) / 3 (tablet) / 4 (desktop) / 5 (wide). */
 export const CARD_SIZES =
-  "(min-width: 96rem) 18vw, (min-width: 64rem) 23vw, (min-width: 48rem) 31vw, 48vw";
+  "(min-width: 80rem) 21vw, (min-width: 64rem) 25vw, (min-width: 48rem) 31vw, 48vw";
 
 /**
  * Product tile for grids and rails. Presentational: data comes from `toProductCard`, actions
@@ -52,8 +51,8 @@ export function ProductCard({
     <article
       className={cn(
         "group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface",
-        "transition-[border-color,box-shadow] duration-(--duration-base) ease-(--ease-out-soft)",
-        "hover:border-ink hover:shadow-[0_18px_32px_-20px_rgb(0_0_0/0.35)]",
+        "ease-(--ease-out-soft)",
+        "transition-[translate,box-shadow] duration-(--duration-base) md:hover:-translate-y-1.5 md:hover:shadow-[0_22px_40px_-18px_rgb(0_0_0/0.28),0_2px_6px_rgb(0_0_0/0.04)]",
         className,
       )}
       onPointerEnter={handleIntent}
@@ -140,7 +139,6 @@ export function ProductCard({
             {card.name}
           </Link>
         </h3>
-        <Rating value={card.rating} count={card.reviewCount} size={12} />
         <Price
           price={card.price}
           salePrice={card.salePrice}
@@ -160,7 +158,7 @@ export function ProductCard({
                   ? `Add ${card.name} to cart`
                   : `Choose options for ${card.name}`
               }
-              className="mt-auto flex h-10 translate-y-0 items-center justify-center gap-1.5 rounded-md bg-ink text-small font-bold text-white transition-colors duration-(--duration-fast) group-hover:bg-brand group-hover:text-ink hover:bg-brand-hover md:h-11"
+              className="mt-auto flex h-10 translate-y-0 items-center justify-center gap-1.5 rounded-md bg-ink text-small font-bold text-white transition-[background-color,color,scale] duration-(--duration-fast) group-hover:bg-brand group-hover:text-ink hover:bg-brand-hover active:scale-[0.97] md:h-11"
             >
               {card.quickAddVariantId ? (
                 <ShoppingBag aria-hidden="true" className="size-4" />
