@@ -2,11 +2,12 @@ import { Link } from "react-router";
 import { cn } from "../../lib/cn";
 import { Spinner } from "./Spinner";
 
-// Every button answers the pointer: solid ones lift a little with a soft shadow, all of them
-// press in on click, and a trailing arrow nudges forward (see `content` below).
+// Hover, site-wide: the colour deepens a shade and a small icon glides in before the label
+// (`glide` in index.css) — the button's own icon if it has one, otherwise an arrow. Every
+// button presses in slightly on click.
 const base =
-  "group/btn relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold " +
-  "transition duration-(--duration-fast) ease-(--ease-out-soft) " +
+  "relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold " +
+  "transition duration-(--duration-base) ease-(--ease-out-soft) " +
   "active:scale-[0.97] " +
   "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
 
@@ -19,16 +20,19 @@ const base =
  * danger    — destructive confirmations only
  */
 const variants = {
-  primary: "bg-brand text-ink lift-brand hover:bg-brand-hover",
-  secondary: "bg-ink text-paper lift-ink hover:bg-ink-2",
-  outline: "border-[1.5px] border-ink text-ink lift-ink hover:bg-ink hover:text-paper",
+  primary: "glide bg-brand text-ink hover:bg-brand-hover",
+  secondary: "glide bg-ink text-paper hover:bg-[#262626]",
+  outline: "glide border-[1.5px] border-ink text-ink hover:bg-ink/5",
   /** Secondary action on charcoal bands (hero, story sections). */
   onDark:
-    "text-white ring-[1.5px] ring-white/40 ring-inset lift hover:bg-white hover:text-ink hover:ring-white",
+    "glide text-white ring-[1.5px] ring-white/40 ring-inset hover:bg-white/10 hover:ring-white",
   ghost: "text-ink hover:bg-shelf",
   link: "text-ink underline decoration-1 underline-offset-4 hover:text-brand-ink",
-  danger: "bg-danger text-white lift-ink hover:opacity-90",
+  danger: "glide bg-danger text-white hover:opacity-90",
 };
+
+/** Variants that use the glide hover; toolbar and link buttons keep their icons in place. */
+const GLIDE = new Set(["primary", "secondary", "outline", "onDark", "danger"]);
 
 /** Heights: 36 / 44 / 48px. Touch targets stay ≥ 44px except `sm` (dense desktop UI). */
 const sizes = {
@@ -82,15 +86,23 @@ export function Button({
           <Spinner />
         </span>
       )}
-      <span className={cn("inline-flex items-center gap-2", loading && "invisible")}>
-        {leadingIcon}
-        {children}
-        {trailingIcon && (
-          <span className="inline-flex transition-transform duration-(--duration-fast) group-hover/btn:translate-x-0.5">
-            {trailingIcon}
+      {GLIDE.has(variant) ? (
+        <span className={cn("glide-label", loading && "invisible")}>
+          <span
+            className={cn("glide-icon", !(leadingIcon ?? trailingIcon) && "glide-auto")}
+            aria-hidden="true"
+          >
+            {leadingIcon ?? trailingIcon ?? "→"}
           </span>
-        )}
-      </span>
+          {children}
+        </span>
+      ) : (
+        <span className={cn("inline-flex items-center gap-2", loading && "invisible")}>
+          {leadingIcon}
+          {children}
+          {trailingIcon}
+        </span>
+      )}
     </>
   );
 

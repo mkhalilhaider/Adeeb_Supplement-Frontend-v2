@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "../../components/ui/Button";
-import { cn } from "../../lib/cn";
 import { usePrefersReducedMotion } from "../../lib/useMediaQuery";
 import { cutoutSrc, HERO_PACKS, LEAD_INDEX } from "./hero-packs";
 
-const INTERVAL = 3500;
+const INTERVAL = 2500;
+/** A horizontal drag/swipe longer than this (px) moves to the next or previous pack. */
+const SWIPE = 40;
 const COUNT = HERO_PACKS.length;
 
 /**
@@ -30,10 +31,11 @@ const offset = (k, active) => {
 
 /**
  * Homepage hero: copy on the left, a rotating stage of real packshots on the right. Every
- * 3.5 s the next pack rolls to the front (full size, full colour) while the others step back.
- * Hover pauses it; clicking a pack or a dot brings that one forward; phones swipe. With
- * reduced motion it only changes when tapped. Static markup and no API call, so it paints
- * with the first frame; the front pack is the LCP image.
+ * 2.5 s the next pack rolls to the front (full size, full colour) while the others step back.
+ * Hover pauses it. Swipe (touch) or drag (mouse) left/right to move; arrow keys work when it's
+ * focused; clicking a back pack brings it forward, the front one opens its product. With
+ * reduced motion it only changes when moved by hand. Static markup and no API call, so it
+ * paints with the first frame; the front pack is the LCP image.
  *
  * @param {{ brandCount?: number }} props
  */
@@ -41,7 +43,10 @@ export function Hero({ brandCount }) {
   const [active, setActive] = useState(LEAD_INDEX);
   const [paused, setPaused] = useState(false);
   const reduced = usePrefersReducedMotion();
-  const touchX = useRef(null);
+  // Pointer drag in progress ({ x, moved }), and whether the click that ends a drag should be
+  // swallowed so dragging a pack never opens its product.
+  const drag = useRef(null);
+  const swallowClick = useRef(false);
 
   useEffect(() => {
     if (paused || reduced) return undefined;
@@ -112,6 +117,9 @@ export function Hero({ brandCount }) {
           </dl>
         </div>
 
+        {/* Drag, swipe and arrow keys are shortcuts on top of the real controls (the pack links
+            inside), so the region itself carries the handlers. */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
           role="region"
           aria-roledescription="carousel"
@@ -120,17 +128,36 @@ export function Hero({ brandCount }) {
           onPointerLeave={(e) => e.pointerType === "mouse" && setPaused(false)}
           onFocus={() => setPaused(true)}
           onBlur={() => setPaused(false)}
-          onTouchStart={(e) => {
-            touchX.current = e.touches[0].clientX;
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") go(active + 1);
+            else if (e.key === "ArrowLeft") go(active - 1);
           }}
-          onTouchEnd={(e) => {
-            const start = touchX.current;
-            touchX.current = null;
-            if (start == null) return;
-            const dx = e.changedTouches[0].clientX - start;
-            if (Math.abs(dx) > 40) go(active + (dx < 0 ? 1 : -1));
+          onPointerDown={(e) => {
+            if (e.button !== 0) return;
+            drag.current = { x: e.clientX, moved: false };
           }}
-          className="[container-type:inline-size] relative h-[330px] sm:h-[400px] lg:h-[580px]"
+          onPointerMove={(e) => {
+            if (drag.current && Math.abs(e.clientX - drag.current.x) > 8) drag.current.moved = true;
+          }}
+          onPointerUp={(e) => {
+            const d = drag.current;
+            drag.current = null;
+            if (!d) return;
+            const dx = e.clientX - d.x;
+            if (Math.abs(dx) > SWIPE) go(active + (dx < 0 ? 1 : -1));
+            if (d.moved) swallowClick.current = true;
+          }}
+          onPointerCancel={() => {
+            drag.current = null;
+          }}
+          onClickCapture={(e) => {
+            if (!swallowClick.current) return;
+            swallowClick.current = false;
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          // pan-y: the page still scrolls vertically, horizontal moves come to us as a drag.
+          className="[container-type:inline-size] relative h-[330px] cursor-grab touch-pan-y select-none active:cursor-grabbing sm:h-[400px] lg:h-[580px]"
         >
           <div
             aria-hidden="true"
@@ -151,6 +178,7 @@ export function Hero({ brandCount }) {
                 to={`/product/${pack.slug}`}
                 aria-label={pack.name}
                 tabIndex={isFront ? 0 : -1}
+                draggable={false}
                 onClick={(e) => {
                   // A back pack is first brought forward; the front one opens its product.
                   if (!isFront) {
@@ -164,13 +192,14 @@ export function Hero({ brandCount }) {
                   zIndex: slot.z,
                   filter: `brightness(${slot.b})${isFront ? " drop-shadow(0 30px 40px rgb(0 0 0 / 0.6))" : ""}`,
                 }}
-                className="absolute bottom-[46px] left-1/2 block h-[74%] origin-bottom transition-[transform,filter] duration-[800ms] ease-(--ease-out-soft)"
+                className="absolute bottom-[46px] left-1/2 block h-[74%] origin-bottom transition-[transform,filter] duration-[650ms] ease-(--ease-out-soft)"
               >
                 <picture>
                   <source media="(min-width: 1024px)" srcSet={cutoutSrc(pack.id, 640)} />
                   <img
                     src={cutoutSrc(pack.id, 400)}
                     alt=""
+                    draggable={false}
                     className="block size-full object-contain"
                     fetchPriority={pack.lead ? "high" : "auto"}
                     decoding={pack.lead ? "sync" : "async"}
@@ -197,26 +226,6 @@ export function Hero({ brandCount }) {
               Shop now <ArrowRight aria-hidden="true" className="size-4" />
             </span>
           </Link>
-
-          <div className="absolute inset-x-0 bottom-1 z-20 flex justify-center gap-1.5">
-            {HERO_PACKS.map((pack, k) => (
-              <button
-                key={pack.id}
-                type="button"
-                aria-label={`Show ${pack.name}`}
-                aria-current={k === active}
-                onClick={() => go(k)}
-                className="flex h-6 items-center"
-              >
-                <span
-                  className={cn(
-                    "block h-2 rounded-full transition-[width,background-color] duration-300",
-                    k === active ? "w-7 bg-brand" : "w-2 bg-night-muted/50 hover:bg-night-muted",
-                  )}
-                />
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </section>

@@ -71,7 +71,7 @@ export function BrandsGrid() {
         to={`/brand/${b.slug}`}
         aria-label={b.name}
         tabIndex={copy ? -1 : undefined}
-        className="group flex h-24 w-44 items-center justify-center rounded-card border border-line bg-surface px-5 py-4 transition-colors duration-(--duration-fast) hover:border-ink md:h-28 md:w-52"
+        className="group flex h-24 w-44 items-center justify-center rounded-card border border-line bg-surface px-5 py-4 md:h-28 md:w-52"
       >
         {b.logoUrl ? (
           <CloudImage

@@ -158,14 +158,14 @@ export function ProductCard({
                   ? `Add ${card.name} to cart`
                   : `Choose options for ${card.name}`
               }
-              className="mt-auto flex h-10 translate-y-0 items-center justify-center gap-1.5 rounded-md bg-ink text-small font-bold text-white transition-[background-color,color,scale] duration-(--duration-fast) group-hover:bg-brand group-hover:text-ink hover:bg-brand-hover active:scale-[0.97] md:h-11"
+              className="glide mt-auto flex h-10 items-center justify-center rounded-md bg-ink text-small font-bold text-white hover:bg-[#262626] active:scale-[0.97] md:h-11"
             >
-              {card.quickAddVariantId ? (
-                <ShoppingBag aria-hidden="true" className="size-4" />
-              ) : (
-                <SlidersHorizontal aria-hidden="true" className="size-4" />
-              )}
-              {card.quickAddVariantId ? "Add to cart" : "Choose options"}
+              <span className="glide-label">
+                <span className="glide-icon" aria-hidden="true">
+                  {card.quickAddVariantId ? <ShoppingBag /> : <SlidersHorizontal />}
+                </span>
+                {card.quickAddVariantId ? "Add to cart" : "Choose options"}
+              </span>
             </button>
           ) : (
             <Link

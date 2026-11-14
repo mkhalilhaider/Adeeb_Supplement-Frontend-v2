@@ -304,19 +304,59 @@
 }
 
 /* Brand row: two copies side by side, moving one copy's width, so the loop is seamless. */
-/* Button hover lift (used by Button and a few hand-built buttons): rise 2px with a soft
-   shadow in the button's own colour. Pointer devices only, like Tailwind's hover variant. */
+/* Button hover, site-wide: a small icon glides in before the label while the label eases
+   over to make room, so the button never changes size. Markup:
+   <button class="glide"><span class="glide-label"><span class="glide-icon">…</span>Label</span>
+   Pointer devices only, like Tailwind's hover variant. */
+.glide {
+  transition:
+    background-color var(--duration-base) var(--ease-out-soft),
+    color var(--duration-base) var(--ease-out-soft),
+    box-shadow var(--duration-base) var(--ease-out-soft),
+    scale var(--duration-fast) var(--ease-out-soft);
+}
+.glide-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  transition: translate 400ms var(--ease-out-soft);
+}
+.glide-icon {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-right: 0.45rem;
+  display: inline-flex;
+  opacity: 0;
+  translate: -6px -50%;
+  transition:
+    opacity 300ms ease,
+    translate 400ms var(--ease-out-soft);
+}
+.glide-icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+/* Touch screens have no hover: a button's own icon simply sits before the label, and the
+   fallback arrow (`glide-auto`) stays hidden. */
+@media (hover: none) {
+  .glide-icon {
+    position: static;
+    margin-right: 0.45rem;
+    opacity: 1;
+    translate: none;
+  }
+  .glide-auto {
+    display: none;
+  }
+}
 @media (hover: hover) {
-  .lift:hover,
-  .lift-ink:hover,
-  .lift-brand:hover {
-    translate: 0 -2px;
+  .glide:hover .glide-label {
+    translate: 0.72rem 0;
   }
-  .lift-ink:hover {
-    box-shadow: 0 12px 24px -12px rgb(0 0 0 / 0.7);
-  }
-  .lift-brand:hover {
-    box-shadow: 0 12px 24px -12px rgb(243 107 39 / 0.9);
+  .glide:hover .glide-icon {
+    opacity: 1;
+    translate: 0 -50%;
   }
 }
 

@@ -200,10 +200,14 @@ export default function TestimonialsSection() {
                 href={site.google.writeReviewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="lift-ink inline-flex h-12 items-center gap-2 rounded-md bg-ink px-5 font-bold text-white transition-[background-color,color,box-shadow,translate,scale] duration-(--duration-fast) hover:bg-ink-2 active:scale-[0.97]"
+                className="glide inline-flex h-12 items-center rounded-md bg-ink px-5 font-bold text-white hover:bg-[#262626] active:scale-[0.97]"
               >
-                <Star aria-hidden="true" className="size-4 fill-brand text-brand" />
-                Write a review on Google
+                <span className="glide-label">
+                  <span className="glide-icon" aria-hidden="true">
+                    <Star className="fill-brand text-brand" />
+                  </span>
+                  Write a review on Google
+                </span>
               </a>
             </div>
           </div>

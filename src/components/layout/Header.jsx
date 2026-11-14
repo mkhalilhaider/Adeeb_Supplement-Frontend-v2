@@ -56,8 +56,8 @@ function CartLink() {
       to="/cart"
       aria-label={count ? `Cart, ${count} item${count === 1 ? "" : "s"}` : "Cart, empty"}
       className={cn(
-        "relative flex h-11 shrink-0 items-center gap-2 rounded-md whitespace-nowrap transition-[background-color,box-shadow,translate,scale] duration-(--duration-fast) active:scale-95",
-        "w-11 justify-center md:w-auto md:bg-brand md:px-3.5 md:text-ink md:hover:-translate-y-px md:hover:bg-brand-hover md:hover:shadow-[0_10px_22px_-10px_rgb(243_107_39/0.9)]",
+        "relative flex h-11 shrink-0 items-center gap-2 rounded-md whitespace-nowrap transition-[background-color,scale] duration-(--duration-base) active:scale-95",
+        "w-11 justify-center md:w-auto md:bg-brand md:px-3.5 md:text-ink md:hover:bg-brand-hover",
       )}
     >
       <ShoppingBag aria-hidden="true" className="size-[22px]" />

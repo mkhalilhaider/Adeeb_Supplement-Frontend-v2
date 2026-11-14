@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { ArrowRight, Banknote, House, ShieldCheck, Zap } from "lucide-react";
-import { WhatsAppIcon } from "../ui/BrandIcons";
+import { BrandIcon, WhatsAppIcon } from "../ui/BrandIcons";
 import { site, whatsappLink } from "../../config/site";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { Logo } from "./Logo";
@@ -20,30 +20,6 @@ const legal = [
   { to: "/terms", label: "Terms" },
   { to: "/refund-policy", label: "Refund policy" },
 ];
-
-/** Brand marks (lucide no longer ships brand icons). 24×24, drawn with currentColor. */
-const SOCIAL_ICONS = {
-  Instagram: (
-    <>
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
-    </>
-  ),
-  Facebook: <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z" />,
-  TikTok: (
-    <>
-      <path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5" />
-      <path d="M14 3c.5 3 2.5 5 5.5 5.3" />
-    </>
-  ),
-  YouTube: (
-    <>
-      <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
-      <path d="M10 9.5v5l4.5-2.5z" fill="currentColor" />
-    </>
-  ),
-};
 
 function Column({ title, children }) {
   return (
@@ -70,6 +46,7 @@ export function Footer() {
     ["Facebook", site.social.facebook],
     ["TikTok", site.social.tiktok],
     ["YouTube", site.social.youtube],
+    ["WhatsApp", whatsappLink()],
   ];
 
   return (
@@ -91,16 +68,25 @@ export function Footer() {
               href={whatsappLink("Hi Adeeb Supplement, which supplement is right for my goal?")}
               target="_blank"
               rel="noopener noreferrer"
-              className="lift-ink inline-flex h-13 items-center justify-center gap-2 rounded-md bg-ink px-6 font-bold text-white transition-[background-color,color,box-shadow,translate,scale] duration-(--duration-fast) hover:bg-ink-2 active:scale-[0.97]"
+              className="glide inline-flex h-13 items-center justify-center rounded-md bg-ink px-6 font-bold text-white hover:bg-[#262626] active:scale-[0.97]"
             >
-              <WhatsAppIcon className="size-5" />
-              Ask on WhatsApp
+              <span className="glide-label">
+                <span className="glide-icon" aria-hidden="true">
+                  <WhatsAppIcon />
+                </span>
+                Ask on WhatsApp
+              </span>
             </a>
             <Link
               to="/track-order"
-              className="lift-ink inline-flex h-13 items-center justify-center rounded-md px-6 font-bold ring-[1.5px] ring-ink transition-[background-color,color,box-shadow,translate,scale] duration-(--duration-fast) ring-inset hover:bg-ink hover:text-brand active:scale-[0.97]"
+              className="glide inline-flex h-13 items-center justify-center rounded-md px-6 font-bold ring-[1.5px] ring-ink ring-inset hover:bg-ink/10 active:scale-[0.97]"
             >
-              Track your order
+              <span className="glide-label">
+                <span className="glide-icon glide-auto" aria-hidden="true">
+                  →
+                </span>
+                Track your order
+              </span>
             </Link>
           </div>
         </div>
@@ -136,33 +122,12 @@ export function Footer() {
                   rel="noreferrer"
                   aria-label={label}
                   title={label}
-                  className="flex size-11 items-center justify-center rounded-full border border-night-line text-night-text transition-colors hover:border-brand hover:text-brand"
+                  className="flex size-11 items-center justify-center rounded-full border border-night-line text-night-text transition-colors duration-(--duration-base) hover:border-brand hover:bg-brand hover:text-ink"
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="size-[19px] fill-none stroke-current"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    {SOCIAL_ICONS[label]}
-                  </svg>
+                  <BrandIcon name={label} className="size-[18px]" />
                 </a>
               </li>
             ))}
-            <li>
-              <a
-                href={whatsappLink()}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="WhatsApp"
-                title="WhatsApp"
-                className="flex size-11 items-center justify-center rounded-full bg-brand text-ink transition-[background-color,scale] duration-(--duration-fast) hover:scale-110 hover:bg-brand-hover active:scale-95"
-              >
-                <WhatsAppIcon className="size-5" />
-              </a>
-            </li>
           </ul>
         </div>
 
@@ -250,12 +215,13 @@ export function Footer() {
         </div>
       </div>
 
+      {/* Decorative outline wordmark. The words come from CSS (data-text) rather than the page
+          text, so screen readers and contrast checks skip it. */}
       <p
         aria-hidden="true"
-        className="pointer-events-none mt-2 overflow-hidden text-center text-[10.8vw] font-display leading-[0.8] whitespace-nowrap text-transparent select-none [-webkit-text-stroke:1.5px_#2e2e2e] lg:text-[11.5vw] 2xl:text-[176px]"
-      >
-        Adeeb Supplement
-      </p>
+        data-text="Adeeb Supplement"
+        className="pointer-events-none mt-2 overflow-hidden text-center text-[10.8vw] font-display leading-[0.8] whitespace-nowrap text-transparent select-none [-webkit-text-stroke:1.5px_#2e2e2e] before:content-[attr(data-text)] lg:text-[11.5vw] 2xl:text-[176px]"
+      />
     </footer>
   );
 }

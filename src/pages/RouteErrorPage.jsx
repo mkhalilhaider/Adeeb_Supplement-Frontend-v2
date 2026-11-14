@@ -51,9 +51,14 @@ export default function RouteErrorPage() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="lift-brand inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-[background-color,color,box-shadow,translate,scale] duration-(--duration-fast) hover:bg-brand-hover active:scale-[0.97]"
+          className="glide inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink hover:bg-brand-hover active:scale-[0.97]"
         >
-          Reload page
+          <span className="glide-label">
+            <span className="glide-icon glide-auto" aria-hidden="true">
+              →
+            </span>
+            Reload page
+          </span>
         </button>
         <Link
           to="/"
