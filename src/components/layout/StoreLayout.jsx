@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { PageViews } from "./PageViews";
-import { Outlet, ScrollRestoration } from "react-router";
+import { Outlet, ScrollRestoration, useMatch } from "react-router";
 import { PageLoader } from "../ui/PageLoader";
 import { SessionNotice } from "../../features/auth/SessionNotice";
 import { Header } from "./Header";
@@ -35,6 +35,8 @@ export default function StoreLayout() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mounted, setMounted] = useState({ menu: false, search: false });
   const loggedIn = useSession((s) => s.status === "authenticated");
+  // The cart has neither the tab bar nor a sticky bar, so it needs no space kept under the footer.
+  const onCart = useMatch("/cart");
   // Cart drawer / options sheet mount on first use and stay mounted (for close animations).
   const drawerOpen = useCartUi((s) => s.drawerOpen);
   const quickAddSlug = useCartUi((s) => s.quickAddSlug);
@@ -75,8 +77,13 @@ export default function StoreLayout() {
       <Suspense fallback={null}>
         <Footer />
       </Suspense>
-      {/* Keeps the end of the footer clear of the phone tab bar. */}
-      <div aria-hidden="true" className="h-[calc(3.5rem+env(safe-area-inset-bottom))] md:hidden" />
+      {/* Keeps the end of the footer clear of the phone tab bar (or a product page's buy bar). */}
+      {!onCart && (
+        <div
+          aria-hidden="true"
+          className="h-[calc(3.5rem+env(safe-area-inset-bottom))] md:hidden"
+        />
+      )}
 
       <Suspense fallback={null}>
         <MobileTabBar onSearch={openSearch} />

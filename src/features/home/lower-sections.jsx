@@ -55,9 +55,12 @@ export function EditorialBand() {
             />
           )}
         </div>
-        <div className="flex flex-col justify-center gap-5 p-7 md:p-14">
+        <div className="flex flex-col justify-center gap-5 p-7 md:p-10 lg:p-14">
           {band.eyebrow && <p className="label-caps text-brand">{band.eyebrow}</p>}
-          <h2 id="feature-heading" className="text-[2.75rem] font-display md:text-[4rem]">
+          <h2
+            id="feature-heading"
+            className="text-[2.75rem] font-display md:text-[3.25rem] lg:text-[4rem]"
+          >
             {band.title}
           </h2>
           {band.description && (
@@ -65,7 +68,7 @@ export function EditorialBand() {
               {band.description}
             </p>
           )}
-          <div className="mt-2 grid gap-3 sm:flex">
+          <div className="mt-2 grid gap-3 sm:flex sm:flex-wrap">
             {band.href &&
               (band.href.startsWith("/") ? (
                 <Button to={band.href} size="lg">

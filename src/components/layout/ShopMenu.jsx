@@ -56,7 +56,7 @@ export function ShopMenu() {
           toggle();
         }}
         className={cn(
-          "flex h-12 items-center gap-1 border-b-2 text-small font-semibold transition-colors duration-(--duration-fast)",
+          "flex h-12 shrink-0 items-center gap-1 border-b-2 text-small font-semibold whitespace-nowrap transition-colors duration-(--duration-fast)",
           open
             ? "border-brand text-white"
             : "border-transparent text-night-text hover:border-brand hover:text-white",

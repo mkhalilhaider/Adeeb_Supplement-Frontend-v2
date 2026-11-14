@@ -145,7 +145,8 @@ function CategoryNav() {
   const { categories, isPending } = useTaxonomy();
   return (
     <nav aria-label="Categories" className="relative hidden border-t border-night-line lg:block">
-      <div className="page-container flex items-center gap-7">
+      {/* Tighter gaps (and About only from xl) so the row fits from 1024px. */}
+      <div className="page-container flex items-center gap-5 xl:gap-7">
         <ShopMenu />
         {isPending
           ? Array.from({ length: 7 }, (_, i) => (
@@ -157,12 +158,12 @@ function CategoryNav() {
               </NavLink>
             ))}
         <BrandsMenu />
-        <span className="ml-auto flex items-center gap-6">
+        <span className="ml-auto flex items-center gap-5 xl:gap-6">
           <NavLink to="/track-order" className={catLink}>
             <PackageSearch aria-hidden="true" className="mr-1.5 size-4 text-brand" />
             Track your order
           </NavLink>
-          <NavLink to="/about" className={catLink}>
+          <NavLink to="/about" className={(s) => cn(catLink(s), "hidden xl:flex")}>
             About
           </NavLink>
         </span>

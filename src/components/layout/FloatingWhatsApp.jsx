@@ -39,7 +39,7 @@ export function WhatsAppGreeting({ settings, href, onClose, onOpen, leaving = fa
           type="button"
           onClick={onClose}
           aria-label="Close message"
-          className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full text-ink-3 hover:bg-shelf hover:text-ink"
+          className="absolute top-1 right-1 flex size-[34px] items-center justify-center rounded-full text-ink-3 hover:bg-shelf hover:text-ink"
         >
           <X aria-hidden="true" className="size-4" />
         </button>

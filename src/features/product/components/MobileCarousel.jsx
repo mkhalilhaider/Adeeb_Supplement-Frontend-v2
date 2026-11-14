@@ -51,7 +51,8 @@ export default function MobileCarousel({ images, alt, index, onIndexChange, onOp
           ))}
         </div>
       </div>
-      <div className="mt-3 flex justify-center gap-1.5">
+      {/* 32px tap targets; the visible dots keep their spacing. */}
+      <div className="mt-2 flex justify-center">
         {images.map((_, i) => (
           <button
             key={i}
@@ -59,7 +60,7 @@ export default function MobileCarousel({ images, alt, index, onIndexChange, onOp
             aria-label={`Show image ${i + 1}`}
             aria-current={i === index}
             onClick={() => show(i)}
-            className="flex size-6 items-center justify-center"
+            className="flex size-8 items-center justify-center"
           >
             <span
               className={cn(
