@@ -4,7 +4,8 @@ const number = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 export function formatPrice(amount) {
   const value = Number(amount);
   if (!Number.isFinite(value)) return "";
-  return `Rs ${number.format(Math.round(value))}`;
+  // Non-breaking space: "Rs" never ends up on a different line from the amount.
+  return `Rs\u00a0${number.format(Math.round(value))}`;
 }
 
 /** Percentage saved, rounded down so we never overstate a discount. 9000→8200 = 8 */

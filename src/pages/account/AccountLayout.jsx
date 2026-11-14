@@ -41,10 +41,10 @@ export default function AccountLayout() {
         Hi, {user?.firstName || "there"}
       </p>
 
-      <div className="mt-6 grid gap-6 md:mt-8 md:grid-cols-[13rem_1fr] md:gap-10">
+      <div className="mt-6 grid grid-cols-1 gap-6 md:mt-8 md:grid-cols-[13rem_minmax(0,1fr)] md:gap-10">
         <nav
           aria-label="Account"
-          className="-mx-4 md:mx-0 md:self-start md:rounded-card md:border md:border-line md:bg-surface md:p-2"
+          className="-mx-4 min-w-0 md:mx-0 md:self-start md:rounded-card md:border md:border-line md:bg-surface md:p-2"
         >
           <ul className="flex [scrollbar-width:none] gap-1 overflow-x-auto px-4 md:flex-col md:px-0">
             {LINKS.map(({ to, label, icon: Icon, end }) => (

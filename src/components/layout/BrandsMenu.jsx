@@ -58,7 +58,7 @@ export function BrandsMenu() {
           toggle();
         }}
         className={cn(
-          "flex h-12 items-center gap-1 border-b-2 text-small font-semibold transition-colors",
+          "flex h-12 shrink-0 items-center gap-1 border-b-2 text-small font-semibold whitespace-nowrap transition-colors",
           open
             ? "border-brand text-white"
             : "border-transparent text-night-muted hover:border-brand hover:text-white",

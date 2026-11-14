@@ -38,7 +38,9 @@ export function OrderCard({ order }) {
         </div>
         <p className="text-small text-ink-2">
           {formatDate(order.createdAt)} · {count} {count === 1 ? "item" : "items"} ·{" "}
-          <span className="font-semibold text-ink tabular-nums">{formatPrice(order.total)}</span>
+          <span className="font-semibold whitespace-nowrap text-ink tabular-nums">
+            {formatPrice(order.total)}
+          </span>
         </p>
       </div>
       <ChevronRight

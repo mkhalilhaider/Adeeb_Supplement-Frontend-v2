@@ -15,10 +15,11 @@ export default function ProductRatingLine({ productId }) {
     staleTime: 10 * 60_000,
   });
   const rating = query.data?.summary?.average ?? 0;
+  const count = query.data?.summary?.count ?? 0;
   if (!rating) return null;
   return (
     <a href="#reviews" className="mt-2 inline-flex items-center gap-2 hover:underline">
-      <Rating value={rating} size={15} showValue />
+      <Rating value={rating} count={count} size={15} showValue />
       <span className="text-small text-ink-3">· Rated on Google</span>
       <span className="sr-only">Read reviews</span>
     </a>

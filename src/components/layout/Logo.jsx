@@ -10,7 +10,8 @@ export function Logo({ className, inverted = false }) {
       </svg>
       <span
         className={cn(
-          "text-[28px] font-display leading-none tracking-[0.01em]",
+          // A touch smaller on the narrowest phones so the header row fits at 360px.
+          "text-[28px] font-display leading-none tracking-[0.01em] max-[389px]:text-[25px]",
           inverted ? "text-paper" : "text-ink",
         )}
       >
@@ -18,7 +19,7 @@ export function Logo({ className, inverted = false }) {
       </span>{" "}
       <span
         className={cn(
-          "mt-1 label-caps text-[10px] tracking-[0.22em]",
+          "mt-1 label-caps text-[10px] tracking-[0.22em] max-[389px]:tracking-[0.14em]",
           inverted ? "text-brand" : "text-brand-ink",
         )}
       >

@@ -94,7 +94,7 @@ export function ReviewsSection({ productId }) {
             <p className="text-6xl font-display tabular-nums">
               {(summary?.average ?? 0).toFixed(1)}
             </p>
-            <Rating value={summary?.average ?? 0} size={16} />
+            <Rating value={summary?.average ?? 0} count={summary?.count} size={16} />
             <p className="mt-3 flex items-center gap-2 text-small text-ink-2">
               <GoogleMark /> Reviews from our Google listing
             </p>

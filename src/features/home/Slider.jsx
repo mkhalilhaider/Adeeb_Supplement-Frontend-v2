@@ -130,7 +130,7 @@ export function Slider({
         </ul>
       </div>
       {showDots && scrollable && (
-        <div className="mt-4 flex justify-center gap-1.5">
+        <div className="mt-3 flex justify-center">
           {Array.from({ length: pages.count }, (_, i) => (
             <button
               key={i}
@@ -138,7 +138,8 @@ export function Slider({
               aria-label={`Go to page ${i + 1} of ${pages.count} — ${label}`}
               aria-current={i === pages.current}
               onClick={() => toPage(i)}
-              className="flex h-6 items-center"
+              // Padding makes each dot an easier tap target without making it bigger.
+              className="flex h-8 items-center px-1.5"
             >
               <span
                 className={cn(

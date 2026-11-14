@@ -23,12 +23,14 @@ function Column({ title, children }) {
   return (
     <div>
       <h2 className="label-caps text-night-muted">{title}</h2>
-      <ul className="mt-4 flex flex-col gap-2.5 text-small">{children}</ul>
+      {/* Phones: taller rows (links carry the padding) so each is an easy tap target. */}
+      <ul className="mt-3 flex flex-col text-small md:mt-4 md:gap-2.5">{children}</ul>
     </div>
   );
 }
 
-const linkClass = "text-night-text/85 transition-colors hover:text-brand";
+const linkClass =
+  "inline-block py-1.5 text-night-text/85 transition-colors hover:text-brand md:py-0";
 
 /** Picks the configured slugs in order (top 5), falling back to the first ones available. */
 function topFive(items, slugs) {
@@ -90,8 +92,8 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="page-container grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.3fr]">
-        <div className="sm:col-span-2 lg:col-span-1">
+      <div className="page-container grid grid-cols-2 gap-x-6 gap-y-9 py-12 md:gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.3fr]">
+        <div className="col-span-2 lg:col-span-1">
           <Logo inverted />
           <p className="mt-4 max-w-xs text-small text-night-muted">
             Authentic supplements at affordable prices — imported for Pakistan since April 2026.
@@ -125,7 +127,7 @@ export function Footer() {
           <li>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-1 text-brand hover:text-brand-hover"
+              className="inline-flex items-center gap-1 py-1.5 text-brand hover:text-brand-hover md:py-0"
             >
               All categories <ArrowRight aria-hidden="true" className="size-3.5" />
             </Link>
@@ -143,7 +145,7 @@ export function Footer() {
           <li>
             <Link
               to="/brands"
-              className="inline-flex items-center gap-1 text-brand hover:text-brand-hover"
+              className="inline-flex items-center gap-1 py-1.5 text-brand hover:text-brand-hover md:py-0"
             >
               All {brands.length || ""} brands{" "}
               <ArrowRight aria-hidden="true" className="size-3.5" />
@@ -162,7 +164,7 @@ export function Footer() {
         </Column>
 
         <Column title="Visit the store">
-          <li className="text-night-text/85">{site.store.address}</li>
+          <li className="pb-1.5 text-night-text/85 md:pb-0">{site.store.address}</li>
           <li>
             <a href={site.store.mapsUrl} target="_blank" rel="noreferrer" className={linkClass}>
               Open in Google Maps
@@ -175,7 +177,9 @@ export function Footer() {
           </li>
           <li>
             <a href={`mailto:${site.contact.email}`} className={linkClass}>
-              {site.contact.email}
+              {/* Breaks after the name on narrow columns, not mid-word. */}
+              {site.contact.email.split("@")[0]}
+              <wbr />@{site.contact.email.split("@")[1]}
             </a>
           </li>
         </Column>
@@ -186,10 +190,10 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {site.name}. All prices in PKR.
           </p>
-          <ul className="flex gap-5">
+          <ul className="flex gap-5 max-md:-my-2">
             {legal.map((item) => (
               <li key={item.label}>
-                <Link to={item.to} className="hover:text-white">
+                <Link to={item.to} className="inline-block py-2 hover:text-white md:py-0">
                   {item.label}
                 </Link>
               </li>

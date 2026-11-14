@@ -9,8 +9,8 @@ import {
 
 describe("formatPrice", () => {
   it("formats whole rupees with grouping", () => {
-    expect(formatPrice(8200)).toBe("Rs 8,200");
-    expect(formatPrice(45000)).toBe("Rs 45,000");
+    expect(formatPrice(8200)).toBe("Rs\u00a08,200");
+    expect(formatPrice(45000)).toBe("Rs\u00a045,000");
   });
   it("returns empty for non-numbers", () => {
     expect(formatPrice(undefined)).toBe("");
