@@ -1,5 +1,5 @@
-import { Suspense, useCallback, useState } from "react";
-import { NavLink, Outlet, ScrollRestoration } from "react-router";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { NavLink, Outlet, ScrollRestoration, useLocation } from "react-router";
 import {
   Award,
   BadgePercent,
@@ -90,7 +90,12 @@ function NavLinks({ collapsed }) {
       {NAV.map(({ group, links }) => (
         <div key={group ?? "main"}>
           {group && (
-            <p className={cn("mb-1.5 px-3 label-caps text-ink-3", collapsed && "lg:sr-only")}>
+            <p
+              className={cn(
+                "mb-1.5 px-3 label-caps whitespace-nowrap text-ink-3",
+                collapsed && "lg:sr-only",
+              )}
+            >
               {group}
             </p>
           )}
@@ -103,7 +108,7 @@ function NavLinks({ collapsed }) {
                   end={end ?? to === "/admin/products"}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-2.5 rounded-sm px-3 py-2 text-small font-medium transition-colors duration-(--duration-fast)",
+                      "flex items-center gap-2.5 rounded-sm px-3 py-2 text-small font-medium whitespace-nowrap transition-colors duration-(--duration-fast)",
                       collapsed && "lg:justify-center lg:px-0",
                       isActive ? "bg-ink text-paper" : "text-ink-2 hover:bg-shelf hover:text-ink",
                     )
@@ -129,6 +134,13 @@ export default function AdminLayout() {
   const user = useSession((s) => s.user);
   const signOut = useSession((s) => s.signOut);
   const menu = useRouteScopedToggle();
+  const { pathname } = useLocation();
+  // Keep the current section visible in the sidebar (the list scrolls on short screens).
+  useEffect(() => {
+    document
+      .querySelector('#admin-menu nav [aria-current="page"]')
+      ?.scrollIntoView({ block: "nearest" });
+  }, [pathname]);
   // Desktop: the sidebar can shrink to icons only (remembered on this device).
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const toggleCollapsed = () => {
@@ -196,7 +208,9 @@ export default function AdminLayout() {
             collapsed ? "justify-center px-2" : "justify-between pr-2 pl-5",
           )}
         >
-          {!collapsed && <span className="label-caps text-ink-2">Adeeb · Admin</span>}
+          {!collapsed && (
+            <span className="label-caps whitespace-nowrap text-ink-2">Adeeb · Admin</span>
+          )}
           <button
             type="button"
             onClick={toggleCollapsed}
@@ -224,7 +238,7 @@ export default function AdminLayout() {
             rel="noopener noreferrer"
             title={collapsed ? "View store" : undefined}
             className={cn(
-              "flex items-center gap-2.5 rounded-sm px-3 py-2 text-ink-2 hover:bg-shelf hover:text-ink",
+              "flex items-center gap-2.5 rounded-sm px-3 py-2 whitespace-nowrap text-ink-2 hover:bg-shelf hover:text-ink",
               collapsed && "lg:justify-center lg:px-0",
             )}
           >
@@ -236,7 +250,7 @@ export default function AdminLayout() {
             onClick={signOut}
             title={collapsed ? "Sign out" : undefined}
             className={cn(
-              "flex items-center gap-2.5 rounded-sm px-3 py-2 text-left text-ink-2 hover:bg-shelf hover:text-ink",
+              "flex items-center gap-2.5 rounded-sm px-3 py-2 text-left whitespace-nowrap text-ink-2 hover:bg-shelf hover:text-ink",
               collapsed && "lg:justify-center lg:px-0",
             )}
           >

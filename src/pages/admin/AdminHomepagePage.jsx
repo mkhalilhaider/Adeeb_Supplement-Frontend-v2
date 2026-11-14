@@ -190,7 +190,7 @@ function LinkChoice({
 }) {
   const set = (patch) => onChange({ ...link, ...patch });
   return (
-    <div className="grid gap-2 sm:grid-cols-2">
+    <div className="flex flex-col gap-2">
       <Select
         id={id}
         aria-label="Opens"
