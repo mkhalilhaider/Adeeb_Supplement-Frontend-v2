@@ -16,6 +16,7 @@ import { OrderItems } from "../../features/orders/components/OrderItems";
 import { OrderStatusTimeline } from "../../features/orders/components/OrderStatusTimeline";
 import { parseOrderIdentifier } from "../../features/orders/lib/order-status";
 import NotFoundPage from "./NotFoundPage";
+import { notify } from "../../lib/notify";
 
 function Row({ label, value, strong = false, tone }) {
   return (
@@ -34,7 +35,10 @@ function CopyNumber({ value }) {
       type="button"
       onClick={() =>
         navigator.clipboard.writeText(value).then(
-          () => setCopied(true),
+          () => {
+            setCopied(true);
+            notify.success("Order number copied");
+          },
           () => {},
         )
       }
@@ -102,7 +106,7 @@ export default function OrderConfirmedPage() {
       <div className="mx-auto max-w-3xl">
         <div className="flex flex-col items-start gap-3">
           <CheckCircle2 aria-hidden="true" className="size-10 text-success" />
-          <h1 className="text-h1 font-extrabold uppercase font-condensed md:text-5xl">
+          <h1 className="text-[2.75rem] font-display md:text-[4rem]">
             {fromCheckout ? `Thank you${firstName ? `, ${firstName}` : ""}!` : "Your order"}
           </h1>
           <p className="text-ink-2">
@@ -115,7 +119,7 @@ export default function OrderConfirmedPage() {
             )}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-2 rounded-sm border border-line bg-surface px-4 py-3">
-            <span className="label-mono text-ink-3">Order number</span>
+            <span className="label-caps text-ink-3">Order number</span>
             <span className="font-mono text-h3 font-semibold">{order.orderNumber}</span>
             <CopyNumber value={order.orderNumber} />
           </div>
@@ -153,7 +157,7 @@ export default function OrderConfirmedPage() {
             <div key={n} className="flex gap-3">
               <span
                 aria-hidden="true"
-                className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ink label-mono text-[12px] text-paper"
+                className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ink label-caps text-[12px] text-paper"
               >
                 {n}
               </span>

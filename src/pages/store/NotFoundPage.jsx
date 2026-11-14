@@ -5,8 +5,8 @@ export default function NotFoundPage() {
   return (
     <section className="page-container py-20 md:py-28">
       <Seo title="Page not found" noIndex />
-      <p className="label-mono text-ink-3">Error 404</p>
-      <h1 className="mt-3 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
+      <p className="label-caps text-ink-3">Error 404</p>
+      <h1 className="mt-3 text-[2.75rem] font-display md:text-[4rem]">
         This page isn't on the shelf
       </h1>
       <p className="mt-4 max-w-prose text-ink-2">
@@ -15,9 +15,14 @@ export default function NotFoundPage() {
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
           to="/shop"
-          className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-colors duration-(--duration-fast) hover:bg-brand-hover"
+          className="glide inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink hover:bg-brand-hover active:scale-[0.97]"
         >
-          Browse all products
+          <span className="glide-label">
+            <span className="glide-icon glide-auto" aria-hidden="true">
+              →
+            </span>
+            Browse all products
+          </span>
         </Link>
         <Link
           to="/"

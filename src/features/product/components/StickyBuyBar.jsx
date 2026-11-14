@@ -26,6 +26,12 @@ export function StickyBuyBar({ targetRef, variant, onAdd, adding, name }) {
     return () => observer.disconnect();
   }, [targetRef, variant?._id]);
 
+  // Lets the floating WhatsApp button step up above this bar while it shows.
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-buybar", visible);
+    return () => document.documentElement.removeAttribute("data-buybar");
+  }, [visible]);
+
   if (!variant) return null;
   const sellable = isPurchasable(variant);
 

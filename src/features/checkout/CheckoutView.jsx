@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { trackEvent } from "../../lib/analytics";
+import { trackEvent } from "../../lib/track";
 import { Link, useNavigate } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Banknote, MapPin, Truck } from "lucide-react";
@@ -21,8 +21,9 @@ import { OrderSummary } from "./components/OrderSummary";
 import { buildCheckoutBody } from "./lib/checkout-body";
 import { validateCheckout } from "./lib/validate-checkout";
 import { checkoutKey, finishCheckout, readDraft, writeDraft } from "./lib/checkout-session";
-import { canonicalCity, PK_CITIES } from "./lib/pk-cities";
+import { canonicalCity } from "./lib/pk-cities";
 import { useCheckoutProgress } from "./useCheckoutProgress";
+import { CityCombobox } from "./components/CityCombobox";
 
 const FORM_ID = "checkout-form";
 const NEW_ADDRESS = "new";
@@ -30,12 +31,12 @@ const NEW_ADDRESS = "new";
 function Section({ step, title, icon: Icon, children, aside }) {
   const id = `checkout-${step}`;
   return (
-    <section aria-labelledby={id} className="border-t border-line pt-6 first:border-t-0 first:pt-0">
+    <section aria-labelledby={id} className="rounded-card border border-line bg-surface p-5 md:p-7">
       <div className="mb-4 flex items-baseline justify-between gap-4">
         <h2 id={id} className="flex items-center gap-2.5 text-h3 font-bold">
           <span
             aria-hidden="true"
-            className="flex size-7 items-center justify-center rounded-full bg-ink label-mono text-[12px] text-paper"
+            className="flex size-7 items-center justify-center rounded-full bg-ink label-caps text-[12px] text-paper"
           >
             {step}
           </span>
@@ -205,7 +206,7 @@ export function CheckoutView({ cart, user, loggedIn }) {
       ref={errorRef}
       tabIndex={-1}
       role="alert"
-      className="rounded-sm border border-danger/40 bg-danger-soft p-4 text-small text-danger outline-none"
+      className="rounded-md border border-danger/40 bg-danger-soft p-4 text-small text-danger outline-none"
     >
       <p className="font-semibold">We couldn't place your order</p>
       <p className="mt-1 text-ink">
@@ -243,7 +244,7 @@ export function CheckoutView({ cart, user, loggedIn }) {
 
   return (
     <div className="page-container pt-6 pb-16 md:pt-10">
-      <h1 className="text-h1 font-extrabold uppercase font-condensed md:text-5xl">Checkout</h1>
+      <h1 className="text-[2.75rem] font-display md:text-[4rem]">Checkout</h1>
       {/* Phones: the summary sits below the form, so show the amount up front. */}
       <a
         href="#summary-heading"
@@ -267,7 +268,7 @@ export function CheckoutView({ cart, user, loggedIn }) {
           }
           noValidate
           aria-label="Delivery and payment details"
-          className="flex flex-col gap-8"
+          className="flex flex-col gap-4 md:gap-5"
         >
           <Section
             step={1}
@@ -347,21 +348,13 @@ export function CheckoutView({ cart, user, loggedIn }) {
                 </Field>
                 <Field label="City" required error={errors.city}>
                   {(f) => (
-                    <>
-                      <Input
-                        {...f}
-                        list="pk-cities"
-                        autoComplete="address-level2"
-                        {...field("city", {
-                          onBlur: (e) => set("city", canonicalCity(e.target.value)),
-                        })}
-                      />
-                      <datalist id="pk-cities">
-                        {PK_CITIES.map((c) => (
-                          <option key={c} value={c} />
-                        ))}
-                      </datalist>
-                    </>
+                    <CityCombobox
+                      {...f}
+                      {...field("city", {
+                        onBlur: (e) => set("city", canonicalCity(e.target.value)),
+                      })}
+                      onPick={(city) => set("city", city)}
+                    />
                   )}
                 </Field>
               </div>
@@ -369,7 +362,7 @@ export function CheckoutView({ cart, user, loggedIn }) {
           </Section>
 
           <Section step={3} title="Delivery" icon={Truck}>
-            <p className="rounded-sm border border-line bg-surface p-4 text-small text-ink-2">
+            <p className="rounded-md border border-line bg-paper p-4 text-small text-ink-2">
               {!hasCity
                 ? "Enter your city to see the delivery fee."
                 : delivery.data?.zone === "karachi"

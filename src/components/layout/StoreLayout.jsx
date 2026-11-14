@@ -4,13 +4,20 @@ import { Outlet, ScrollRestoration } from "react-router";
 import { PageLoader } from "../ui/PageLoader";
 import { SessionNotice } from "../../features/auth/SessionNotice";
 import { Header } from "./Header";
-import { Footer } from "./Footer";
-import { MobileTabBar } from "./MobileTabBar";
 import { useCartUi } from "../../features/cart/cart-ui";
 import { useSession } from "../../features/auth/session-store";
 
 // Overlays load on first use: most visits never open them, so their drawer/dialog code
 // stays off the critical path.
+// Always below the fold: loads right after the page instead of with it.
+const Footer = lazy(() => import("./Footer").then((m) => ({ default: m.Footer })));
+// Phone tab bar: fixed to the bottom of the screen, so loading it a moment after the page moves
+// nothing (its space is kept by the spacer below the footer). Hidden on computers.
+const MobileTabBar = lazy(() =>
+  import("./MobileTabBar").then((m) => ({ default: m.MobileTabBar })),
+);
+// Floating WhatsApp button + promo popup: one small download right after the page.
+const StoreExtras = lazy(() => import("./StoreExtras"));
 const MobileMenu = lazy(() => import("./MobileMenu").then((m) => ({ default: m.MobileMenu })));
 // Guest → account cart merge and wishlist push: only logged-in shoppers download it.
 const SessionSync = lazy(() =>
@@ -58,17 +65,23 @@ export default function StoreLayout() {
 
       <Header onOpenMenu={openMenu} onOpenSearch={openSearch} />
 
-      <main id="main" className="flex-1">
+      {/* At least a screen tall: the footer stays below the fold while content loads (no layout shift). */}
+      <main id="main" className="min-h-svh flex-1">
         <Suspense fallback={<PageLoader />}>
           <Outlet />
         </Suspense>
       </main>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       {/* Keeps the end of the footer clear of the phone tab bar. */}
       <div aria-hidden="true" className="h-[calc(3.5rem+env(safe-area-inset-bottom))] md:hidden" />
 
-      <MobileTabBar onSearch={openSearch} />
+      <Suspense fallback={null}>
+        <MobileTabBar onSearch={openSearch} />
+        <StoreExtras />
+      </Suspense>
       <Suspense fallback={null}>
         {mounted.menu && <MobileMenu open={menuOpen} onOpenChange={setMenuOpen} />}
         {mounted.search && <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />}

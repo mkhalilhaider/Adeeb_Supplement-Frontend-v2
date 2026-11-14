@@ -11,7 +11,7 @@ import { adminQuery, shortDateTime } from "../../features/admin/format";
 function Stat({ label, value, to, tone }) {
   const body = (
     <>
-      <dt className="label-mono text-ink-3">{label}</dt>
+      <dt className="label-caps text-ink-3">{label}</dt>
       <dd
         className={`mt-1 text-[32px] leading-none font-extrabold font-condensed tabular-nums ${tone ?? ""}`}
       >

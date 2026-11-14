@@ -1,5 +1,5 @@
-import { Suspense, useCallback } from "react";
-import { NavLink, Outlet, ScrollRestoration } from "react-router";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { NavLink, Outlet, ScrollRestoration, useLocation } from "react-router";
 import {
   Award,
   BadgePercent,
@@ -8,12 +8,17 @@ import {
   ExternalLink,
   FileSpreadsheet,
   Film,
+  Star,
   HeartHandshake,
   Inbox,
   LayoutDashboard,
   LogOut,
+  LayoutTemplate,
   Mail,
+  Megaphone,
+  MessageCircle,
   Package,
+  PanelLeftClose,
   PanelLeftOpen,
   ShoppingCart,
   Tags,
@@ -58,34 +63,59 @@ const NAV = [
   {
     group: "Content",
     links: [
+      { to: "/admin/homepage", label: "Homepage", icon: LayoutTemplate },
       { to: "/admin/reels", label: "Reels", icon: Film },
+      { to: "/admin/reviews", label: "Reviews", icon: Star },
+      { to: "/admin/promo-popup", label: "Promo popup", icon: Megaphone },
+      { to: "/admin/whatsapp", label: "WhatsApp button", icon: MessageCircle },
       { to: "/admin/seo", label: "SEO", icon: TextSearch },
       { to: "/admin/marketing", label: "Marketing email", icon: Mail },
     ],
   },
 ];
 
-function NavLinks() {
+/** Remembers whether the desktop sidebar is collapsed (icons only). */
+const COLLAPSE_KEY = "adeeb.admin-sidebar";
+const readCollapsed = () => {
+  try {
+    return localStorage.getItem(COLLAPSE_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+
+function NavLinks({ collapsed }) {
   return (
     <div className="flex flex-col gap-5">
       {NAV.map(({ group, links }) => (
         <div key={group ?? "main"}>
-          {group && <p className="mb-1.5 px-3 label-mono text-ink-3">{group}</p>}
+          {group && (
+            <p
+              className={cn(
+                "mb-1.5 px-3 label-caps whitespace-nowrap text-ink-3",
+                collapsed && "lg:sr-only",
+              )}
+            >
+              {group}
+            </p>
+          )}
           <ul className="flex flex-col gap-0.5">
             {links.map(({ to, label, icon: Icon, end }) => (
               <li key={to}>
                 <NavLink
                   to={to}
+                  title={collapsed ? label : undefined}
                   end={end ?? to === "/admin/products"}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-2.5 rounded-sm px-3 py-2 text-small font-medium transition-colors duration-(--duration-fast)",
+                      "flex items-center gap-2.5 rounded-sm px-3 py-2 text-small font-medium whitespace-nowrap transition-colors duration-(--duration-fast)",
+                      collapsed && "lg:justify-center lg:px-0",
                       isActive ? "bg-ink text-paper" : "text-ink-2 hover:bg-shelf hover:text-ink",
                     )
                   }
                 >
-                  <Icon aria-hidden="true" className="size-4" />
-                  {label}
+                  <Icon aria-hidden="true" className="size-4 shrink-0" />
+                  <span className={cn(collapsed && "lg:sr-only")}>{label}</span>
                 </NavLink>
               </li>
             ))}
@@ -104,6 +134,25 @@ export default function AdminLayout() {
   const user = useSession((s) => s.user);
   const signOut = useSession((s) => s.signOut);
   const menu = useRouteScopedToggle();
+  const { pathname } = useLocation();
+  // Keep the current section visible in the sidebar (the list scrolls on short screens).
+  useEffect(() => {
+    document
+      .querySelector('#admin-menu nav [aria-current="page"]')
+      ?.scrollIntoView({ block: "nearest" });
+  }, [pathname]);
+  // Desktop: the sidebar can shrink to icons only (remembered on this device).
+  const [collapsed, setCollapsed] = useState(readCollapsed);
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      try {
+        localStorage.setItem(COLLAPSE_KEY, c ? "0" : "1");
+      } catch {
+        /* not remembered: fine */
+      }
+      return !c;
+    });
+  };
 
   const onTimeout = useCallback(() => {
     signOut();
@@ -112,7 +161,11 @@ export default function AdminLayout() {
   const idle = useIdleLogout({ onTimeout });
 
   return (
-    <div className="flex min-h-dvh flex-col bg-paper lg:flex-row">
+    <div
+      className="flex min-h-dvh flex-col bg-paper lg:flex-row"
+      // Width of the desktop sidebar, for anything fixed beside it (e.g. save bars).
+      style={{ "--admin-sidebar": collapsed ? "4rem" : "15rem" }}
+    >
       <meta name="robots" content="noindex, nofollow" />
       <a
         href="#main"
@@ -123,7 +176,7 @@ export default function AdminLayout() {
 
       {/* Phones and tablets: top bar + menu panel */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface px-4 lg:hidden">
-        <span className="label-mono text-ink-2">Adeeb · Admin</span>
+        <span className="label-caps text-ink-2">Adeeb · Admin</span>
         <button
           type="button"
           onClick={menu.toggle}
@@ -144,32 +197,65 @@ export default function AdminLayout() {
         id="admin-menu"
         aria-label="Admin"
         className={cn(
-          "border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-dvh lg:w-60 lg:shrink-0 lg:flex-col lg:border-r",
+          "border-line bg-surface lg:sticky lg:top-0 lg:flex lg:h-dvh lg:shrink-0 lg:flex-col lg:border-r lg:transition-[width] lg:duration-(--duration-base)",
+          collapsed ? "lg:w-16" : "lg:w-60",
           menu.open ? "block border-b" : "hidden",
         )}
       >
-        <div className="hidden h-16 items-center border-b border-line px-5 lg:flex">
-          <span className="label-mono text-ink-2">Adeeb · Admin</span>
+        <div
+          className={cn(
+            "hidden h-16 items-center border-b border-line lg:flex",
+            collapsed ? "justify-center px-2" : "justify-between pr-2 pl-5",
+          )}
+        >
+          {!collapsed && (
+            <span className="label-caps whitespace-nowrap text-ink-2">Adeeb · Admin</span>
+          )}
+          <button
+            type="button"
+            onClick={toggleCollapsed}
+            aria-expanded={!collapsed}
+            aria-controls="admin-menu"
+            title={collapsed ? "Open menu" : "Close menu"}
+            className="flex size-10 items-center justify-center rounded-sm text-ink-2 transition-colors hover:bg-shelf hover:text-ink"
+          >
+            {collapsed ? (
+              <PanelLeftOpen aria-hidden="true" className="size-5" />
+            ) : (
+              <PanelLeftClose aria-hidden="true" className="size-5" />
+            )}
+            <span className="sr-only">{collapsed ? "Open menu" : "Close menu"}</span>
+          </button>
         </div>
-        <nav aria-label="Admin sections" className="flex-1 overflow-y-auto p-3">
-          <NavLinks />
+        <nav aria-label="Admin sections" className="flex-1 overflow-x-hidden overflow-y-auto p-3">
+          <NavLinks collapsed={collapsed} />
         </nav>
         <div className="flex flex-col gap-1 border-t border-line p-3 text-small">
-          <p className="truncate px-3 text-ink-3">{user?.email}</p>
+          <p className={cn("truncate px-3 text-ink-3", collapsed && "lg:sr-only")}>{user?.email}</p>
           <a
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-ink-2 hover:bg-shelf hover:text-ink"
+            title={collapsed ? "View store" : undefined}
+            className={cn(
+              "flex items-center gap-2.5 rounded-sm px-3 py-2 whitespace-nowrap text-ink-2 hover:bg-shelf hover:text-ink",
+              collapsed && "lg:justify-center lg:px-0",
+            )}
           >
-            <ExternalLink aria-hidden="true" className="size-4" /> View store
+            <ExternalLink aria-hidden="true" className="size-4 shrink-0" />
+            <span className={cn(collapsed && "lg:sr-only")}>View store</span>
           </a>
           <button
             type="button"
             onClick={signOut}
-            className="flex items-center gap-2.5 rounded-sm px-3 py-2 text-left text-ink-2 hover:bg-shelf hover:text-ink"
+            title={collapsed ? "Sign out" : undefined}
+            className={cn(
+              "flex items-center gap-2.5 rounded-sm px-3 py-2 text-left whitespace-nowrap text-ink-2 hover:bg-shelf hover:text-ink",
+              collapsed && "lg:justify-center lg:px-0",
+            )}
           >
-            <LogOut aria-hidden="true" className="size-4" /> Sign out
+            <LogOut aria-hidden="true" className="size-4 shrink-0" />
+            <span className={cn(collapsed && "lg:sr-only")}>Sign out</span>
           </button>
         </div>
       </aside>

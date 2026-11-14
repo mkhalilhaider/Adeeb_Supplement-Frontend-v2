@@ -30,18 +30,18 @@ export function InlineSearch() {
       </label>
       <Search
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-ink-3"
+        className="pointer-events-none absolute top-1/2 left-3.5 z-10 size-5 -translate-y-1/2 text-ink-3"
       />
       <input
         id="header-search"
         type="search"
         autoComplete="off"
         enterKeyHint="search"
-        placeholder="Search whey, creatine, brands…"
+        placeholder="Search products, categories, brands…"
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onFocus={() => setReady(true)}
-        className="h-11 w-full rounded-sm border border-line-strong bg-surface pr-10 pl-10 text-body outline-none placeholder:text-ink-3 focus-visible:border-ink [&::-webkit-search-cancel-button]:hidden"
+        className="h-12 w-full rounded-lg bg-night-2 pr-10 pl-11 text-body text-night-text ring-1 ring-night-line transition-colors duration-(--duration-fast) outline-none placeholder:text-night-muted hover:ring-night-muted focus:bg-surface focus:text-ink focus:ring-2 focus:ring-brand focus:placeholder:text-ink-3 [&::-webkit-search-cancel-button]:hidden"
       />
     </form>
   );

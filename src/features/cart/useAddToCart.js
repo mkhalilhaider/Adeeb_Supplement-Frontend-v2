@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { trackEvent } from "../../lib/analytics";
+import { trackEvent } from "../../lib/track";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchProduct } from "../catalog/api";
 import { catalogKeys } from "../catalog/queries";
@@ -7,6 +7,21 @@ import { isPurchasable, paidPrice, variantImage } from "../catalog/lib/product-v
 import { notify } from "../../lib/notify";
 import { useCart } from "./useCart";
 import { useCartUi } from "./cart-ui";
+
+/** The cart line for one variant of a freshly fetched product. */
+export function toCartLine(product, variant) {
+  return {
+    variantId: variant._id,
+    productId: product._id,
+    slug: product.slug,
+    name: product.name,
+    brand: product.brand?.name ?? "",
+    attributes: variant.attributes ?? {},
+    image: variantImage(variant) ?? variantImage(product.variants.find((v) => v.isDefault)) ?? null,
+    unitPrice: paidPrice(variant),
+    maxQuantity: variant.stockQuantity,
+  };
+}
 
 /**
  * Add a variant to the cart, re-checking stock first: the page may have been open a while, so
@@ -37,21 +52,7 @@ export function useAddToCart() {
         return false;
       }
 
-      const { quantity: inCart, capped } = await cart.add(
-        {
-          variantId: current._id,
-          productId: fresh._id,
-          slug: fresh.slug,
-          name: fresh.name,
-          brand: fresh.brand?.name ?? "",
-          attributes: current.attributes ?? {},
-          image:
-            variantImage(current) ?? variantImage(fresh.variants.find((v) => v.isDefault)) ?? null,
-          unitPrice: paidPrice(current),
-          maxQuantity: current.stockQuantity,
-        },
-        quantity,
-      );
+      const { quantity: inCart, capped } = await cart.add(toCartLine(fresh, current), quantity);
 
       if (capped) {
         notify.info(`Only ${current.stockQuantity} available`, {

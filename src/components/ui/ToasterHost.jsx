@@ -11,6 +11,9 @@ export default function ToasterHost() {
   return (
     <Toaster
       position="bottom-center"
+      visibleToasts={3}
+      // Confirmations are quick to read; errors stay a little longer.
+      duration={2800}
       // Sit above the phone tab bar / sticky buy bar.
       offset={{ bottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}
       mobileOffset={{ bottom: "calc(4.5rem + env(safe-area-inset-bottom))" }}

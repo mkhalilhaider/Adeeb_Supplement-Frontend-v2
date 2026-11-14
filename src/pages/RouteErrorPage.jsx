@@ -32,8 +32,8 @@ export default function RouteErrorPage() {
   return (
     <section role="alert" className="page-container py-20 md:py-28">
       <title>Something went wrong | Adeeb Supplement</title>
-      <p className="label-mono text-ink-3">{chunk ? "Update available" : "Error"}</p>
-      <h1 className="mt-3 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
+      <p className="label-caps text-ink-3">{chunk ? "Update available" : "Error"}</p>
+      <h1 className="mt-3 text-[2.75rem] font-display md:text-[4rem]">
         {chunk
           ? "The site was just updated"
           : offline
@@ -51,9 +51,14 @@ export default function RouteErrorPage() {
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink transition-colors duration-(--duration-fast) hover:bg-brand-hover"
+          className="glide inline-flex h-12 items-center rounded-md bg-brand px-6 font-semibold text-ink hover:bg-brand-hover active:scale-[0.97]"
         >
-          Reload page
+          <span className="glide-label">
+            <span className="glide-icon glide-auto" aria-hidden="true">
+              →
+            </span>
+            Reload page
+          </span>
         </button>
         <Link
           to="/"

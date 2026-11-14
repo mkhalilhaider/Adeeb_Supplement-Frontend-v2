@@ -2,7 +2,7 @@ import { env } from "../config/env";
 
 /**
  * Google Analytics 4 (VITE_GA_ID) and Meta Pixel (VITE_META_PIXEL_ID), both optional.
- * Scripts load only after the page is idle (never delaying the store), never on admin pages,
+ * Scripts load only after the first interaction or 9 s (never delaying the store), never on admin pages,
  * and events sent before that are queued by the standard snippets.
  */
 
@@ -51,8 +51,18 @@ function start() {
       addScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(env.gaId)}`);
     if (env.metaPixelId) addScript("https://connect.facebook.net/en_US/fbevents.js");
   };
-  if ("requestIdleCallback" in window) window.requestIdleCallback(load, { timeout: 4000 });
-  else setTimeout(load, 2500);
+  // Third-party scripts are heavy (~380 KB, ~2 s of main-thread work on a phone), so they wait
+  // for the visitor's first scroll, tap, click or key press, or 9 seconds — whichever comes
+  // first — and never compete with the page loading. Calls made before then are queued.
+  const events = ["pointerdown", "keydown", "scroll", "touchstart"];
+  let timer = 0;
+  const go = () => {
+    window.clearTimeout(timer);
+    events.forEach((e) => window.removeEventListener(e, go));
+    load();
+  };
+  events.forEach((e) => window.addEventListener(e, go, { once: true, passive: true }));
+  timer = window.setTimeout(go, 9000);
 }
 
 /** One page view per route change (call from the store layouts). */

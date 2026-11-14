@@ -11,6 +11,7 @@ import { errorMessage } from "../../lib/api/errors";
 import { normalizePkPhone } from "../../lib/format";
 import { useForm } from "../../lib/use-form";
 import { useSession } from "../../features/auth/session-store";
+import { notify } from "../../lib/notify";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -75,6 +76,7 @@ export default function ContactPage() {
         message: v.message.trim(),
       });
       setSent(true);
+      notify.success("Message sent — we'll get back to you soon");
     } catch (err) {
       setError(errorMessage(err));
     } finally {
@@ -93,9 +95,7 @@ export default function ContactPage() {
         className="pt-4 md:pt-6"
         items={[{ label: "Home", to: "/" }, { label: "Contact" }]}
       />
-      <h1 className="mt-4 text-h1 font-extrabold uppercase font-condensed md:text-5xl">
-        Contact us
-      </h1>
+      <h1 className="mt-4 text-[2.75rem] font-display md:text-[4rem]">Contact us</h1>
       <p className="mt-2 max-w-[56ch] text-ink-2">
         Questions about a product, your order or the right supplement for your goal? WhatsApp is the
         fastest way to reach us.

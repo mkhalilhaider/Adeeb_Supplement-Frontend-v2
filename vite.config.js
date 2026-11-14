@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 const CORE_UI = new RegExp(
   [
-    String.raw`/src/components/ui/(Button|Spinner|CloudImage|Skeleton|States|Breadcrumbs|Rating|Price|QuantityStepper)\.jsx$`,
+    String.raw`/src/components/ui/(Button|Spinner|CloudImage|Skeleton|States|Breadcrumbs|Price|QuantityStepper)\.jsx$`,
     String.raw`/src/lib/(cn|format|cloudinary|hooks)\.js$`,
     String.raw`/src/features/catalog/lib/product-view\.js$`,
     String.raw`/lucide-react/dist/esm/(shared/|Icon\.mjs|createLucideIcon\.mjs|context\.mjs)`,
@@ -16,7 +16,7 @@ const RARE_PAGES =
 
 /**
  * Run the Vercel functions in /api inside the dev server, with every variable from .env and
- * .env.local (not only VITE_ ones) — so the Google reviews, link previews and sitemap can be
+ * .env.local (not only VITE_ ones) — so the link previews and sitemap can be
  * tried locally. Server-only keys stay on the Node side; nothing is exposed to the browser.
  */
 function vercelFunctionsDev() {
@@ -29,9 +29,7 @@ function vercelFunctionsDev() {
         if (process.env[key] === undefined && value) process.env[key] = value;
       }
       server.middlewares.use(async (req, res, next) => {
-        const match = /^\/(?:api\/(google-reviews|preview|sitemap)|(sitemap)\.xml)(?:\?|$)/.exec(
-          req.url ?? "",
-        );
+        const match = /^\/(?:api\/(preview|sitemap)|(sitemap)\.xml)(?:\?|$)/.exec(req.url ?? "");
         if (!match) return next();
         try {
           const fn = await server.ssrLoadModule(`/api/${match[1] ?? match[2]}.js`);

@@ -38,7 +38,7 @@ const ConfirmDialog = lazy(() =>
 function Detail({ label, children }) {
   return (
     <div>
-      <dt className="label-mono text-ink-3">{label}</dt>
+      <dt className="label-caps text-ink-3">{label}</dt>
       <dd className="mt-1">{children}</dd>
     </div>
   );
@@ -211,7 +211,7 @@ function OrderRow({ order, onChange }) {
             {options.length > 0 && (
               <div className="flex items-end gap-2">
                 <label className="flex flex-col gap-1 text-small">
-                  <span className="label-mono text-ink-3">Change status</span>
+                  <span className="label-caps text-ink-3">Change status</span>
                   <Select
                     value={target}
                     onChange={(e) => setTarget(e.target.value)}

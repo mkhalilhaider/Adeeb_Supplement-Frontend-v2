@@ -13,23 +13,19 @@ export function SectionHeading({ eyebrow, index, title, as: Tag = "h2", action, 
     <div className={cn("flex items-end justify-between gap-4", className)}>
       <div>
         {(eyebrow || index != null) && (
-          <p className="flex items-center gap-2.5 label-mono text-ink-3">
+          <p className="flex items-center gap-2.5 label-caps text-brand-ink">
             {index != null && <span className="text-ink">{String(index).padStart(2, "0")}</span>}
-            <span aria-hidden="true" className="h-px w-6 bg-ink" />
             {eyebrow}
           </p>
         )}
-        <Tag
-          id={id}
-          className="mt-2 text-h2 font-extrabold uppercase font-condensed md:text-[2rem] md:leading-tight"
-        >
+        <Tag id={id} className="mt-2 text-[2.5rem] font-display md:text-[3.25rem] lg:text-[4rem]">
           {title}
         </Tag>
       </div>
       {action && (
         <Link
           to={action.to}
-          className="group inline-flex shrink-0 items-center gap-1.5 border-b border-ink pb-0.5 text-small font-semibold"
+          className="group inline-flex shrink-0 items-center gap-1.5 pb-1 text-small font-bold hover:text-brand-ink md:text-body"
         >
           {action.label}
           <ArrowRight

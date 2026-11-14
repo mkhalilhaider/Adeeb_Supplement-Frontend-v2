@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router";
-import { trackPageView } from "../../lib/analytics";
+import { trackPageView } from "../../lib/track";
 
 /** Sends a page view on every route change (renders nothing). */
 export function PageViews() {

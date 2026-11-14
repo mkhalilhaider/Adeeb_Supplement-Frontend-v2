@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { Checkbox, Input } from "../../../components/ui/Input";
 import { Button } from "../../../components/ui/Button";
 import { cn } from "../../../lib/cn";
@@ -26,7 +27,7 @@ function RadioRow({ name, value, checked, onChange, children }) {
 function Section({ legend, children }) {
   return (
     <fieldset className="border-t border-line py-5 first:border-t-0 first:pt-0">
-      <legend className="float-left mb-3 w-full label-mono text-ink-3">{legend}</legend>
+      <legend className="float-left mb-3 w-full label-caps text-ink">{legend}</legend>
       <div className="clear-both">{children}</div>
     </fieldset>
   );
@@ -95,7 +96,20 @@ function PriceRange({ min, max, onApply }) {
  */
 export function FilterPanel({ state, base, taxonomy, onChange, idPrefix = "f", className }) {
   const [brandQuery, setBrandQuery] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
   const preset = matchPricePreset(state);
+  const currentCategory = base.category ?? state.category;
+  // On a category page the category is the page itself: picking another opens that page,
+  // keeping the other filters (brand, price, sort) and starting again from page 1.
+  const pickCategory = (slug) => {
+    if (!base.category) return onChange({ category: slug || undefined });
+    const params = new URLSearchParams(location.search);
+    params.delete("page");
+    params.delete("category");
+    const qs = params.toString();
+    navigate(`${slug ? `/category/${slug}` : "/shop"}${qs ? `?${qs}` : ""}`);
+  };
   const hasCustomPrice = (state.min != null || state.max != null) && !preset;
   const brands = brandQuery
     ? taxonomy.brands.filter((b) => b.name.toLowerCase().includes(brandQuery.toLowerCase()))
@@ -103,29 +117,27 @@ export function FilterPanel({ state, base, taxonomy, onChange, idPrefix = "f", c
 
   return (
     <div className={cn("flex flex-col", className)}>
-      {!base.category && (
-        <Section legend="Category">
+      <Section legend="Category">
+        <RadioRow
+          name={`${idPrefix}-category`}
+          value=""
+          checked={!currentCategory}
+          onChange={() => pickCategory("")}
+        >
+          All categories
+        </RadioRow>
+        {taxonomy.categories.map((c) => (
           <RadioRow
+            key={c._id}
             name={`${idPrefix}-category`}
-            value=""
-            checked={!state.category}
-            onChange={() => onChange({ category: undefined })}
+            value={c.slug}
+            checked={currentCategory === c.slug}
+            onChange={() => pickCategory(c.slug)}
           >
-            All categories
+            {c.name}
           </RadioRow>
-          {taxonomy.categories.map((c) => (
-            <RadioRow
-              key={c._id}
-              name={`${idPrefix}-category`}
-              value={c.slug}
-              checked={state.category === c.slug}
-              onChange={() => onChange({ category: c.slug })}
-            >
-              {c.name}
-            </RadioRow>
-          ))}
-        </Section>
-      )}
+        ))}
+      </Section>
 
       {!base.brand && (
         <Section legend="Brand">

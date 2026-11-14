@@ -8,6 +8,7 @@ import { AuthShell, FormNotice } from "../../features/auth/components/AuthShell"
 import { GOOGLE_RETURN_KEY } from "../../features/auth/components/GoogleButton";
 import { safeReturnTo } from "../../features/auth/lib/return-to";
 import { useSession } from "../../features/auth/session-store";
+import { notify } from "../../lib/notify";
 
 /** Read and remove the tokens the backend put in the URL hash (never left in history). */
 function takeTokensFromHash() {
@@ -74,6 +75,7 @@ export default function GoogleCallbackPage() {
         if (!active) return;
         if (result) {
           signIn(result);
+          notify.success(result.user?.firstName ? `Welcome, ${result.user.firstName}` : "Welcome");
           navigate(result.returnTo, { replace: true });
         } else if (tokenStorage.hasSession()) {
           // Reloaded after the hash was cleared: the session is already stored.

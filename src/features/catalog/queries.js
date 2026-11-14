@@ -46,8 +46,9 @@ export function useProduct(slug) {
   return useQuery({
     queryKey: catalogKeys.product(slug),
     queryFn: ({ signal }) => fetchProduct(slug, { signal }),
-    initialData: () => findProductInLists(queryClient, slug)?.product,
-    initialDataUpdatedAt: () => findProductInLists(queryClient, slug)?.updatedAt,
+    // Lists carry a slimmer product (no description or SEO text), so show the list copy at
+    // once while the full product loads, instead of treating it as the full product.
+    placeholderData: () => findProductInLists(queryClient, slug)?.product,
     enabled: Boolean(slug),
   });
 }

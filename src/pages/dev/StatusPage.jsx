@@ -7,7 +7,7 @@ import { useSession } from "../../features/auth/session-store";
 function Row({ label, value, ok }) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-line py-3">
-      <span className="label-mono text-ink-3">{label}</span>
+      <span className="label-caps text-ink-3">{label}</span>
       <span className={ok === false ? "text-danger" : ok ? "text-success" : "text-ink"}>
         {value}
       </span>
@@ -32,7 +32,7 @@ export default function StatusPage() {
     <section className="page-container max-w-2xl py-12">
       <title>Dev status</title>
       <meta name="robots" content="noindex" />
-      <h1 className="text-h1 font-extrabold uppercase font-condensed">Foundation status</h1>
+      <h1 className="text-[2.75rem] font-display">Foundation status</h1>
       <div className="mt-6">
         <Row label="API base" value={env.apiUrl} />
         <Row

@@ -8,29 +8,9 @@ export const fetchReels = ({ signal } = {}) =>
   getData("/reels", { query: { limit: 10 }, signal }).then((d) => d?.reels ?? []);
 
 /**
- * Live Google reviews from our own serverless function (/api/google-reviews), one page at a
- * time. Same-origin, so it is a plain fetch rather than the backend client.
- * @returns {Promise<{ rating: number, total: number, placeUrl: string, reviews: GoogleReview[], next: string|null }>}
+ * Reviews copied from Google by the admin (Admin → Reviews), in the admin's order, with the
+ * rating summary. Each may carry the product it's about (name, slug, one photo, price).
+ * @returns {Promise<{ items: any[], summary: { count: number, average: number|null } }>}
  */
-export async function fetchGoogleReviews(pageToken, { signal } = {}) {
-  const url = pageToken
-    ? `/api/google-reviews?page=${encodeURIComponent(pageToken)}`
-    : "/api/google-reviews";
-  const response = await fetch(url, { signal, headers: { Accept: "application/json" } });
-  const type = response.headers.get("content-type") ?? "";
-  if (!response.ok || !type.includes("application/json")) {
-    throw new Error(`Google reviews unavailable (${response.status})`);
-  }
-  return response.json();
-}
-
-/**
- * @typedef {object} GoogleReview
- * @property {string} id
- * @property {string} author
- * @property {string} [avatar]
- * @property {number} rating
- * @property {string} date       relative ("2 weeks ago"), as Google shows it
- * @property {string} text
- * @property {string} [link]
- */
+export const fetchTestimonials = ({ signal } = {}) =>
+  getData("/testimonials", { query: { limit: 24 }, signal });

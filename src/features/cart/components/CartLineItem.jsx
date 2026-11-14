@@ -45,7 +45,7 @@ export function CartLineItem({
     <li
       ref={itemRef}
       className={cn(
-        "flex gap-3 border-b border-line py-4 transition-colors duration-700",
+        "flex gap-3 border-b border-line py-4 transition-colors duration-700 last:border-b-0",
         highlight && "bg-brand/10",
       )}
     >
@@ -68,7 +68,7 @@ export function CartLineItem({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             {(line.brand || check?.brand) && (
-              <p className="truncate label-mono text-ink-3">{line.brand || check.brand}</p>
+              <p className="truncate label-caps text-ink-3">{line.brand || check.brand}</p>
             )}
             <Name
               {...(href ? { to: href } : {})}

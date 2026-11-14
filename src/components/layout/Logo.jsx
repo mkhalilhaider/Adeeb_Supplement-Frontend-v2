@@ -10,7 +10,7 @@ export function Logo({ className, inverted = false }) {
       </svg>
       <span
         className={cn(
-          "text-[23px] leading-none font-extrabold tracking-wide font-condensed",
+          "text-[28px] font-display leading-none tracking-[0.01em]",
           inverted ? "text-paper" : "text-ink",
         )}
       >
@@ -18,8 +18,8 @@ export function Logo({ className, inverted = false }) {
       </span>{" "}
       <span
         className={cn(
-          "mt-0.5 label-mono text-[10px] tracking-[0.22em]",
-          inverted ? "text-night-muted" : "text-brand-ink",
+          "mt-1 label-caps text-[10px] tracking-[0.22em]",
+          inverted ? "text-brand" : "text-brand-ink",
         )}
       >
         Supplement

@@ -134,6 +134,16 @@ export const sendBroadcast = (body) =>
   api.post("/marketing/broadcast", body, { timeout: 10 * 60_000 });
 
 /** Query keys (all private: dropped on logout). */
+// ── Reviews from Google (homepage) ─────────────────────────────────────────────
+export const fetchAdminTestimonials = ({ signal } = {}) =>
+  getData("/testimonials/admin", { signal });
+export const createTestimonial = (body) => getData("/testimonials/admin", { method: "POST", body });
+export const updateTestimonial = (id, body) =>
+  getData(`/testimonials/admin/${id}`, { method: "PATCH", body });
+export const deleteTestimonial = (id) => getData(`/testimonials/admin/${id}`, { method: "DELETE" });
+export const reorderTestimonials = (ids) =>
+  getData("/testimonials/admin/reorder", { method: "POST", body: { ids } });
+
 export const adminKeys = {
   all: ["admin"],
   dashboard: ["admin", "dashboard"],
@@ -147,6 +157,26 @@ export const adminKeys = {
   abandoned: ["admin", "abandoned"],
   wishlists: (page) => ["admin", "wishlists", page],
   reels: ["admin", "reels"],
+  testimonials: ["admin", "testimonials"],
   seo: ["admin", "seo"],
   marketing: ["admin", "marketing"],
+  promo: ["admin", "promo"],
+  homepage: ["admin", "homepage"],
+  whatsapp: ["admin", "whatsapp"],
 };
+
+/** Floating WhatsApp button and greeting settings. */
+export const fetchWhatsAppWidget = ({ signal } = {}) =>
+  getData("/whatsapp-widget/admin", { signal });
+export const saveWhatsAppWidget = (body) =>
+  getData("/whatsapp-widget/admin", { method: "PUT", body });
+
+/** Homepage content (hero, menu feature, goal tile, spotlight); populated for the form. */
+export const fetchHomepageContent = ({ signal } = {}) =>
+  getData("/homepage-content/admin", { signal });
+export const saveHomepageContent = (body) =>
+  getData("/homepage-content/admin", { method: "PUT", body });
+
+/** Promo popup settings (one record). */
+export const fetchPromoPopup = ({ signal } = {}) => getData("/promo-popup/admin", { signal });
+export const savePromoPopup = (body) => getData("/promo-popup/admin", { method: "PUT", body });

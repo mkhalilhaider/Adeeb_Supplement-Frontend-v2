@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { Heart } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { useWishlist } from "./wishlist-store";
@@ -10,6 +11,7 @@ import { useWishlist } from "./wishlist-store";
 export function WishlistButton({ card, className }) {
   const saved = useWishlist((s) => s.items.some((c) => c.id === card.id));
   const toggle = useWishlist((s) => s.toggle);
+  const navigate = useNavigate();
 
   return (
     <button
@@ -17,7 +19,12 @@ export function WishlistButton({ card, className }) {
       aria-pressed={saved}
       aria-label={saved ? "Saved to wishlist" : "Save to wishlist"}
       title={saved ? "Remove from wishlist" : "Save to wishlist"}
-      onClick={() => toggle(card)}
+      onClick={() => {
+        const nowSaved = toggle(card);
+        import("./wishlist-toasts").then(({ wishlistToast }) =>
+          wishlistToast(nowSaved, { view: () => navigate("/wishlist"), undo: () => toggle(card) }),
+        );
+      }}
       className={cn(
         "flex size-12 shrink-0 items-center justify-center rounded-md border transition-colors duration-(--duration-fast)",
         saved ? "border-ink bg-surface" : "border-line-strong bg-surface hover:border-ink",

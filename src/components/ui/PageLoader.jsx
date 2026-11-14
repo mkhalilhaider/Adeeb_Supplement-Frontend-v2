@@ -14,7 +14,7 @@ export function PageLoader({ label = "Loading", className = "" }) {
           aria-hidden="true"
           className="size-4 animate-spin rounded-full border-2 border-line-strong border-t-ink"
         />
-        <span className="label-mono">{label}</span>
+        <span className="label-caps">{label}</span>
       </span>
     </div>
   );

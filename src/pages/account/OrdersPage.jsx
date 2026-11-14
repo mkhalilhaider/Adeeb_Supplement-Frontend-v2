@@ -58,7 +58,7 @@ export default function OrdersPage() {
   return (
     <div className="flex flex-col gap-6">
       <Seo title="My orders" noIndex />
-      <h1 className="text-h2 font-extrabold uppercase font-condensed">
+      <h1 className="text-[2rem] font-display md:text-[2.5rem]">
         Orders{list.length ? ` (${list.length})` : ""}
       </h1>
       {body}

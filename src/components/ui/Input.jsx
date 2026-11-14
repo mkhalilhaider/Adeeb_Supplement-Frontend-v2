@@ -3,7 +3,7 @@ import { cn } from "../../lib/cn";
 
 /** Shared look for text-like controls: 48px tall, 4px radius, ink focus, red when invalid. */
 export const controlClasses =
-  "w-full rounded-sm border border-line-strong bg-surface text-ink placeholder:text-ink-3 " +
+  "w-full rounded-md border border-line-strong bg-surface text-ink placeholder:text-ink-3 " +
   "transition-colors duration-(--duration-fast) outline-none " +
   "hover:border-ink-3 focus-visible:border-ink focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ink " +
   "aria-invalid:border-danger aria-invalid:focus-visible:outline-danger " +

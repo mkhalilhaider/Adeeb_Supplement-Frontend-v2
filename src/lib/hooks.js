@@ -47,12 +47,15 @@ export function useOutsideClick(refs, handler, active = true) {
 /**
  * True once the element has come within `rootMargin` of the viewport (then stays true).
  * Used to load below-the-fold sections only when they're about to be seen.
+ *
+ * The returned ref is a callback ref, so it also works when the element only appears after a
+ * later render (e.g. a section that renders nothing until its data arrives).
  */
 export function useInViewOnce({ rootMargin = "400px 0px" } = {}) {
-  const ref = useRef(null);
+  const [node, setNode] = useState(/** @type {Element|null} */ (null));
   const [seen, setSeen] = useState(false);
   useEffect(() => {
-    if (seen || !ref.current) return undefined;
+    if (seen || !node) return undefined;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) {
@@ -62,10 +65,10 @@ export function useInViewOnce({ rootMargin = "400px 0px" } = {}) {
       },
       { rootMargin },
     );
-    observer.observe(ref.current);
+    observer.observe(node);
     return () => observer.disconnect();
-  }, [seen, rootMargin]);
-  return [ref, seen];
+  }, [node, seen, rootMargin]);
+  return [setNode, seen];
 }
 
 /**
