@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowDown, ArrowUp, Star } from "lucide-react";
+import { ArrowDown, ArrowUp, ImagePlus, Star, X } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { Field } from "../../components/ui/Field";
 import { Input, Select, Textarea } from "../../components/ui/Input";
@@ -8,6 +8,7 @@ import { Skeleton } from "../../components/ui/Skeleton";
 import { ErrorState } from "../../components/ui/States";
 import { errorMessage } from "../../lib/api/errors";
 import { formatDate } from "../../lib/format";
+import { cloudinaryUrl } from "../../lib/cloudinary";
 import { cn } from "../../lib/cn";
 import { notify } from "../../lib/notify";
 import { useForm } from "../../lib/use-form";
@@ -19,6 +20,7 @@ import {
   fetchAdminTestimonials,
   reorderTestimonials,
   updateTestimonial,
+  uploadImage,
 } from "../../features/admin/api";
 import { AdminHeader, EmptyRow, Panel, Table, Toggle } from "../../features/admin/ui";
 import { adminQuery, td, th } from "../../features/admin/format";
@@ -58,6 +60,79 @@ function Stars({ value, onChange }) {
         </button>
       ))}
     </div>
+  );
+}
+
+const MAX_PHOTOS = 6;
+
+/**
+ * The photos the reviewer posted with the review (save them from Google, then upload here).
+ * Thumbnails with a remove button, plus an upload button (several at once, up to 6 in all).
+ */
+function PhotosField({ photos, onChange }) {
+  const [busy, setBusy] = useState(false);
+  const upload = async (files) => {
+    const room = MAX_PHOTOS - photos.length;
+    const chosen = [...files].slice(0, room);
+    if (!chosen.length) return;
+    setBusy(true);
+    try {
+      const added = [];
+      for (const file of chosen) {
+        const { image } = await uploadImage(file);
+        added.push({ url: image.url, publicId: image.publicId ?? "" });
+      }
+      onChange([...photos, ...added]);
+      if (files.length > room) notify.info(`Up to ${MAX_PHOTOS} photos per review`);
+    } catch (err) {
+      notify.error(err);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <fieldset className="flex flex-col gap-1.5 md:col-span-2">
+      <legend className="mb-1.5 text-small font-semibold">Photos from the review</legend>
+      <div className="flex flex-wrap items-center gap-2">
+        {photos.map((p, i) => (
+          <div key={p.url} className="relative">
+            <img
+              src={cloudinaryUrl(p.url, { w: 160, h: 160, crop: "fill" })}
+              alt={`Review upload ${i + 1}`}
+              className="size-20 rounded-md border border-line object-cover"
+            />
+            <button
+              type="button"
+              aria-label={`Remove review upload ${i + 1}`}
+              onClick={() => onChange(photos.filter((x) => x !== p))}
+              className="absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full bg-ink text-white shadow hover:bg-danger"
+            >
+              <X aria-hidden="true" className="size-3.5" />
+            </button>
+          </div>
+        ))}
+        {photos.length < MAX_PHOTOS && (
+          <label className="flex size-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-md border border-dashed border-line-strong text-[12px] font-semibold text-ink-2 hover:bg-shelf has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ink">
+            <ImagePlus aria-hidden="true" className="size-5" />
+            {busy ? "Uploading…" : "Add"}
+            <input
+              type="file"
+              accept="image/png,image/webp,image/jpeg"
+              multiple
+              disabled={busy}
+              className="sr-only"
+              onChange={(e) => {
+                upload(e.target.files ?? []);
+                e.target.value = "";
+              }}
+            />
+          </label>
+        )}
+      </div>
+      <p className="text-small text-ink-3">
+        Optional, up to {MAX_PHOTOS}. The first one becomes the card picture on the homepage.
+      </p>
+    </fieldset>
   );
 }
 
@@ -106,6 +181,7 @@ export default function AdminReviewsPage() {
   const [rating, setRating] = useState(5);
   const [visible, setVisible] = useState(true);
   const [productPages, setProductPages] = useState("all");
+  const [photos, setPhotos] = useState(/** @type {{url: string, publicId: string}[]} */ ([]));
   const [editing, setEditing] = useState(/** @type {any} */ (null));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -114,10 +190,11 @@ export default function AdminReviewsPage() {
   const refresh = () => queryClient.invalidateQueries({ queryKey: adminKeys.testimonials });
 
   const resetForm = () => {
-    Object.entries(blank()).forEach(([k, val]) => form.set(k, val));
+    form.reset(blank());
     setRating(5);
     setVisible(true);
     setProductPages("all");
+    setPhotos([]);
     setEditing(null);
     setError("");
   };
@@ -130,6 +207,7 @@ export default function AdminReviewsPage() {
     setRating(t.rating);
     setVisible(t.isVisible !== false);
     setProductPages(t.productPages ?? "all");
+    setPhotos(t.photos ?? []);
     setEditing(t);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -145,6 +223,7 @@ export default function AdminReviewsPage() {
       product: v.product || null,
       isVisible: visible,
       productPages,
+      photos,
       source: "google",
     };
     try {
@@ -210,7 +289,7 @@ export default function AdminReviewsPage() {
     <div className="max-w-6xl">
       <AdminHeader
         title="Reviews"
-        description="Copy your Google reviews here. Choose where each one shows: the homepage (in this order) and product pages. Link a product to show its photo and a link to it."
+        description="Copy your Google reviews here, with any photos the reviewer posted. Choose where each one shows: the homepage (in this order) and product pages. Link a product to show its photo and a link to it."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -292,6 +371,7 @@ export default function AdminReviewsPage() {
               </Select>
             )}
           </Field>
+          <PhotosField photos={photos} onChange={setPhotos} />
           {error && (
             <p role="alert" className="text-small text-danger md:col-span-2">
               {error}
@@ -369,6 +449,18 @@ export default function AdminReviewsPage() {
                   </td>
                   <td className={`${td} max-w-xs text-ink-2`}>
                     <span className="line-clamp-2">{t.text}</span>
+                    {t.photos?.length > 0 && (
+                      <span className="mt-1.5 flex gap-1">
+                        {t.photos.map((p) => (
+                          <img
+                            key={p.url}
+                            src={cloudinaryUrl(p.url, { w: 160, h: 160, crop: "fill" })}
+                            alt=""
+                            className="size-8 rounded-sm border border-line object-cover"
+                          />
+                        ))}
+                      </span>
+                    )}
                   </td>
                   <td className={`${td} text-small`}>
                     {t.product ? t.product.name : <span className="text-ink-3">—</span>}

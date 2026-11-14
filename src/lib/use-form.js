@@ -60,7 +60,15 @@ export function useForm(init) {
 
   const getValue = useCallback((name) => latest.current[name], []);
 
-  return { values, errors, field, set, getValue, handleSubmit };
+  /** Start over with these values: no errors, and no re-checking until the next submit. */
+  const reset = useCallback((next) => {
+    latest.current = next;
+    validator.current = null;
+    setValues(next);
+    setErrors({});
+  }, []);
+
+  return { values, errors, field, set, getValue, handleSubmit, reset };
 }
 
 /** Drop empty messages so `Object.keys(errors)` means "fields with a problem". */
