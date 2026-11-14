@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Camera, Star } from "lucide-react";
 import { CloudImage } from "../../components/ui/CloudImage";
 import { site } from "../../config/site";
 import { formatPrice } from "../../lib/format";
 import { fetchTestimonials } from "./api";
 import { Slider } from "./Slider";
 import { timeAgo } from "../reviews/store-reviews";
+import { ReviewPhotoViewer } from "../reviews/ReviewPhotos";
 
 function Stars({ value, className = "text-[15px]" }) {
   const n = Math.round(value);
@@ -21,17 +22,41 @@ function Stars({ value, className = "text-[15px]" }) {
 
 /**
  * One review. The whole card is a link: to the product it's about, or — for a review of the
- * store itself — to the Google listing. "Read more" sits above that link so it still works.
+ * store itself — to the Google listing. "Read more" and the reviewer's photo sit above that link
+ * so they still work.
  */
 function ReviewCard({ review }) {
   const [open, setOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(/** @type {number|null} */ (null));
   const product = review.product;
+  const photos = review.photos ?? [];
   const long = review.text.length > 220;
   // Stretches the card's one link over the whole card.
   const cover = "after:absolute after:inset-0 after:z-[1] after:content-['']";
   return (
     <article className="group/card relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface transition-[translate,box-shadow,border-color] duration-(--duration-base) ease-(--ease-out-soft) hover:border-ink/15 md:hover:-translate-y-1.5 md:hover:shadow-[0_22px_40px_-18px_rgb(0_0_0/0.28),0_2px_6px_rgb(0_0_0/0.04)]">
-      {product ? (
+      {photos.length > 0 ? (
+        // The reviewer's own photo; opens the photo viewer (sits above the card link).
+        <button
+          type="button"
+          onClick={() => setPhotoIndex(0)}
+          className="relative z-[2] block aspect-[4/3] overflow-hidden border-b border-line bg-shelf focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink"
+        >
+          <CloudImage
+            src={photos[0].url}
+            alt={`Photo from ${review.name}'s review — open larger`}
+            ratio={null}
+            fit="cover"
+            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 82vw"
+            className="size-full"
+            imgClassName="transition-transform duration-(--duration-sheet) ease-(--ease-out-soft) group-hover/card:scale-[1.05]"
+          />
+          <span className="absolute bottom-2.5 left-2.5 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-bold text-white">
+            <Camera aria-hidden="true" className="size-3.5" />
+            Customer photo{photos.length > 1 ? ` · +${photos.length - 1}` : ""}
+          </span>
+        </button>
+      ) : product ? (
         <div className="flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-line bg-[radial-gradient(70%_60%_at_50%_55%,#ffffff,var(--color-shelf))]">
           {product.image?.url && (
             <CloudImage
@@ -119,6 +144,14 @@ function ReviewCard({ review }) {
           </span>
         </footer>
       </div>
+      {photos.length > 0 && (
+        <ReviewPhotoViewer
+          photos={photos}
+          name={review.name}
+          index={photoIndex}
+          onIndexChange={setPhotoIndex}
+        />
+      )}
     </article>
   );
 }

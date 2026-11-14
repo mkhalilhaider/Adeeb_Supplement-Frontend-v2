@@ -7,6 +7,7 @@ import { Rating } from "../../components/ui/Rating";
 import { SkeletonText } from "../../components/ui/Skeleton";
 import { EmptyState, ErrorState } from "../../components/ui/States";
 import { site } from "../../config/site";
+import { ReviewPhotoStrip } from "./ReviewPhotos";
 import { fetchProductStoreReviews, productStoreReviewsKey, timeAgo } from "./store-reviews";
 
 const PAGE = 5;
@@ -124,6 +125,7 @@ export function ReviewsSection({ productId }) {
                 <li key={review._id} className="border-b border-line py-5 first:pt-0">
                   <Rating value={review.rating} size={14} single />
                   <p className="mt-2 whitespace-pre-line text-ink-2">{review.text}</p>
+                  <ReviewPhotoStrip photos={review.photos} name={review.name} className="mt-3" />
                   <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-ink-3">
                     <span className="font-semibold text-ink">{review.name}</span>
                     {review.source === "google" && (
