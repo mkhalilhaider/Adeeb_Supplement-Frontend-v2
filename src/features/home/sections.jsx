@@ -132,7 +132,7 @@ function GoalTile({ category, goal, big = false }) {
         className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-card bg-night-deep p-5 text-white transition-[translate,box-shadow] duration-(--duration-base) ease-(--ease-out-soft) md:p-7 md:hover:-translate-y-1.5 md:hover:shadow-[0_22px_40px_-16px_rgb(0_0_0/0.45)] lg:min-h-0"
         style={{
           backgroundImage:
-            "radial-gradient(70% 55% at 60% 30%, rgb(243 107 39 / 0.35), rgb(243 107 39 / 0) 70%)",
+            "radial-gradient(70% 55% at 50% 30%, rgb(243 107 39 / 0.35), rgb(243 107 39 / 0) 70%)",
         }}
       >
         <img
@@ -140,7 +140,8 @@ function GoalTile({ category, goal, big = false }) {
           alt=""
           loading="lazy"
           decoding="async"
-          className="absolute top-5 right-5 h-[38%] w-auto drop-shadow-[0_18px_24px_rgb(0_0_0/0.6)] transition-transform duration-(--duration-sheet) ease-(--ease-out-soft) group-hover:-translate-y-1 lg:right-1/2 lg:h-[36%] lg:translate-x-1/2 lg:group-hover:translate-x-1/2"
+          // Centred over the glow at every size, like on desktop.
+          className="absolute top-6 left-1/2 h-[42%] w-auto -translate-x-1/2 drop-shadow-[0_18px_24px_rgb(0_0_0/0.6)] transition-transform duration-(--duration-sheet) ease-(--ease-out-soft) group-hover:-translate-y-1 lg:top-5 lg:h-[36%]"
         />
         <span className="relative label-caps text-brand">{category.name}</span>
         <span className="relative mt-1.5 text-[2.75rem] font-display md:text-[3.5rem]">{goal}</span>

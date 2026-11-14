@@ -79,7 +79,8 @@ export function Slider({
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div className="min-w-0 flex-1">{header}</div>
+        {/* Phones: the heading gets the full row and anything beside it drops underneath. */}
+        <div className="w-full min-w-0 sm:w-auto sm:flex-1">{header}</div>
         {headerAside}
       </div>
       <div className="relative md:px-12">
