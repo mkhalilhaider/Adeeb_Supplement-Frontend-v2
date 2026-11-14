@@ -10,10 +10,10 @@ export const site = Object.freeze({
   locale: "en-PK",
 
   contact: {
-    phone: "03102987869",
-    phoneDisplay: "0310 2987869",
-    phoneIntl: "+923102987869",
-    whatsapp: "923102987869",
+    phone: "03000447870",
+    phoneDisplay: "0300 0447870",
+    phoneIntl: "+923000447870",
+    whatsapp: "923000447870",
     email: "adeebsupplement@gmail.com",
   },
 

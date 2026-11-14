@@ -1,11 +1,9 @@
 import { Link } from "react-router";
-import { ArrowRight, Banknote, House, ShieldCheck, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { BrandIcon, WhatsAppIcon } from "../ui/BrandIcons";
 import { site, whatsappLink } from "../../config/site";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { Logo } from "./Logo";
-
-const TRUST_ICONS = { authentic: ShieldCheck, sameday: Zap, cod: Banknote, store: House };
 
 const help = [
   { to: "/track-order", label: "Track your order" },
@@ -90,21 +88,6 @@ export function Footer() {
             </Link>
           </div>
         </div>
-
-        <ul className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-          {site.trust.map((t) => {
-            const Icon = TRUST_ICONS[t.id] ?? ShieldCheck;
-            return (
-              <li
-                key={t.id}
-                className="flex h-14 items-center gap-3 rounded-card border border-night-line bg-night px-4 text-small font-bold"
-              >
-                <Icon aria-hidden="true" className="size-5 flex-none text-brand" />
-                {t.title}
-              </li>
-            );
-          })}
-        </ul>
       </div>
 
       <div className="page-container grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1.3fr]">
@@ -214,14 +197,6 @@ export function Footer() {
           </ul>
         </div>
       </div>
-
-      {/* Decorative outline wordmark. The words come from CSS (data-text) rather than the page
-          text, so screen readers and contrast checks skip it. */}
-      <p
-        aria-hidden="true"
-        data-text="Adeeb Supplement"
-        className="pointer-events-none mt-2 overflow-hidden text-center text-[10.8vw] font-display leading-[0.8] whitespace-nowrap text-transparent select-none [-webkit-text-stroke:1.5px_#2e2e2e] before:content-[attr(data-text)] lg:text-[11.5vw] 2xl:text-[176px]"
-      />
     </footer>
   );
 }

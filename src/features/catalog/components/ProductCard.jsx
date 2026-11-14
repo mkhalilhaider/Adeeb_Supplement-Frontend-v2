@@ -74,21 +74,21 @@ export function ProductCard({
             sizes={CARD_SIZES}
             priority={priority}
             trim
-            blend
+            // Blend on the element that zooms: a scaled wrapper is its own layer, so blending the
+            // image inside it would show the photo's white background as a box on hover.
             className={cn(
-              "size-full transition-[opacity,scale] duration-(--duration-sheet) ease-(--ease-out-soft) md:group-hover:scale-[1.04]",
+              "size-full mix-blend-multiply transition-[opacity,scale] duration-(--duration-sheet) ease-(--ease-out-soft) md:group-hover:scale-[1.04]",
               showSecond && "md:group-hover:opacity-0",
             )}
           />
           {showSecond && (
-            <span className="absolute inset-[8%] hidden opacity-0 transition-opacity duration-(--duration-base) group-hover:opacity-100 md:block">
+            <span className="absolute inset-[8%] hidden opacity-0 mix-blend-multiply transition-opacity duration-(--duration-base) group-hover:opacity-100 md:block">
               <CloudImage
                 src={card.secondImage.url}
                 alt=""
                 ratio={null}
                 sizes={CARD_SIZES}
                 trim
-                blend
                 className="size-full"
               />
             </span>

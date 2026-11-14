@@ -360,6 +360,70 @@
   }
 }
 
+/* Floating WhatsApp button: above the phone tab bar, higher still while a product page's sticky
+   buy bar is up, and in the corner on larger screens. */
+.wa-float {
+  bottom: calc(3.5rem + env(safe-area-inset-bottom) + 0.75rem);
+}
+[data-buybar] .wa-float {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom) + 0.75rem);
+}
+@media (width >= 48rem) {
+  .wa-float,
+  [data-buybar] .wa-float {
+    bottom: 1.5rem;
+  }
+}
+
+/* Floating WhatsApp button: a ring that grows and fades while the greeting is showing. */
+@keyframes wa-pulse {
+  from {
+    opacity: 0.9;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 1.45;
+  }
+}
+
+/* Promo popup: soft entrance and exit (transform/opacity only; the dialog centres itself with
+   the separate translate property). */
+@keyframes promo-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes promo-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes promo-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+}
+@keyframes promo-pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+@keyframes promo-sheet-in {
+  from {
+    opacity: 0.6;
+    transform: translateY(100%);
+  }
+}
+@keyframes promo-sheet-out {
+  to {
+    opacity: 0.6;
+    transform: translateY(100%);
+  }
+}
+
 @keyframes marquee {
   from {
     translate: 0 0;

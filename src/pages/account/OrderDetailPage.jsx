@@ -8,7 +8,7 @@ import { Button } from "../../components/ui/Button";
 import { CloudImage } from "../../components/ui/CloudImage";
 import { Skeleton } from "../../components/ui/Skeleton";
 import { ErrorState } from "../../components/ui/States";
-import { whatsappLink } from "../../config/site";
+import { site, whatsappLink } from "../../config/site";
 import { ApiError } from "../../lib/api/errors";
 import { cn } from "../../lib/cn";
 import { formatDate, formatPkPhone, formatPrice } from "../../lib/format";
@@ -25,7 +25,6 @@ import NotFoundPage from "../store/NotFoundPage";
 const ConfirmDialog = lazy(() =>
   import("../../components/ui/Dialog").then((m) => ({ default: m.ConfirmDialog })),
 );
-const WriteReviewDialog = lazy(() => import("../../features/reviews/components/WriteReviewDialog"));
 
 function Row({ label, value, strong, tone }) {
   return (
@@ -45,8 +44,6 @@ export default function OrderDetailPage() {
   const query = useMyOrder(orderId, queryClient);
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [cancelling, setCancelling] = useState(false);
-  const [reviewItem, setReviewItem] = useState(/** @type {any} */ (null));
-  const [reviewed, setReviewed] = useState(() => new Set());
   const [rebuying, setRebuying] = useState(false);
 
   if (query.isPending) {
@@ -134,7 +131,6 @@ export default function OrderDetailPage() {
         <ul className="mt-3 flex flex-col border-t border-line">
           {(order.items ?? []).map((item) => {
             const label = variantLabel(item);
-            const done = reviewed.has(item.productId);
             return (
               <li key={item.variantId} className="flex gap-3 border-b border-line py-4">
                 <div className="size-16 shrink-0 bg-shelf p-1">
@@ -163,18 +159,6 @@ export default function OrderDetailPage() {
                   <p className="text-ink-3">
                     {item.quantity} × {formatPrice(item.unitPrice)}
                   </p>
-                  {canReview(order) &&
-                    (done ? (
-                      <p className="text-success">Thanks for your review</p>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setReviewItem(item)}
-                        className="self-start font-semibold underline hover:text-brand-ink"
-                      >
-                        Write a review
-                      </button>
-                    ))}
                 </div>
                 <p className="shrink-0 text-small font-semibold tabular-nums">
                   {formatPrice(item.lineTotal ?? item.unitPrice * item.quantity)}
@@ -183,9 +167,17 @@ export default function OrderDetailPage() {
             );
           })}
         </ul>
-        {!canReview(order) && order.orderStatus === "pending" && (
-          <p className="mt-3 text-small text-ink-3">
-            You can review these products once the order is confirmed.
+        {canReview(order) && (
+          <p className="mt-3 text-small text-ink-2">
+            Happy with your order?{" "}
+            <a
+              href={site.google.writeReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline hover:text-brand-ink"
+            >
+              Write a review on Google
+            </a>
           </p>
         )}
       </section>
@@ -264,15 +256,6 @@ export default function OrderDetailPage() {
             cancelLabel="Keep order"
             pending={cancelling}
             onConfirm={cancel}
-          />
-        )}
-        {reviewItem && (
-          <WriteReviewDialog
-            open={Boolean(reviewItem)}
-            onOpenChange={(open) => !open && setReviewItem(null)}
-            item={reviewItem}
-            orderId={order._id}
-            onDone={(productId) => setReviewed((s) => new Set(s).add(productId))}
           />
         )}
       </Suspense>

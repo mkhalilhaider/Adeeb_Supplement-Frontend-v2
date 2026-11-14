@@ -2,7 +2,8 @@ import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { useTaxonomy } from "../../features/catalog/useTaxonomy";
 import { PRICE_PRESETS } from "../../features/catalog/lib/listing-params";
-import { cutoutSrc, LEAD_PACK } from "../../features/home/hero-packs";
+import { contentImageSrc, cutoutSrc, LEAD_PACK } from "../../features/home/hero-packs";
+import { useHomepageContent } from "../../features/home/useHomepageContent";
 
 const BRAND_LIMIT = 8;
 
@@ -21,6 +22,17 @@ function priceHref(p) {
 export default function ShopMenuPanel({ id, onNavigate }) {
   const { categories, brands } = useTaxonomy();
   const go = () => onNavigate();
+  // Featured card: from Admin → Homepage content, else the built-in lead product.
+  const set = useHomepageContent().data?.menuFeature;
+  const feature = set
+    ? { ...set, src: contentImageSrc(set, 400) }
+    : {
+        href: `/product/${LEAD_PACK.slug}`,
+        label: "Featured pick",
+        title: LEAD_PACK.short,
+        brand: LEAD_PACK.brand,
+        src: cutoutSrc(LEAD_PACK.id, 400),
+      };
 
   return (
     <div
@@ -72,7 +84,7 @@ export default function ShopMenuPanel({ id, onNavigate }) {
         </nav>
 
         <Link
-          to={`/product/${LEAD_PACK.slug}`}
+          to={feature.href}
           onClick={go}
           className="group relative flex min-h-[330px] flex-col justify-end overflow-hidden rounded-card bg-night-deep p-6 text-white"
           style={{
@@ -80,17 +92,20 @@ export default function ShopMenuPanel({ id, onNavigate }) {
               "radial-gradient(60% 60% at 70% 45%, rgb(243 107 39 / 0.4), rgb(243 107 39 / 0) 70%)",
           }}
         >
-          <img
-            src={cutoutSrc(LEAD_PACK.id, 400)}
-            alt=""
-            className="absolute top-6 right-6 h-[58%] w-auto drop-shadow-[0_18px_24px_rgb(0_0_0/0.6)] transition-transform duration-(--duration-sheet) group-hover:scale-[1.04]"
-          />
-          <span className="relative label-caps text-brand">Featured pick</span>
-          <span className="relative mt-2 max-w-[14ch] text-[2.4rem] font-display">
-            {LEAD_PACK.short}
+          {feature.src && (
+            <img
+              src={feature.src}
+              alt=""
+              className="absolute top-6 right-6 h-[58%] w-auto drop-shadow-[0_18px_24px_rgb(0_0_0/0.6)] transition-transform duration-(--duration-sheet) group-hover:scale-[1.04]"
+            />
+          )}
+          <span className="relative label-caps text-brand">{feature.label}</span>
+          <span className="relative mt-2 line-clamp-3 max-w-[14ch] text-[2.4rem] font-display leading-[0.95]">
+            {feature.title}
           </span>
           <span className="relative mt-3 flex items-center gap-1.5 text-small font-bold">
-            {LEAD_PACK.brand} · Shop now <ArrowRight aria-hidden="true" className="size-4" />
+            {feature.brand ? `${feature.brand} · ` : ""}Shop now{" "}
+            <ArrowRight aria-hidden="true" className="size-4" />
           </span>
         </Link>
       </div>

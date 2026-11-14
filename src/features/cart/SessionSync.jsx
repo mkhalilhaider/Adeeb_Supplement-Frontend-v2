@@ -16,23 +16,30 @@ import { cartKeys } from "./useCart";
  * rest. Adding on the server *adds* to the quantity, so each line must be sent exactly once:
  * tabs take turns (Web Lock), re-read the shared guest cart first, and drop each line as soon
  * as it is sent (a tab closed halfway can't resend the finished ones).
+ *
+ * A line the store refuses (sold out, removed) is dropped with a note; a line that failed
+ * because the connection dropped stays on the device and is merged on the next try, so
+ * nothing is lost to a bad signal.
+ * @returns {Promise<number>} lines now in the account cart
  */
 async function mergeGuestCart(queryClient) {
   const failed = [];
-  let merged = false;
+  let moved = 0;
   await withCrossTabLock(async () => {
     await useGuestCart.persist.rehydrate();
     for (const line of useGuestCart.getState().lines) {
       try {
         await addServerItem({ variantId: line.variantId, quantity: line.quantity });
+        moved += 1;
       } catch (error) {
-        failed.push(`${line.name}: ${error instanceof ApiError ? error.message : "unavailable"}`);
+        const refused = error instanceof ApiError && error.status >= 400 && error.status < 500;
+        if (!refused) continue; // offline / server hiccup: keep it for the next attempt
+        failed.push(`${line.name}: ${error.message}`);
       }
       useGuestCart.getState().remove(line.variantId);
-      merged = true;
     }
   }, "adeeb-cart-merge");
-  if (!merged) return;
+  if (!moved && !failed.length) return 0;
   await queryClient.invalidateQueries({ queryKey: cartKeys.server });
   if (failed.length) {
     notify.info("Some items couldn't be moved to your account cart", {
@@ -40,17 +47,15 @@ async function mergeGuestCart(queryClient) {
       duration: 8000,
     });
   }
+  return moved;
 }
 
-/** Push the device wishlist to the server once per browser session per account. */
-function syncWishlistOnce(userId) {
-  const flag = `adeeb.wishlist-synced.${userId}`;
-  try {
-    if (sessionStorage.getItem(flag)) return;
-    sessionStorage.setItem(flag, "1");
-  } catch {
-    /* storage blocked: sync anyway */
-  }
+/**
+ * Push the device wishlist to the account and pull the account's list back. Runs on every
+ * login (not once per browser session), so items saved as a guest after logging out still
+ * reach the account the next time the shopper logs in.
+ */
+function syncWishlist() {
   // Send this device's items, get the account's full list back, and add what's missing here
   // (items saved on a phone show up on the laptop after logging in).
   const ids = useWishlist.getState().items.map((c) => c.id);
@@ -74,14 +79,26 @@ export function SessionSync() {
   const guestLineCount = useGuestCart((s) => s.lines.length);
   const queryClient = useQueryClient();
   const running = useRef(false);
+  // The account this page load already synced the wishlist for (re-runs on each new login).
+  const syncedUser = useRef(null);
 
   useEffect(() => {
     if (status !== "authenticated" || !userId || running.current) return;
     running.current = true;
-    syncWishlistOnce(userId);
-    mergeGuestCart(queryClient).finally(() => {
-      running.current = false;
-    });
+    const firstRunForUser = syncedUser.current !== userId;
+    if (firstRunForUser) {
+      syncedUser.current = userId;
+      syncWishlist();
+    }
+    mergeGuestCart(queryClient)
+      .then((moved) => {
+        if (moved && firstRunForUser) {
+          notify.info("Your cart and wishlist are saved to your account");
+        }
+      })
+      .finally(() => {
+        running.current = false;
+      });
   }, [status, userId, guestLineCount, queryClient]);
 
   return null;

@@ -29,7 +29,8 @@ function ZoomImage({ image, alt, priority, onOpen }) {
       className="group relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-card border border-line bg-shelf bg-[radial-gradient(70%_60%_at_50%_55%,#ffffff,var(--color-shelf))]"
     >
       <span
-        className="absolute inset-[6%] block transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
+        // Blended here (the zooming layer), not on the image, so no white box shows while zoomed.
+        className="absolute inset-[6%] block mix-blend-multiply transition-transform duration-(--duration-base) ease-(--ease-out-soft)"
         style={origin ? { transform: "scale(2)", transformOrigin: origin } : undefined}
       >
         <CloudImage
@@ -39,7 +40,6 @@ function ZoomImage({ image, alt, priority, onOpen }) {
           sizes="(min-width: 80rem) 640px, 50vw"
           priority={priority}
           trim
-          blend
           className="size-full"
         />
       </span>

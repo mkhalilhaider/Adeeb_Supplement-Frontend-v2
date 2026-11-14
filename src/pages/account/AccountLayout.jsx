@@ -4,6 +4,7 @@ import { LayoutDashboard, LogOut, MapPin, Package, Settings } from "lucide-react
 import { PageLoader } from "../../components/ui/PageLoader";
 import { cn } from "../../lib/cn";
 import { useSession } from "../../features/auth/session-store";
+import { notify } from "../../lib/notify";
 
 const LINKS = [
   { to: "/account", label: "Overview", icon: LayoutDashboard, end: true },
@@ -22,7 +23,10 @@ export default function AccountLayout() {
 
   // Leave the protected area first; signing out while still on it would bounce to /login.
   // The account guard sees the voluntary sign-out and sends the shopper home.
-  const logOut = () => signOut();
+  const logOut = () => {
+    signOut();
+    notify.info("You're logged out");
+  };
 
   const linkClass = ({ isActive }) =>
     cn(

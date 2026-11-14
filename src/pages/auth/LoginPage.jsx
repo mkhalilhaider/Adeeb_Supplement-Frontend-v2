@@ -12,6 +12,7 @@ import { PasswordInput } from "../../features/auth/components/PasswordInput";
 import { loginPath, safeReturnTo } from "../../features/auth/lib/return-to";
 import { EMAIL_PATTERN } from "../../features/auth/lib/validation";
 import { useSession } from "../../features/auth/session-store";
+import { notify } from "../../lib/notify";
 
 function validate(v) {
   const errors = {};
@@ -50,6 +51,9 @@ export default function LoginPage() {
     try {
       const result = await login({ email: values.email.trim(), password: values.password });
       signIn(result);
+      notify.success(
+        result.user?.firstName ? `Welcome back, ${result.user.firstName}` : "Welcome back",
+      );
       navigate(returnTo, { replace: true });
     } catch (err) {
       setError(

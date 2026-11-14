@@ -19,6 +19,8 @@ export function markToasterReady() {
   resolveReady();
 }
 
+// How long toasts stay is set on the toast container (ToasterHost): short by default, longer
+// for errors and anything with an Undo.
 async function show(kind, message, options) {
   window.dispatchEvent(new Event(NEED_TOASTER_EVENT));
   const [{ toast }] = await Promise.all([import("sonner"), toasterReady]);
@@ -33,9 +35,9 @@ export const notify = {
   error: (errorOrMessage, options) => {
     const message =
       typeof errorOrMessage === "string" ? errorOrMessage : errorMessage(errorOrMessage);
-    if (message) show("error", message, options);
+    if (message) show("error", message, { duration: 5000, ...options });
   },
   /** Action with undo, e.g. "Removed from cart · Undo". */
   undoable: (message, onUndo) =>
-    show("plain", message, { action: { label: "Undo", onClick: onUndo }, duration: 6000 }),
+    show("plain", message, { action: { label: "Undo", onClick: onUndo }, duration: 4000 }),
 };

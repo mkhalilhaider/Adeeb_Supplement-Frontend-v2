@@ -1,9 +1,9 @@
+import { lazy, Suspense } from "react";
 import { Link } from "react-router";
 import { MessageCircle, ShoppingBag } from "lucide-react";
 import { Button } from "../../../components/ui/Button";
 import { Price } from "../../../components/ui/Price";
 import { QuantityStepper } from "../../../components/ui/QuantityStepper";
-import { Rating } from "../../../components/ui/Rating";
 import { whatsappLink } from "../../../config/site";
 import { cn } from "../../../lib/cn";
 import { isPurchasable, toProductCard } from "../../catalog/lib/product-view";
@@ -11,6 +11,9 @@ import { WishlistButton } from "../../wishlist/WishlistButton";
 import { variantLabel } from "../lib/variant-matrix";
 import { DeliveryInfo } from "./DeliveryInfo";
 import { VariantPicker } from "./VariantPicker";
+
+// Loaded right after the page: the rating only shows once the store's reviews have arrived.
+const ProductRatingLine = lazy(() => import("../../reviews/ProductRatingLine"));
 
 export const MAX_QTY = 20;
 
@@ -67,12 +70,9 @@ export function PurchasePanel({
         <h1 className="mt-2 text-[1.625rem] leading-tight font-extrabold tracking-[-0.01em] md:text-[2.125rem]">
           {product.name}
         </h1>
-        {product.reviewCount > 0 && (
-          <a href="#reviews" className="mt-2 inline-flex items-center gap-2 hover:underline">
-            <Rating value={product.averageRating} count={product.reviewCount} size={15} showValue />
-            <span className="sr-only">Read reviews</span>
-          </a>
-        )}
+        <Suspense fallback={null}>
+          <ProductRatingLine productId={product._id} />
+        </Suspense>
       </div>
 
       <div className="flex flex-col gap-2">

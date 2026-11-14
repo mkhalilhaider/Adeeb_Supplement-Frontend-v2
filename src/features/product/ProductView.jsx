@@ -45,11 +45,7 @@ function BelowFoldReviews({ product }) {
     <div ref={ref} id="reviews" className="mt-14 min-h-24 scroll-mt-24 md:mt-20">
       {seen && (
         <Suspense fallback={null}>
-          <ReviewsSection
-            productId={product._id}
-            average={product.averageRating}
-            count={product.reviewCount}
-          />
+          <ReviewsSection productId={product._id} />
         </Suspense>
       )}
     </div>

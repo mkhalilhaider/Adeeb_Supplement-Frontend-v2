@@ -6,6 +6,7 @@ import { ApiError } from "../../../lib/api/errors";
 import { formatPrice } from "../../../lib/format";
 import { useCartChoices } from "../cart-ui";
 import { validateCoupon } from "../quotes";
+import { notify } from "../../../lib/notify";
 
 /** Coupon entry: validates with the backend, shows the exact reason when a code doesn't apply. */
 export function CouponField({ subtotal, quote }) {
@@ -21,9 +22,14 @@ export function CouponField({ subtotal, quote }) {
     setPending(true);
     setError("");
     try {
-      await validateCoupon({ code, subtotal: Math.round(subtotal) });
+      const result = await validateCoupon({ code, subtotal: Math.round(subtotal) });
       setCoupon(code);
       setDraft("");
+      notify.success(
+        result?.discountAmount
+          ? `Coupon ${code.toUpperCase()} applied — ${formatPrice(result.discountAmount)} off`
+          : `Coupon ${code.toUpperCase()} applied`,
+      );
     } catch (err) {
       setError(
         err instanceof ApiError ? err.message : "Couldn't check that code. Please try again.",
@@ -51,7 +57,10 @@ export function CouponField({ subtotal, quote }) {
         </div>
         <button
           type="button"
-          onClick={clearCoupon}
+          onClick={() => {
+            clearCoupon();
+            notify.info(`Coupon ${couponCode} removed`);
+          }}
           aria-label={`Remove coupon ${couponCode}`}
           className="flex size-8 shrink-0 items-center justify-center rounded-sm text-ink-2 hover:bg-shelf hover:text-ink"
         >

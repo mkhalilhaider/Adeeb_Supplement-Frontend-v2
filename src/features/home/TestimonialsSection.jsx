@@ -7,20 +7,7 @@ import { site } from "../../config/site";
 import { formatPrice } from "../../lib/format";
 import { fetchTestimonials } from "./api";
 import { Slider } from "./Slider";
-
-const DAY = 86_400_000;
-
-/** "3 days ago", "2 weeks ago", "5 months ago" — the way Google shows review dates. */
-function timeAgo(value) {
-  if (!value) return "";
-  const days = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / DAY));
-  const unit = (n, word) => `${n} ${word}${n === 1 ? "" : "s"} ago`;
-  if (days < 1) return "Today";
-  if (days < 7) return unit(days, "day");
-  if (days < 31) return unit(Math.floor(days / 7), "week");
-  if (days < 365) return unit(Math.floor(days / 30), "month");
-  return unit(Math.floor(days / 365), "year");
-}
+import { timeAgo } from "../reviews/store-reviews";
 
 function Stars({ value, className = "text-[15px]" }) {
   const n = Math.round(value);

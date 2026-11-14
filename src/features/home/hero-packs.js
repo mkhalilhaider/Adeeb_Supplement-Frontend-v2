@@ -7,9 +7,23 @@
  */
 const CLOUD = "https://res.cloudinary.com/ztiwmftk/image/upload";
 
-/** @param {string} id @param {400|640} h */
+/**
+ * Background-removed packshot. `id` is a Cloudinary public id, or just the file name of one in
+ * adeeb-supplement/variants (the built-in packs below).
+ * @param {string} id @param {400|640} h
+ */
 export const cutoutSrc = (id, h) =>
-  `${CLOUD}/e_background_removal/e_trim/f_webp,q_auto,h_${h}/adeeb-supplement/variants/${id}`;
+  `${CLOUD}/e_background_removal/e_trim/f_webp,q_auto,h_${h}/${id.includes("/") ? id : `adeeb-supplement/variants/${id}`}`;
+
+/** An uploaded cut-out (already transparent), resized by Cloudinary when it lives there. */
+const uploadedSrc = (url, h) =>
+  url.includes("/image/upload/")
+    ? url.replace("/image/upload/", `/image/upload/f_auto,q_auto,h_${h}/`)
+    : url;
+
+/** Image URL for content from Admin → Homepage content: an uploaded image, else a cut-out. */
+export const contentImageSrc = (item, h) =>
+  item?.image ? uploadedSrc(item.image, h) : item?.cutout ? cutoutSrc(item.cutout, h) : null;
 
 /**
  * Hero carousel order. `w` is each pack's width ÷ height (keeps the row centred while the
@@ -61,3 +75,46 @@ export const HERO_PACKS = [
 
 export const LEAD_PACK = HERO_PACKS.find((p) => p.lead);
 export const LEAD_INDEX = HERO_PACKS.indexOf(LEAD_PACK);
+
+/**
+ * @typedef {object} HeroPack
+ * @property {string} key
+ * @property {string} href     Where clicking it goes
+ * @property {string} name     Accessible name
+ * @property {string} eyebrow  Small line on the card (usually the brand)
+ * @property {string} title    Title on the card
+ * @property {number} w        Width ÷ height (keeps the stage steady while images load)
+ * @property {boolean} lead    Starts at the front (the LCP image)
+ * @property {(h: 400|640) => string} src
+ */
+
+/** @type {HeroPack[]} The built-in packs, used until the admin saves the hero. */
+const DEFAULT_PACKS = HERO_PACKS.map((p) => ({
+  key: p.id,
+  href: `/product/${p.slug}`,
+  name: p.name,
+  eyebrow: p.brand,
+  title: p.short,
+  w: p.w,
+  lead: Boolean(p.lead),
+  src: (h) => cutoutSrc(p.id, h),
+}));
+
+/**
+ * Hero packs from Admin → Homepage content (first one leads), or the built-in ones.
+ * @returns {HeroPack[]}
+ */
+export function heroPacks(content) {
+  const items = content?.hero;
+  if (!items?.length) return DEFAULT_PACKS;
+  return items.map((item, i) => ({
+    key: `${item.key}-${i}`,
+    href: item.href || "/shop",
+    name: item.name,
+    eyebrow: item.eyebrow,
+    title: item.title,
+    w: 0.8,
+    lead: i === 0,
+    src: (h) => contentImageSrc(item, h),
+  }));
+}

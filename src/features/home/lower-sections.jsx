@@ -9,16 +9,32 @@ import { useInViewOnce } from "../../lib/hooks";
 import { usePrefersReducedMotion } from "../../lib/useMediaQuery";
 import { useTaxonomy } from "../catalog/useTaxonomy";
 import { fetchStorefrontStats } from "./api";
-import { cutoutSrc, HERO_PACKS } from "./hero-packs";
+import { contentImageSrc, cutoutSrc, HERO_PACKS } from "./hero-packs";
+import { useHomepageContent } from "./useHomepageContent";
 import { Odometer } from "./Odometer";
+import { DEFAULT_SPOTLIGHT } from "./homepage-defaults";
 
-const FEATURE = { slug: "creatine", title: "Strength starts with creatine.", pack: HERO_PACKS[0] };
+const FEATURE = { ...DEFAULT_SPOTLIGHT, pack: HERO_PACKS[0] };
 
-/** One dark editorial band for a single category (copy = the category's own description). */
+/**
+ * One dark editorial band after Best sellers. Its content comes from Admin → Homepage content
+ * (spotlight); until that is set, it features Creatine with the category's own description.
+ */
 export function EditorialBand() {
   const { categories } = useTaxonomy();
+  const spot = useHomepageContent().data?.spotlight;
   const category = categories.find((c) => c.slug === FEATURE.slug);
-  if (!category) return null;
+  const band = spot
+    ? { ...spot, src: contentImageSrc(spot, 400) }
+    : category && {
+        href: `/category/${category.slug}`,
+        eyebrow: category.name,
+        title: FEATURE.title,
+        description: category.description,
+        buttonText: `Shop ${category.name.toLowerCase()}`,
+        src: cutoutSrc(FEATURE.pack.id, 400),
+      };
+  if (!band) return null;
   return (
     <section aria-labelledby="feature-heading" className="page-container">
       <div className="grid overflow-hidden rounded-band bg-night text-night-text md:grid-cols-2">
@@ -29,28 +45,37 @@ export function EditorialBand() {
               "radial-gradient(55% 55% at 50% 60%, rgb(243 107 39 / 0.42), rgb(243 107 39 / 0) 70%)",
           }}
         >
-          <img
-            src={cutoutSrc(FEATURE.pack.id, 400)}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className="h-[220px] w-auto drop-shadow-[0_24px_30px_rgb(0_0_0/0.6)] md:h-[320px]"
-          />
+          {band.src && (
+            <img
+              src={band.src}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-[220px] w-auto drop-shadow-[0_24px_30px_rgb(0_0_0/0.6)] md:h-[320px]"
+            />
+          )}
         </div>
         <div className="flex flex-col justify-center gap-5 p-7 md:p-14">
-          <p className="label-caps text-brand">{category.name}</p>
+          {band.eyebrow && <p className="label-caps text-brand">{band.eyebrow}</p>}
           <h2 id="feature-heading" className="text-[2.75rem] font-display md:text-[4rem]">
-            {FEATURE.title}
+            {band.title}
           </h2>
-          {category.description && (
+          {band.description && (
             <p className="max-w-[46ch] text-[17px] leading-relaxed text-night-muted">
-              {category.description}
+              {band.description}
             </p>
           )}
           <div className="mt-2 grid gap-3 sm:flex">
-            <Button to={`/category/${category.slug}`} size="lg">
-              Shop {category.name.toLowerCase()}
-            </Button>
+            {band.href &&
+              (band.href.startsWith("/") ? (
+                <Button to={band.href} size="lg">
+                  {band.buttonText || "Shop now"}
+                </Button>
+              ) : (
+                <Button href={band.href} target="_blank" rel="noopener" size="lg">
+                  {band.buttonText || "Shop now"}
+                </Button>
+              ))}
             <Button to="/brands" size="lg" variant="onDark">
               Compare brands
             </Button>
@@ -82,7 +107,7 @@ export function BrandsGrid() {
             blend
             sizes="200px"
             className="h-full w-full"
-            imgClassName="opacity-85 grayscale transition duration-(--duration-base) group-hover:opacity-100 group-hover:grayscale-0"
+            imgClassName="transition-transform duration-(--duration-base) group-hover:scale-105"
           />
         ) : (
           <span className="text-center text-small font-semibold">{b.name}</span>
@@ -131,10 +156,6 @@ export function StatsBand() {
   const [ref, seen] = useInViewOnce({ rootMargin: "0px 0px -15% 0px" });
   const rolled = reduced || seen;
   const d = stats.data;
-  const returnRate =
-    d?.customers > 0 && d?.repeatedCustomers > 0
-      ? Math.max(2, Math.round(d.customers / d.repeatedCustomers))
-      : 0;
   const items = [
     {
       id: "orders",
@@ -159,10 +180,10 @@ export function StatsBand() {
     },
     {
       id: "repeat",
-      value: returnRate,
-      show: `1 in ${returnRate}`,
-      label: "Customers order again",
-      note: "the best proof it's genuine",
+      value: d?.repeatedCustomers,
+      show: `${d?.repeatedCustomers}+`,
+      label: "Repeat customers",
+      note: "ordered from us again",
     },
   ].filter((i) => i.value > 0);
   if (!items.length) return null;

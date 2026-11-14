@@ -23,10 +23,10 @@ export const STORY = {
     { value: "KHI", title: "Gulshan Iqbal, Karachi", note: "Our walk-in store & warehouse" },
     { value: "PK", title: "Imported for Pakistan", note: "Delivered nationwide" },
     {
-      value: "7D",
-      title: "Exchange window",
-      note: "See our refund & exchange policy",
-      to: "/refund-policy",
+      value: "100%",
+      title: "Authentic & verified products",
+      note: "Sourced from authorised distributors",
+      highlight: true,
     },
   ],
   promises: [

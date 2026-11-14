@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { usePrefersReducedMotion } from "../../lib/useMediaQuery";
-import { cutoutSrc, HERO_PACKS, LEAD_INDEX } from "./hero-packs";
+import { heroPacks } from "./hero-packs";
+import { useHomepageContent } from "./useHomepageContent";
 
 const INTERVAL = 2500;
 /** A horizontal drag/swipe longer than this (px) moves to the next or previous pack. */
 const SWIPE = 40;
-const COUNT = HERO_PACKS.length;
 
 /**
  * Slot by distance from the front pack: horizontal offset (share of the stage width), scale,
@@ -21,26 +21,44 @@ const SLOTS = {
   2: { x: 40, s: 0.46, z: 3, b: 0.3 },
   [-2]: { x: -40, s: 0.46, z: 3, b: 0.3 },
 };
+/** Packs further back (6–8 packs) wait out of sight behind the others. */
+const slotFor = (d) => SLOTS[d] ?? { x: Math.sign(d) * 44, s: 0.36, z: 1, b: 0.2, hidden: true };
 
 /** Signed distance from the front, wrapping round (e.g. -2…2 for five packs). */
-const offset = (k, active) => {
-  let d = (k - active + COUNT) % COUNT;
-  if (d > COUNT / 2) d -= COUNT;
+const offset = (k, active, count) => {
+  let d = (k - active + count) % count;
+  if (d > count / 2) d -= count;
   return d;
 };
+
+/** Internal links use the router; a custom https link opens in a new tab. */
+const linkProps = (href) =>
+  href.startsWith("/")
+    ? { as: Link, to: href }
+    : { as: "a", href, target: "_blank", rel: "noopener" };
 
 /**
  * Homepage hero: copy on the left, a rotating stage of real packshots on the right. Every
  * 2.5 s the next pack rolls to the front (full size, full colour) while the others step back.
  * Hover pauses it. Swipe (touch) or drag (mouse) left/right to move; arrow keys work when it's
- * focused; clicking a back pack brings it forward, the front one opens its product. With
- * reduced motion it only changes when moved by hand. Static markup and no API call, so it
- * paints with the first frame; the front pack is the LCP image.
+ * focused; clicking a back pack brings it forward, the front one opens its link. With
+ * reduced motion it only changes when moved by hand. The packs come from Admin → Homepage
+ * content (remembered between visits); the built-in ones show until that has loaded, so the
+ * hero paints with the first frame and the front pack is the LCP image.
  *
  * @param {{ brandCount?: number }} props
  */
 export function Hero({ brandCount }) {
-  const [active, setActive] = useState(LEAD_INDEX);
+  const content = useHomepageContent().data;
+  const packs = useMemo(() => heroPacks(content), [content]);
+  const count = packs.length;
+  const [picked, setActive] = useState(() =>
+    Math.max(
+      0,
+      packs.findIndex((p) => p.lead),
+    ),
+  );
+  const active = picked % count;
   const [paused, setPaused] = useState(false);
   const reduced = usePrefersReducedMotion();
   // Pointer drag in progress ({ x, moved }), and whether the click that ends a drag should be
@@ -50,9 +68,9 @@ export function Hero({ brandCount }) {
 
   useEffect(() => {
     if (paused || reduced) return undefined;
-    const id = window.setInterval(() => setActive((i) => (i + 1) % COUNT), INTERVAL);
+    const id = window.setInterval(() => setActive((i) => (i + 1) % count), INTERVAL);
     return () => window.clearInterval(id);
-  }, [paused, reduced]);
+  }, [paused, reduced, count]);
 
   // Background tabs don't need to spin.
   useEffect(() => {
@@ -61,8 +79,9 @@ export function Hero({ brandCount }) {
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  const go = (i) => setActive(((i % COUNT) + COUNT) % COUNT);
-  const front = HERO_PACKS[active];
+  const go = (i) => setActive(((i % count) + count) % count);
+  const front = packs[active];
+  const { as: FrontLink, ...frontLink } = linkProps(front.href);
 
   return (
     <section
@@ -168,15 +187,17 @@ export function Hero({ brandCount }) {
             className="absolute inset-x-0 bottom-[46px] h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
           />
 
-          {HERO_PACKS.map((pack, k) => {
-            const d = offset(k, active);
-            const slot = SLOTS[d];
+          {packs.map((pack, k) => {
+            const d = offset(k, active, count);
+            const slot = slotFor(d);
             const isFront = d === 0;
+            const { as: PackLink, ...packLink } = linkProps(pack.href);
             return (
-              <Link
-                key={pack.id}
-                to={`/product/${pack.slug}`}
+              <PackLink
+                key={pack.key}
+                {...packLink}
                 aria-label={pack.name}
+                aria-hidden={slot.hidden || undefined}
                 tabIndex={isFront ? 0 : -1}
                 draggable={false}
                 onClick={(e) => {
@@ -190,14 +211,15 @@ export function Hero({ brandCount }) {
                   aspectRatio: pack.w,
                   transform: `translateX(calc(-50% + ${slot.x}cqw)) scale(${slot.s})`,
                   zIndex: slot.z,
+                  opacity: slot.hidden ? 0 : 1,
                   filter: `brightness(${slot.b})${isFront ? " drop-shadow(0 30px 40px rgb(0 0 0 / 0.6))" : ""}`,
                 }}
-                className="absolute bottom-[46px] left-1/2 block h-[74%] origin-bottom transition-[transform,filter] duration-[650ms] ease-(--ease-out-soft)"
+                className="absolute bottom-[46px] left-1/2 block h-[74%] origin-bottom transition-[transform,filter,opacity] duration-[650ms] ease-(--ease-out-soft)"
               >
                 <picture>
-                  <source media="(min-width: 1024px)" srcSet={cutoutSrc(pack.id, 640)} />
+                  <source media="(min-width: 1024px)" srcSet={pack.src(640)} />
                   <img
-                    src={cutoutSrc(pack.id, 400)}
+                    src={pack.src(400)}
                     alt=""
                     draggable={false}
                     className="block size-full object-contain"
@@ -205,12 +227,12 @@ export function Hero({ brandCount }) {
                     decoding={pack.lead ? "sync" : "async"}
                   />
                 </picture>
-              </Link>
+              </PackLink>
             );
           })}
 
-          <Link
-            to={`/product/${front.slug}`}
+          <FrontLink
+            {...frontLink}
             aria-live="polite"
             className="absolute top-2 right-0 z-20 hidden items-center gap-3 rounded-card bg-night/85 px-4 py-3 ring-1 ring-night-line backdrop-blur-sm transition-colors hover:ring-brand lg:flex"
           >
@@ -219,13 +241,13 @@ export function Hero({ brandCount }) {
               className="size-2 rounded-full bg-brand ring-4 ring-brand/25"
             />
             <span className="flex flex-col">
-              <span className="text-[12px] text-night-muted">{front.brand}</span>
-              <span className="text-small font-bold text-white">{front.short}</span>
+              <span className="text-[12px] text-night-muted">{front.eyebrow}</span>
+              <span className="text-small font-bold text-white">{front.title}</span>
             </span>
             <span className="ml-2 flex items-center gap-1 text-small font-bold text-brand">
               Shop now <ArrowRight aria-hidden="true" className="size-4" />
             </span>
-          </Link>
+          </FrontLink>
         </div>
       </div>
     </section>

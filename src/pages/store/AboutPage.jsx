@@ -74,7 +74,7 @@ function Facts() {
             <dd
               className={cn(
                 "order-1 text-[3rem] font-display leading-none transition-colors duration-(--duration-base) group-hover:text-brand-ink md:text-[4.5rem]",
-                f.to && "text-brand-ink",
+                (f.to || f.highlight) && "text-brand-ink",
               )}
             >
               <span className="sr-only">{f.value}</span>

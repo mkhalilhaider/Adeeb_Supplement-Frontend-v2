@@ -12,6 +12,7 @@ import { PasswordInput } from "../../features/auth/components/PasswordInput";
 import { loginPath, safeReturnTo } from "../../features/auth/lib/return-to";
 import { EMAIL_PATTERN, MIN_PASSWORD, passwordProblem } from "../../features/auth/lib/validation";
 import { useSession } from "../../features/auth/session-store";
+import { notify } from "../../lib/notify";
 
 function validate(v) {
   const errors = {};
@@ -54,6 +55,7 @@ export default function RegisterPage() {
         password: values.password,
       });
       signIn(result);
+      notify.success("Account created — welcome to Adeeb!");
       navigate(returnTo, { replace: true });
     } catch (err) {
       setPending(false);

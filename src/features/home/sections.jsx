@@ -6,7 +6,9 @@ import { Skeleton } from "../../components/ui/Skeleton";
 import { site } from "../../config/site";
 import { cn } from "../../lib/cn";
 import { useTaxonomy } from "../catalog/useTaxonomy";
-import { cutoutSrc, LEAD_PACK } from "./hero-packs";
+import { contentImageSrc, cutoutSrc, LEAD_PACK } from "./hero-packs";
+import { useHomepageContent } from "./useHomepageContent";
+import { GOAL_ORDER, GOALS } from "./homepage-defaults";
 
 const TRUST_ICONS = {
   authentic: ShieldCheck,
@@ -53,26 +55,19 @@ export function TrustStrip() {
  * Each category framed as a customer goal. Goals map one-to-one to real categories (the shop
  * filters by one category at a time); a category without a goal keeps its own name.
  */
-const GOALS = {
-  protein: "Build muscle",
-  creatine: "Strength & power",
-  preworkout: "Energy & focus",
-  "mass-gainer": "Gain size",
-  "fat-burner": "Get lean",
-  "bcaa-eaa": "Recover faster",
-  "health-recovery": "Daily health",
-};
-const GOAL_ORDER = Object.keys(GOALS);
 
 export function GoalTiles() {
   const { categories, isPending } = useTaxonomy();
-  const tiles = useMemo(
-    () =>
-      [...categories].sort(
-        (a, b) => (GOAL_ORDER.indexOf(a.slug) + 1 || 99) - (GOAL_ORDER.indexOf(b.slug) + 1 || 99),
-      ),
-    [categories],
-  );
+  // Admin → Homepage content: which category gets the big tile, its copy and image, and the
+  // goal titles of the other tiles. Built-in values fill anything not set.
+  const content = useHomepageContent().data;
+  const bigSlug = content?.goalTile?.category ?? null;
+  const titles = content?.goalTitles;
+  const tiles = useMemo(() => {
+    const rank = (slug) => (slug === bigSlug ? -1 : GOAL_ORDER.indexOf(slug) + 1 || 99);
+    return [...categories].sort((a, b) => rank(a.slug) - rank(b.slug));
+  }, [categories, bigSlug]);
+  const goalOf = (c) => titles?.[c.slug] || GOALS[c.slug] || c.name;
   const [lead, ...rest] = tiles;
 
   return (
@@ -105,12 +100,16 @@ export function GoalTiles() {
         <ul className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:grid-rows-[250px_250px] lg:gap-4">
           {lead && (
             <li className="col-span-2 lg:col-span-1 lg:row-span-2">
-              <GoalTile category={lead} big />
+              <GoalTile
+                category={lead}
+                goal={content?.goalTile?.title || goalOf(lead)}
+                big={bigSlug === lead.slug ? content.goalTile : {}}
+              />
             </li>
           )}
           {rest.map((c) => (
             <li key={c._id}>
-              <GoalTile category={c} />
+              <GoalTile category={c} goal={goalOf(c)} />
             </li>
           ))}
         </ul>
@@ -119,9 +118,14 @@ export function GoalTiles() {
   );
 }
 
-function GoalTile({ category, big = false }) {
-  const goal = GOALS[category.slug] ?? category.name;
+/**
+ * @param {{ category: any, goal: string, big?: false | { description?: string,
+ *   buttonText?: string, image?: string|null, cutout?: string|null } }} props
+ */
+function GoalTile({ category, goal, big = false }) {
   if (big) {
+    const image = contentImageSrc(big, 400) ?? cutoutSrc(LEAD_PACK.id, 400);
+    const description = big.description || category.description;
     return (
       <Link
         to={`/category/${category.slug}`}
@@ -132,7 +136,7 @@ function GoalTile({ category, big = false }) {
         }}
       >
         <img
-          src={cutoutSrc(LEAD_PACK.id, 400)}
+          src={image}
           alt=""
           loading="lazy"
           decoding="async"
@@ -140,13 +144,14 @@ function GoalTile({ category, big = false }) {
         />
         <span className="relative label-caps text-brand">{category.name}</span>
         <span className="relative mt-1.5 text-[2.75rem] font-display md:text-[3.5rem]">{goal}</span>
-        {category.description && (
+        {description && (
           <span className="relative mt-3 hidden max-w-[34ch] text-small text-night-muted md:line-clamp-3">
-            {category.description}
+            {description}
           </span>
         )}
         <span className="relative mt-5 inline-flex h-11 items-center gap-2 self-start rounded-md bg-brand px-5 text-small font-bold text-ink transition-colors group-hover:bg-brand-hover">
-          Shop {category.name.toLowerCase()} <ArrowRight aria-hidden="true" className="size-4" />
+          {big.buttonText || `Shop ${category.name.toLowerCase()}`}{" "}
+          <ArrowRight aria-hidden="true" className="size-4" />
         </span>
       </Link>
     );

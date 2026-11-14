@@ -7,9 +7,10 @@ import { Input } from "../../../components/ui/Input";
 import { errorMessage } from "../../../lib/api/errors";
 import { notify } from "../../../lib/notify";
 import { useForm } from "../../../lib/use-form";
-import { canonicalCity, PK_CITIES } from "../../checkout/lib/pk-cities";
+import { canonicalCity } from "../../checkout/lib/pk-cities";
 import { accountKeys, addAddress, updateAddress } from "../api";
 import { addressBody, addressFormValues, validateAddress } from "../lib/address";
+import { CityCombobox } from "../../checkout/components/CityCombobox";
 
 /**
  * Add or edit a saved address. Loaded on demand (the dialog code isn't needed until the
@@ -83,21 +84,13 @@ export default function AddressFormDialog({ open, onOpenChange, address }) {
         </Field>
         <Field label="City" required error={form.errors.city}>
           {(f) => (
-            <>
-              <Input
-                {...f}
-                {...form.field("city", {
-                  onBlur: (e) => form.set("city", canonicalCity(e.target.value)),
-                })}
-                list="account-pk-cities"
-                autoComplete="address-level2"
-              />
-              <datalist id="account-pk-cities">
-                {PK_CITIES.map((c) => (
-                  <option key={c} value={c} />
-                ))}
-              </datalist>
-            </>
+            <CityCombobox
+              {...f}
+              {...form.field("city", {
+                onBlur: (e) => form.set("city", canonicalCity(e.target.value)),
+              })}
+              onPick={(city) => form.set("city", city)}
+            />
           )}
         </Field>
         <Field

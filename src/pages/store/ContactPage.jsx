@@ -11,6 +11,7 @@ import { errorMessage } from "../../lib/api/errors";
 import { normalizePkPhone } from "../../lib/format";
 import { useForm } from "../../lib/use-form";
 import { useSession } from "../../features/auth/session-store";
+import { notify } from "../../lib/notify";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -75,6 +76,7 @@ export default function ContactPage() {
         message: v.message.trim(),
       });
       setSent(true);
+      notify.success("Message sent — we'll get back to you soon");
     } catch (err) {
       setError(errorMessage(err));
     } finally {

@@ -160,4 +160,23 @@ export const adminKeys = {
   testimonials: ["admin", "testimonials"],
   seo: ["admin", "seo"],
   marketing: ["admin", "marketing"],
+  promo: ["admin", "promo"],
+  homepage: ["admin", "homepage"],
+  whatsapp: ["admin", "whatsapp"],
 };
+
+/** Floating WhatsApp button and greeting settings. */
+export const fetchWhatsAppWidget = ({ signal } = {}) =>
+  getData("/whatsapp-widget/admin", { signal });
+export const saveWhatsAppWidget = (body) =>
+  getData("/whatsapp-widget/admin", { method: "PUT", body });
+
+/** Homepage content (hero, menu feature, goal tile, spotlight); populated for the form. */
+export const fetchHomepageContent = ({ signal } = {}) =>
+  getData("/homepage-content/admin", { signal });
+export const saveHomepageContent = (body) =>
+  getData("/homepage-content/admin", { method: "PUT", body });
+
+/** Promo popup settings (one record). */
+export const fetchPromoPopup = ({ signal } = {}) => getData("/promo-popup/admin", { signal });
+export const savePromoPopup = (body) => getData("/promo-popup/admin", { method: "PUT", body });

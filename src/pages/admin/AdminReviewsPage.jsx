@@ -61,9 +61,27 @@ function Stars({ value, onChange }) {
   );
 }
 
+/** Where a review shows on product pages (stored as productPages). */
+const PRODUCT_PAGES = [
+  {
+    value: "all",
+    label: "Its product + all product pages",
+    short: "Its product + all",
+    hint: "First on its own product's page, then on every other product page.",
+  },
+  {
+    value: "own",
+    label: "Only its product's page",
+    short: "Only its product",
+    hint: "Only on the page of the product it's linked to.",
+  },
+  { value: "off", label: "Off", short: "Off", hint: "Never shown on product pages." },
+];
+
 /**
  * /admin/reviews — reviews copied from the store's Google listing, shown on the homepage in
- * this order. Linking a product gives the card its photo and a link to the product page.
+ * this order and on product pages as each one is set. Linking a product gives the card its
+ * photo and a link to the product page.
  */
 export default function AdminReviewsPage() {
   const queryClient = useQueryClient();
@@ -87,6 +105,7 @@ export default function AdminReviewsPage() {
   const form = useForm(blank);
   const [rating, setRating] = useState(5);
   const [visible, setVisible] = useState(true);
+  const [productPages, setProductPages] = useState("all");
   const [editing, setEditing] = useState(/** @type {any} */ (null));
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -98,6 +117,7 @@ export default function AdminReviewsPage() {
     Object.entries(blank()).forEach(([k, val]) => form.set(k, val));
     setRating(5);
     setVisible(true);
+    setProductPages("all");
     setEditing(null);
     setError("");
   };
@@ -109,6 +129,7 @@ export default function AdminReviewsPage() {
     form.set("product", t.product?._id ?? "");
     setRating(t.rating);
     setVisible(t.isVisible !== false);
+    setProductPages(t.productPages ?? "all");
     setEditing(t);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -123,6 +144,7 @@ export default function AdminReviewsPage() {
       reviewedAt: v.reviewedAt,
       product: v.product || null,
       isVisible: visible,
+      productPages,
       source: "google",
     };
     try {
@@ -138,9 +160,10 @@ export default function AdminReviewsPage() {
     }
   };
 
-  const toggleVisible = async (t, next) => {
+  /** Save one field straight from the table (homepage switch, product pages). */
+  const saveField = async (t, patch) => {
     try {
-      await updateTestimonial(t._id, { isVisible: next });
+      await updateTestimonial(t._id, patch);
       refresh();
     } catch (err) {
       notify.error(err);
@@ -187,7 +210,7 @@ export default function AdminReviewsPage() {
     <div className="max-w-6xl">
       <AdminHeader
         title="Reviews"
-        description="Copy your Google reviews here. They show on the homepage in this order; link a product to show its photo and a link to it."
+        description="Copy your Google reviews here. Choose where each one shows: the homepage (in this order) and product pages. Link a product to show its photo and a link to it."
       />
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
@@ -252,9 +275,23 @@ export default function AdminReviewsPage() {
               </Select>
             )}
           </Field>
-          <div className="flex items-center md:col-span-2">
+          <div className="flex items-center">
             <Toggle checked={visible} onChange={setVisible} label="Show on homepage" />
           </div>
+          <Field
+            label="Show on product pages"
+            hint={PRODUCT_PAGES.find((o) => o.value === productPages)?.hint}
+          >
+            {(f) => (
+              <Select {...f} value={productPages} onChange={(e) => setProductPages(e.target.value)}>
+                {PRODUCT_PAGES.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
           {error && (
             <p role="alert" className="text-small text-danger md:col-span-2">
               {error}
@@ -282,7 +319,8 @@ export default function AdminReviewsPage() {
                 <th className={th}>Stars</th>
                 <th className={th}>Review</th>
                 <th className={th}>Product</th>
-                <th className={th}>Shown</th>
+                <th className={th}>Homepage</th>
+                <th className={th}>Product pages</th>
                 <th className={th}>
                   <span className="sr-only">Actions</span>
                 </th>
@@ -290,7 +328,7 @@ export default function AdminReviewsPage() {
             </thead>
             <tbody>
               {list.length === 0 && (
-                <EmptyRow colSpan={7}>
+                <EmptyRow colSpan={8}>
                   No reviews yet — add your first Google review above.
                 </EmptyRow>
               )}
@@ -338,10 +376,24 @@ export default function AdminReviewsPage() {
                   <td className={td}>
                     <Toggle
                       checked={t.isVisible}
-                      onChange={(next) => toggleVisible(t, next)}
-                      label={`Show review by ${t.name}`}
+                      onChange={(next) => saveField(t, { isVisible: next })}
+                      label={`Show review by ${t.name} on the homepage`}
                       hideLabel
                     />
+                  </td>
+                  <td className={td}>
+                    <Select
+                      aria-label={`Product pages for the review by ${t.name}`}
+                      value={t.productPages ?? "all"}
+                      onChange={(e) => saveField(t, { productPages: e.target.value })}
+                      className="h-9 min-w-44 text-small"
+                    >
+                      {PRODUCT_PAGES.map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.short}
+                        </option>
+                      ))}
+                    </Select>
                   </td>
                   <td className={`${td} text-right whitespace-nowrap`}>
                     <button

@@ -21,8 +21,9 @@ import { OrderSummary } from "./components/OrderSummary";
 import { buildCheckoutBody } from "./lib/checkout-body";
 import { validateCheckout } from "./lib/validate-checkout";
 import { checkoutKey, finishCheckout, readDraft, writeDraft } from "./lib/checkout-session";
-import { canonicalCity, PK_CITIES } from "./lib/pk-cities";
+import { canonicalCity } from "./lib/pk-cities";
 import { useCheckoutProgress } from "./useCheckoutProgress";
+import { CityCombobox } from "./components/CityCombobox";
 
 const FORM_ID = "checkout-form";
 const NEW_ADDRESS = "new";
@@ -347,21 +348,13 @@ export function CheckoutView({ cart, user, loggedIn }) {
                 </Field>
                 <Field label="City" required error={errors.city}>
                   {(f) => (
-                    <>
-                      <Input
-                        {...f}
-                        list="pk-cities"
-                        autoComplete="address-level2"
-                        {...field("city", {
-                          onBlur: (e) => set("city", canonicalCity(e.target.value)),
-                        })}
-                      />
-                      <datalist id="pk-cities">
-                        {PK_CITIES.map((c) => (
-                          <option key={c} value={c} />
-                        ))}
-                      </datalist>
-                    </>
+                    <CityCombobox
+                      {...f}
+                      {...field("city", {
+                        onBlur: (e) => set("city", canonicalCity(e.target.value)),
+                      })}
+                      onPick={(city) => set("city", city)}
+                    />
                   )}
                 </Field>
               </div>

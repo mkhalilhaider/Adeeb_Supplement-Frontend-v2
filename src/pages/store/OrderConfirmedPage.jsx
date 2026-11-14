@@ -16,6 +16,7 @@ import { OrderItems } from "../../features/orders/components/OrderItems";
 import { OrderStatusTimeline } from "../../features/orders/components/OrderStatusTimeline";
 import { parseOrderIdentifier } from "../../features/orders/lib/order-status";
 import NotFoundPage from "./NotFoundPage";
+import { notify } from "../../lib/notify";
 
 function Row({ label, value, strong = false, tone }) {
   return (
@@ -34,7 +35,10 @@ function CopyNumber({ value }) {
       type="button"
       onClick={() =>
         navigator.clipboard.writeText(value).then(
-          () => setCopied(true),
+          () => {
+            setCopied(true);
+            notify.success("Order number copied");
+          },
           () => {},
         )
       }
